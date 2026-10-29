@@ -1223,10 +1223,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
 
 			try {
+				// Checked here, after every filter, so it holds whatever compiler a filter supplies.
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( $less );
+
+				if ( $check !== true ) {
+					throw new Exception( sprintf( 'SiteOrigin Widgets: the LESS for %s was not compiled (%s).', $this->id_base, $check ) );
+				}
+
 				if ( method_exists( $compiler, 'compile' ) ) {
 					$css = @ $compiler->compile( $less );
 				}
-			} catch ( Exception $e ) {
+			} catch ( Throwable $e ) {
 				if ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
 					throw $e;
 				}

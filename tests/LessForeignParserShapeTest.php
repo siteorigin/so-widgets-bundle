@@ -35,6 +35,7 @@ class LessForeignParserShapeTest extends TestCase {
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_variable( '5em' ) );
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_mixin_argument( 'icon_color', '#fff' ) );
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_mixin_call( '( @name:facebook-0);', array( 'name' ) ) );
+		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( '.so-widget-test { p: 1; }' ) );
 	}
 
 	#[RunInSeparateProcess]
