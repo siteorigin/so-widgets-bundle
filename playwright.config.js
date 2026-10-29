@@ -11,12 +11,32 @@ const config = require('siteorigin-tests-common/playwright/config');
 const ABILITY_SPECS = /[\\/]wb-(?:abilities|abilities-mcp|widget-block-abilities|widget-block-abilities-mcp|widget-block-shortcodes)\.test\.js$/;
 const ABILITIES_PROJECT = 'abilities';
 
+/**
+ * The Features specs render in a second theme through core's theme preview.
+ * Their setup project installs that theme once, before any spec, and its
+ * teardown removes it when the setup installed it.
+ */
+const FEATURES_SETUP_PROJECT = 'features setup';
+const FEATURES_TEARDOWN_PROJECT = 'features teardown';
+
 const [ browserProject ] = config.projects;
 
 config.projects = [
 	{
 		...browserProject,
+		name: FEATURES_SETUP_PROJECT,
+		testMatch: /[\\/]features\.setup\.js$/,
+		teardown: FEATURES_TEARDOWN_PROJECT,
+	},
+	{
+		...browserProject,
+		name: FEATURES_TEARDOWN_PROJECT,
+		testMatch: /[\\/]features\.teardown\.js$/,
+	},
+	{
+		...browserProject,
 		testIgnore: ABILITY_SPECS,
+		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 	{
 		...browserProject,
