@@ -1110,4 +1110,21 @@ class FeaturesSpacingTest extends SiteOriginTests {
 			$this->assertStringNotContainsString( ':has(', $this->css( self::with_more_text( $instance ) ), $case );
 		}
 	}
+
+	/**
+	 * With the More link aligned to the bottom, the link sits between the
+	 * text and a bottom icon, so the icon spacing leaves the bottom margin of
+	 * the text's last element, the space above the link, as it is.
+	 */
+	public function test_text_keeps_its_bottom_margin_above_a_bottom_aligned_more_link() {
+		foreach ( array( 3, 1 ) as $per_row ) {
+			$instance = self::with_more_text( self::with_text( '<p>Text</p><h4>End</h4>', array( 'icon_spacing' => '20px', 'per_row' => $per_row, 'more_text_bottom_align' => true ) ) );
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$last = self::text_edge_element( $doc, 'bottom', false );
+
+			$this->assertSame( 'h4', $last->tagName );
+			$this->assertNotSame( '0', $this->winning_value( $css, $doc, $last, 'margin-bottom', false ), "per row $per_row" );
+		}
+	}
 }

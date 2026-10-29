@@ -195,7 +195,10 @@
 				}
 			}
 
-			&.sow-icon-container-position-bottom .textwidget {
+			// A bottom aligned More link follows the text column and sits
+			// between it and the icon, so only a column with nothing after it
+			// meets the icon.
+			&.sow-icon-container-position-bottom .textwidget:last-child {
 				> :last-child,
 				> .sow-features-feature-text:last-child > :last-child,
 				> .sow-features-feature-text:last-child > :last-child > li:last-child {
