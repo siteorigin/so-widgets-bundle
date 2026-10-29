@@ -788,27 +788,15 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The element whose margin meets the icon of the feature at a top or
-	 * bottom position on desktop: the first (top) or last (bottom) element of
-	 * the text column, looking inside the content wrapper and the text box,
-	 * or the bottom aligned More link that sits between the text and a bottom
-	 * icon. Text that starts or ends with bare text gives the text box.
+	 * The first or last element of a feature's text column, looking inside
+	 * the content wrapper and the text box. Text that starts or ends with
+	 * bare text gives the text box.
 	 */
-	private static function element_facing_the_icon( DOMDocument $doc, $position ) {
+	private static function text_edge_element( DOMDocument $doc, $position, $first ) {
 		$xpath = new DOMXPath( $doc );
-		$feature = $xpath->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]' )->item( 0 );
-		self::assertNotNull( $feature, $position . ' feature' );
-
-		if ( $position === 'bottom' ) {
-			$more = $xpath->query( './p[contains(@class, "sow-more-text")]', $feature )->item( 0 );
-
-			if ( $more !== null ) {
-				return $more;
-			}
-		}
-
-		$node = $xpath->query( './/div[contains(@class, "textwidget")]', $feature )->item( 0 );
-		$pick = $position === 'top' ? './*[1]' : './*[last()]';
+		$node = $xpath->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]//div[contains(@class, "textwidget")]' )->item( 0 );
+		self::assertNotNull( $node, $position . ' text column' );
+		$pick = $first ? './*[1]' : './*[last()]';
 
 		while ( preg_match( '/\b(textwidget|sow-features-feature-content|sow-features-feature-text)\b/', $node->getAttribute( 'class' ) ) ) {
 			$child = $xpath->query( $pick, $node )->item( 0 );
@@ -824,14 +812,49 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A set icon spacing is the whole gap to the text: the element that meets
-	 * a top or bottom icon adds no margin on that side, whatever the text
-	 * starts or ends with, with and without the More link, bottom aligned or
-	 * not, and with one or three features per row.
+	 * The bottom aligned More link that is a sibling of the text column, or
+	 * null.
 	 */
-	#[DataProvider( 'icon_text_cases' )]
-	public function test_icon_spacing_is_the_whole_gap_to_the_text_for_top_and_bottom_icons( $text, $has_title ) {
-		foreach ( array( 3, 1 ) as $per_row ) {
+	private static function outer_more_link( DOMDocument $doc, $position ) {
+		return ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]/p[contains(@class, "sow-more-text")]' )->item( 0 );
+	}
+
+	/**
+	 * The element whose margin meets the icon of the feature at a top or
+	 * bottom position on desktop: the first (top) or last (bottom) element of
+	 * the text column, or the bottom aligned More link that sits between the
+	 * text and a bottom icon.
+	 */
+	private static function element_facing_the_icon( DOMDocument $doc, $position ) {
+		if ( $position === 'bottom' && self::outer_more_link( $doc, $position ) !== null ) {
+			return self::outer_more_link( $doc, $position );
+		}
+
+		return self::text_edge_element( $doc, $position, $position === 'top' );
+	}
+
+	/**
+	 * The winning margin, where the text box, which has no margin of its own,
+	 * counts no rule as 0.
+	 */
+	private function edge_margin( $css, DOMDocument $doc, DOMElement $element, $property, $mobile ) {
+		$value = $this->winning_value( $css, $doc, $element, $property, $mobile );
+
+		if ( $value === null && strpos( $element->getAttribute( 'class' ), 'sow-features-feature-text' ) !== false ) {
+			return '0';
+		}
+
+		return $value;
+	}
+
+	/**
+	 * The text cases of icon_text_cases(), rendered for every bottom align
+	 * and More link combination, as array( case label, instance ).
+	 */
+	private static function icon_text_instances( $text, $has_title, $per_rows = array( 3 ) ) {
+		$out = array();
+
+		foreach ( $per_rows as $per_row ) {
 			foreach ( array( false, true ) as $bottom_align ) {
 				foreach ( array( false, true ) as $more ) {
 					$instance = self::with_text( $text, array( 'icon_spacing' => '20px', 'per_row' => $per_row, 'more_text_bottom_align' => $bottom_align ) );
@@ -842,27 +865,87 @@ class FeaturesSpacingTest extends SiteOriginTests {
 						}
 					}
 
-					if ( $more ) {
-						$instance = self::with_more_text( $instance );
-					}
-
-					$css = $this->css( $instance );
-					$doc = self::dom( $this->render( $instance ) );
-					$case = "per row $per_row, bottom align " . ( $bottom_align ? 'on' : 'off' ) . ', More ' . ( $more ? 'on' : 'off' );
-
-					foreach ( array( 'top' => 'margin-top', 'bottom' => 'margin-bottom' ) as $position => $property ) {
-						$element = self::element_facing_the_icon( $doc, $position );
-						$value = $this->winning_value( $css, $doc, $element, $property, false );
-
-						// The text box has no margin of its own, so no rule is as good as 0.
-						if ( strpos( $element->getAttribute( 'class' ), 'sow-features-feature-text' ) !== false && $value === null ) {
-							$value = '0';
-						}
-
-						$this->assertSame( '0', $value, "$position icon, {$element->tagName}, $case" );
-					}
+					$out[] = array(
+						"per row $per_row, bottom align " . ( $bottom_align ? 'on' : 'off' ) . ', More ' . ( $more ? 'on' : 'off' ),
+						$more ? self::with_more_text( $instance ) : $instance,
+					);
 				}
 			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * A set icon spacing is the whole gap to the text: the element that meets
+	 * a top or bottom icon adds no margin on that side, whatever the text
+	 * starts or ends with, with and without the More link, bottom aligned or
+	 * not, and with one or three features per row.
+	 */
+	#[DataProvider( 'icon_text_cases' )]
+	public function test_icon_spacing_is_the_whole_gap_to_the_text_for_top_and_bottom_icons( $text, $has_title ) {
+		foreach ( self::icon_text_instances( $text, $has_title, array( 3, 1 ) ) as list( $case, $instance ) ) {
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+
+			foreach ( array( 'top' => 'margin-top', 'bottom' => 'margin-bottom' ) as $position => $property ) {
+				$element = self::element_facing_the_icon( $doc, $position );
+
+				$this->assertSame( '0', $this->edge_margin( $css, $doc, $element, $property, false ), "$position icon, {$element->tagName}, $case" );
+			}
+		}
+	}
+
+	/**
+	 * On mobile a left or right icon stacks above the text: the icon keeps
+	 * the spacing below it and the first element of the text adds no top
+	 * margin. On desktop that element keeps its margin.
+	 */
+	#[DataProvider( 'icon_text_cases' )]
+	public function test_icon_spacing_is_the_whole_gap_below_a_stacked_side_icon_on_mobile( $text, $has_title ) {
+		foreach ( self::icon_text_instances( $text, $has_title ) as list( $case, $instance ) ) {
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+
+			foreach ( array( 'left', 'right' ) as $position ) {
+				$element = self::text_edge_element( $doc, $position, true );
+
+				$this->assertSame( '0', $this->edge_margin( $css, $doc, $element, 'margin-top', true ), "$position icon, {$element->tagName}, $case" );
+
+				if ( $element->tagName !== 'div' && ! ( $element->tagName === 'p' && ! $has_title ) ) {
+					$this->assertNotSame( '0', $this->winning_value( $css, $doc, $element, 'margin-top', false ), "$position icon on desktop, {$element->tagName}, $case" );
+				}
+			}
+		}
+	}
+
+	/**
+	 * On mobile, with the More link aligned to the bottom, a bottom icon
+	 * shows above the content, so the spacing goes below the icon, and the
+	 * element under it (the More link, else the first element of the text)
+	 * adds no top margin. On desktop the icon keeps the spacing above it.
+	 */
+	#[DataProvider( 'icon_text_cases' )]
+	public function test_icon_spacing_is_below_a_bottom_icon_that_mobile_shows_first( $text, $has_title ) {
+		foreach ( self::icon_text_instances( $text, $has_title ) as list( $case, $instance ) ) {
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$icon = ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-bottom")]//*[contains(@class, "sow-icon-container")]' )->item( 0 );
+
+			$this->assertSame( '20px', $this->winning_value( $css, $doc, $icon, 'margin-top', false ), "desktop, $case" );
+
+			if ( empty( $instance['more_text_bottom_align'] ) ) {
+				$this->assertSame( '20px', $this->winning_value( $css, $doc, $icon, 'margin-top', true ), "mobile, $case" );
+				continue;
+			}
+
+			$this->assertSame( '0', $this->winning_value( $css, $doc, $icon, 'margin-top', true ), "mobile, $case" );
+			$this->assertSame( '20px', $this->winning_value( $css, $doc, $icon, 'margin-bottom', true ), "mobile, $case" );
+
+			$below = self::outer_more_link( $doc, 'bottom' );
+			$below = $below !== null ? $below : self::text_edge_element( $doc, 'bottom', true );
+
+			$this->assertSame( '0', $this->edge_margin( $css, $doc, $below, 'margin-top', true ), "mobile, {$below->tagName}, $case" );
 		}
 	}
 

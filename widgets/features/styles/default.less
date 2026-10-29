@@ -429,6 +429,17 @@
 					margin-bottom: @icon_spacing;
 				}
 
+				// A stacked side icon meets the top of the text, which adds
+				// no margin of its own.
+				.sow-icon-container-position-left .textwidget,
+				.sow-icon-container-position-right .textwidget {
+					> :first-child,
+					> .sow-features-feature-content:first-child > :first-child,
+					.sow-features-feature-text:first-child > :first-child {
+						margin-top: 0;
+					}
+				}
+
 				// The bottom aligned More link wraps the icon, and the
 				// desktop side margin of that wrapper rule is as specific.
 				& when ( @more_text_bottom_align = true ) {
@@ -438,6 +449,20 @@
 
 					.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
 						margin-right: 0;
+					}
+
+					// Here a bottom icon shows above the content, so the
+					// spacing goes below it, and the More link, else the top
+					// of the text, adds no margin of its own.
+					.sow-icon-container-position-bottom .sow-icon-container {
+						margin-top: 0;
+						margin-bottom: @icon_spacing;
+					}
+
+					.sow-icon-container-position-bottom > p.sow-more-text,
+					.sow-icon-container-position-bottom > .textwidget:last-child > :first-child,
+					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child {
+						margin-top: 0;
 					}
 				}
 			}
