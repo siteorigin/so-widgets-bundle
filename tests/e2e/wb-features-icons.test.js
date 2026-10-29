@@ -79,8 +79,12 @@ const measure = async ( names ) => {
 			const before = getComputedStyle( container, '::before' );
 			const icon = container.querySelector( '[class^="sow-icon-"]' );
 			const image = container.querySelector( '.sow-icon-image' );
+			const c = container.getBoundingClientRect();
+			const t = li.querySelector( '.textwidget' ).getBoundingClientRect();
 			const f = {
 				position: li.className.match( /position-(\w+)/ )[ 1 ],
+				// Where the icon renders against the text.
+				side: ( c.bottom <= t.top + 1 && 'above' ) || ( c.right <= t.left + 1 && 'left' ) || ( c.left >= t.right - 1 && 'right' ) || ( c.top >= t.bottom - 1 && 'below' ) || 'overlapping',
 				feature: box( li ),
 				container: box( container ),
 				glyph: before.content,
@@ -232,7 +236,9 @@ test.describe( 'Features icon settings', { tag: [ '@firefox', '@webkit' ] }, () 
 		await page.context().close();
 
 		for ( const name of names ) {
-			expect( measured[ name ].map( ( f ) => f.position ), name ).toEqual( [ 'top', 'right' ] );
+			// The "right" position puts the icon on the left of the text; below
+			// the breakpoint it stacks above it.
+			expect( measured[ name ].map( ( f ) => f.side ), `${ name }: where the icons render` ).toEqual( [ 'above', width <= BREAKPOINT ? 'above' : 'left' ] );
 
 			measured[ name ].forEach( ( f ) => CHECKS[ name ](
 				f,

@@ -28,7 +28,8 @@ const {
 test.describe.configure( { mode: 'serial' } );
 
 const PER_ROW = 3;
-const SAVED = 1000;
+// A breakpoint to save, other than the one the dialog shows.
+const toSave = ( shownValue ) => ( Number( shownValue ) === 1000 ? 1100 : 1000 );
 
 const widgetData = ( responsive ) => ( {
 	features: Array.from( { length: PER_ROW }, ( _, i ) => ( {
@@ -110,11 +111,11 @@ const shown = async ( { input, select } ) => ( { value: await input.inputValue()
 const readBreakpoint = ( browser, featuresPage ) => withSettings( browser, featuresPage, shown );
 
 /**
- * Saves the breakpoint. `found` receives the value and unit the dialog
- * showed, before anything is written.
+ * Saves a breakpoint. `next` receives the value and unit the dialog shows,
+ * before anything is written, and returns the value and unit to save.
  */
-const saveBreakpoint = ( browser, featuresPage, { value, unit }, found = () => {} ) => withSettings( browser, featuresPage, async ( settings ) => {
-	found( await shown( settings ) );
+const saveBreakpoint = ( browser, featuresPage, next ) => withSettings( browser, featuresPage, async ( settings ) => {
+	const { value, unit } = next( await shown( settings ) );
 
 	await settings.input.fill( String( value ) );
 	await settings.select.selectOption( unit );
@@ -140,7 +141,7 @@ test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@
 	// way to delete the setting.
 	test.afterAll( async ( { browser } ) => {
 		if ( found ) {
-			await saveBreakpoint( browser, featuresPage, found );
+			await saveBreakpoint( browser, featuresPage, () => found );
 		}
 	} );
 
@@ -176,10 +177,15 @@ test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@
 	} );
 
 	test( 'a breakpoint saved in the Settings dialog moves where features stack', async ( { browser } ) => {
-		await saveBreakpoint( browser, featuresPage, { value: SAVED, unit: 'px' }, ( value ) => {
+		let saved;
+
+		await saveBreakpoint( browser, featuresPage, ( value ) => {
 			found = value;
+			saved = toSave( value.value );
+
+			return { value: saved, unit: 'px' };
 		} );
 
-		await checkBreakpoint( browser, SAVED );
+		await checkBreakpoint( browser, saved );
 	} );
 } );
