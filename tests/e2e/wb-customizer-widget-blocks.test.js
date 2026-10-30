@@ -229,7 +229,7 @@ const widgetTitle = ( form ) => form.locator( 'input[name$="[title]"]:not([name*
 const pressWithMouse = async ( page, button ) => {
 	await button.scrollIntoViewIfNeeded();
 	const box = await button.boundingBox();
-	await page.mouse.click( box.x + ( box.width / 2 ), box.y + ( box.height / 2 ) );
+	await page.mouse.click( box.x + ( box.width / 2 ), box.y + ( box.height / 2 ), { delay: 80 } );
 };
 
 const publish = async ( page ) => {
@@ -449,7 +449,8 @@ for ( const screen of SCREENS ) {
 			await expect( body ).toContainText( text );
 			await body.click();
 			await page.keyboard.press( 'ControlOrMeta+End' );
-			await page.keyboard.type( ` ${ addition }` );
+			// Typed at a person's pace: the Customizer refocuses the frame shortly after the first key.
+			await page.keyboard.type( ` ${ addition }`, { delay: 60 } );
 			await screen.save( page );
 
 			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( addition );
