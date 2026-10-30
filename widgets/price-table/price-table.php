@@ -217,6 +217,148 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'fonts' => array(
+						'type' => 'section',
+						'label' => __( 'Fonts', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'title' => array(
+								'type' => 'section',
+								'label' => __( 'Title', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'subtitle' => array(
+								'type' => 'section',
+								'label' => __( 'Subtitle', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'price' => array(
+								'type' => 'section',
+								'label' => __( 'Price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'sale_price' => array(
+								'type' => 'section',
+								'label' => __( 'Sale price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'original_price' => array(
+								'type' => 'section',
+								'label' => __( 'Original price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'period' => array(
+								'type' => 'section',
+								'label' => __( 'Period', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'features' => array(
+								'type' => 'section',
+								'label' => __( 'Features', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'button' => array(
+								'type' => 'section',
+								'label' => __( 'Button', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+						),
+					),
 				),
 			),
 		);

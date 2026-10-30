@@ -24,6 +24,8 @@ if ( ! class_exists( 'SiteOrigin_Widget_PriceTable_Widget' ) ) {
 	require __DIR__ . '/../widgets/price-table/price-table.php';
 }
 
+require_once __DIR__ . '/../base/inc/widget-describer.php';
+
 /**
  * Pins the CSS and LESS variables of the Price Table widget.
  *
@@ -147,5 +149,36 @@ class PriceTableFontsTest extends SiteOriginTests {
 		$this->assertArrayHasKey( $key, $fixture['instances'] );
 		$this->assertSame( $fixture['instances'][ $key ]['less_variables'], $actual['less_variables'] );
 		$this->assertSame( $fixture['instances'][ $key ]['css'], $actual['css'] );
+	}
+
+	public function test_form_has_a_closed_fonts_section_after_button() {
+		$design = $this->widget()->form_options()['design']['fields'];
+
+		$this->assertSame( 'button', array_slice( array_keys( $design ), -2, 1 )[0] );
+		$this->assertSame( 'fonts', array_slice( array_keys( $design ), -1 )[0] );
+		$this->assertSame( 'section', $design['fonts']['type'] );
+		$this->assertTrue( $design['fonts']['hide'] );
+		$this->assertSame( self::PARTS, array_keys( $design['fonts']['fields'] ) );
+
+		foreach ( $design['fonts']['fields'] as $part => $section ) {
+			$this->assertTrue( $section['hide'], "{$part} is closed" );
+			$this->assertSame( array( 'font', 'size' ), array_keys( $section['fields'] ), $part );
+			$this->assertSame( 'font', $section['fields']['font']['type'], $part );
+			$this->assertSame( 'default', $section['fields']['font']['default'], $part );
+			$this->assertSame( 'measurement', $section['fields']['size']['type'], $part );
+			$this->assertArrayNotHasKey( 'default', $section['fields']['size'], $part );
+		}
+	}
+
+	public function test_schema_offers_font_and_size_for_each_part() {
+		$schema = SiteOrigin_Widgets_Widget_Describer::single()->get_schema( $this->widget() );
+		$fonts = $schema['properties']['design']['properties']['fonts']['properties'];
+
+		$this->assertSame( self::PARTS, array_keys( $fonts ) );
+
+		foreach ( $fonts as $part => $section ) {
+			$this->assertSame( 'string', $section['properties']['font']['type'], $part );
+			$this->assertSame( 1, preg_match( '/' . $section['properties']['size']['pattern'] . '/', '24px' ), $part );
+		}
 	}
 }
