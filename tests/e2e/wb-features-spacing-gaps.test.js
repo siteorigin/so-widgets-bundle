@@ -3,15 +3,12 @@ const {
 	test
 } = require( '@playwright/test' );
 
-const common = require( 'siteorigin-tests-common/playwright/common' );
-
 const {
-	setupRequestUtils,
-} = common;
-
-const {
-	widgetBlock,
-} = require( './helpers/widget-block-abilities' );
+	expectNear,
+	featuresBlock,
+	openFeaturesPage,
+	useFeaturesPage,
+} = require( './helpers/features' );
 
 /**
  * Measures the Features spacing settings on a rendered page: a set "Space
@@ -21,11 +18,6 @@ const {
  * widths. Every edge is an element's border box; text that starts or ends
  * with bare text is measured from the text box.
  */
-
-const featuresBlock = ( widgetData ) => widgetBlock( 'sowb/siteorigin-widget-features-widget', {
-	widgetClass: 'SiteOrigin_Widget_Features_Widget',
-	widgetData,
-} );
 
 const TEXTS = {
 	headingAndList: { title: true, text: '<h4>Heading</h4><p>Text</p><ul><li>End</li></ul>' },
@@ -231,11 +223,6 @@ const measure = () => {
 
 const label = ( c, width, position ) => `${ JSON.stringify( c ) } at ${ width }, ${ position } icon`;
 
-const expectNear = ( value, expected, message ) => {
-	expect.soft( value, message ).toBeGreaterThanOrEqual( expected - 1 );
-	expect.soft( value, message ).toBeLessThanOrEqual( expected + 1 );
-};
-
 /**
  * The bottom aligned More link of a top icon feature with nothing else sits
  * at the foot of a row that a taller feature stretches, as bottom align
@@ -290,42 +277,16 @@ const PAGES = {
 for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 	// A describe block per page: after a failed test, the new worker saves
 	// only the pages still to measure.
-	test.describe( `Features ${ name } spacing setting`, () => {
-		let requestUtils;
-
-		test.beforeAll( async ( { browser }, testInfo ) => {
-			requestUtils = await setupRequestUtils( { browser }, testInfo );
-
-			const created = await requestUtils.rest( {
-				method: 'POST',
-				path: '/wp/v2/pages',
-				data: {
-					title: `Features spacing gaps, ${ name } (e2e)`,
-					status: 'publish',
-					content: [ THEME_MARGINS, ...fixture.cases.map( ( c ) => featuresBlock( fixture.data( c ) ) ) ].join( '\n\n' ),
-				},
-			} );
-
-			fixture.id = created.id;
-			fixture.link = created.link;
-		} );
-
-		test.afterAll( async () => {
-			if ( fixture.id ) {
-				const deleted = await requestUtils.rest( {
-					method: 'DELETE',
-					path: `/wp/v2/pages/${ fixture.id }`,
-					params: { force: true },
-				} );
-
-				expect( deleted.deleted ).toBe( true );
-			}
-		} );
+	test.describe( `Features ${ name } spacing setting`, { tag: [ '@firefox', '@webkit' ] }, () => {
+		const featuresPage = useFeaturesPage(
+			test,
+			`Features spacing gaps, ${ name } (e2e)`,
+			() => [ THEME_MARGINS, ...fixture.cases.map( ( c ) => featuresBlock( fixture.data( c ) ) ) ].join( '\n\n' )
+		);
 
 		for ( const width of [ 1280, 390 ] ) {
 			test( `each set ${ name } spacing is the gap it names at ${ width }px`, async ( { browser } ) => {
-				const page = await browser.newPage( { viewport: { width, height: 900 } } );
-				await page.goto( fixture.link );
+				const page = await openFeaturesPage( browser, featuresPage, { width } );
 
 				const lists = await page.evaluate( measure );
 
@@ -337,7 +298,7 @@ for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 					lists[ n ].forEach( ( f ) => fixture.check( c, f, label( c, width, f.position ), width ) );
 				} );
 
-				await page.close();
+				await page.context().close();
 			} );
 		}
 	} );
