@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="wpml-config" type="wpmlConfig"/>
+    <!--
+    XML Schema file for the wpml-config.xml file
+
+    Product: WPML
+    Site: https://wpml.org
+
+    Author: OnTheGo Systems
+    -->
+
+
+    <!-- Main: start -->
+    <xs:complexType name="wpmlConfig">
+        <xs:all>
+            <xs:element type="wpml-language-switcher-settings" name="language-switcher-settings" minOccurs="0"/>
+            <xs:element type="wpml-custom-types" name="custom-types" minOccurs="0"/>
+            <xs:element type="wpml-taxonomies" name="taxonomies" minOccurs="0"/>
+            <xs:element type="wpml-shortcodes" name="shortcodes" minOccurs="0"/>
+            <xs:element type="wpml-shortcode-list" name="shortcode-list" minOccurs="0"/>
+            <xs:element type="wpml-non-empty-string" name="built-with-page-builder" minOccurs="0"/>
+            <xs:element type="wpml-custom-fields" name="custom-fields" minOccurs="0"/>
+            <xs:element type="wpml-custom-term-fields" name="custom-term-fields" minOccurs="0"/>
+            <xs:element type="wpml-custom-fields-texts" name="custom-fields-texts" minOccurs="0"/>
+            <xs:element type="wpml-admin-texts" name="admin-texts" minOccurs="0"/>
+            <xs:element type="wpml-allow-translatable-job-fields" name="allow-translatable-job-fields" minOccurs="0"/>
+            <xs:element type="wpml-gutenberg-blocks" name="gutenberg-blocks" minOccurs="0"/>
+            <xs:element type="wpml-elementor-widgets" name="elementor-widgets" minOccurs="0"/>
+            <xs:element type="wpml-beaver-builder-widgets" name="beaver-builder-widgets" minOccurs="0"/>
+            <xs:element type="wpml-cornerstone-widgets" name="cornerstone-widgets" minOccurs="0"/>
+            <xs:element type="wpml-siteorigin-widgets" name="siteorigin-widgets" minOccurs="0"/>
+            <xs:element type="notices" name="notices" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <!-- Main: end -->
+
+
+    <!-- Shared types: start -->
+    <xs:complexType name="wpml-translate-option">
+        <xs:simpleContent>
+            <xs:extension base="wpml-non-empty-string">
+                <xs:attribute name="translate" type="wpml-integer-boolean" use="required" />
+                <xs:attribute name="display-as-translated" type="wpml-integer-boolean" use="optional"/>
+                <xs:attribute name="automatic" type="wpml-integer-boolean" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-translate-action">
+        <xs:simpleContent>
+            <xs:extension base="wpml-non-empty-string">
+                <xs:attribute name="action" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="copy"/>
+                            <xs:enumeration value="translate"/>
+                            <xs:enumeration value="ignore"/>
+                            <xs:enumeration value="copy-once"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="style" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="line"/>
+                            <xs:enumeration value="textarea"/>
+                            <xs:enumeration value="visual"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="label" use="optional"/>
+                <xs:attribute type="xs:string" name="group" use="optional"/>
+                <xs:attribute name="translate_link_target" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                            <xs:enumeration value="0"/>
+                            <xs:enumeration value="1"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="convert_to_sticky" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                            <xs:enumeration value="0"/>
+                            <xs:enumeration value="1"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="encoding" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="[0-9a-z,]*"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-generic-setting-key" mixed="true">
+        <xs:sequence>
+            <xs:element type="wpml-generic-setting-key" name="key" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="label" use="optional"/>
+        <xs:attribute type="xs:string" name="type" use="optional"/>
+        <xs:attribute type="xs:string" name="sub-type" use="optional"/>
+        <xs:attribute name="encoding" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="json" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="search-method">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="wildcards"/>
+                    <xs:enumeration value="regex"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:simpleType name="wpml-non-empty-string">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="wpml-integer-boolean">
+        <xs:restriction base="xs:integer">
+            <xs:enumeration value="0"/>
+            <xs:enumeration value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Shared types: end -->
+
+    <!-- Shortcodes: start -->
+    <xs:complexType name="wpml-shortcodes">
+        <xs:sequence>
+            <xs:element type="wpml-shortcode" name="shortcode" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-shortcode">
+        <xs:all>
+            <xs:element type="wpml-shortcode-tag" name="tag" minOccurs="1" maxOccurs="1"/>
+            <xs:element type="wpml-shortcode-attributes" name="attributes" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-shortcode-tag">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <!-- todo: define restriction with enumeration -->
+                <xs:attribute type="xs:string" name="encoding" use="optional"/>
+                <xs:attribute type="xs:string" name="encoding-condition" use="optional"/>
+                <xs:attribute type="xs:string" name="raw-html" use="optional"/>
+                <xs:attribute type="xs:string" name="label" use="optional"/>
+                <xs:attribute name="ignore-content" type="wpml-integer-boolean" use="optional"/>
+                <xs:attribute name="type" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="media-url"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-shortcode-attributes">
+        <xs:sequence>
+            <xs:element type="wpml-shortcode-attribute" name="attribute" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-shortcode-attribute">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="type" use="optional"/>
+                <xs:attribute type="xs:string" name="sub-type" use="optional"/>
+                <xs:attribute type="xs:string" name="encoding" use="optional"/>
+                <xs:attribute type="xs:string" name="label" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <!-- Shortcodes: end -->
+
+    <!-- Language Switchers: start -->
+    <xs:complexType name="wpml-language-switcher-settings">
+        <xs:sequence>
+            <xs:element type="wpml-generic-setting-key" name="key" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Language Switchers: end -->
+
+
+    <!-- Admin Texts: start -->
+    <xs:complexType name="wpml-admin-texts">
+        <xs:sequence>
+            <xs:element type="wpml-generic-setting-key" name="key" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Admin Texts: end -->
+
+
+    <!-- Custom Fields: start -->
+    <xs:complexType name="wpml-custom-fields">
+        <xs:sequence>
+            <xs:element type="wpml-custom-field" name="custom-field" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-custom-field">
+        <xs:simpleContent>
+            <xs:extension base="wpml-translate-action"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <!-- Custom Fields: end -->
+
+    <!-- Custom Fields Texts: start -->
+    <xs:complexType name="wpml-custom-fields-texts">
+        <xs:sequence>
+            <xs:element type="wpml-generic-setting-key" name="key" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Admin Texts: end -->
+
+
+    <!-- Custom Types: start -->
+    <xs:complexType name="wpml-custom-types">
+        <xs:sequence>
+            <xs:element type="wpml-translate-option" name="custom-type" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Custom Types: end -->
+
+
+    <!-- Taxonomies: start -->
+    <xs:complexType name="wpml-taxonomies">
+        <xs:sequence>
+            <xs:element type="wpml-translate-option" name="taxonomy" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Taxonomies: end -->
+
+    <!-- Custom Terms Meta/Fields: start -->
+    <xs:complexType name="wpml-custom-term-fields">
+        <xs:sequence>
+            <xs:element type="wpml-custom-term-field" name="custom-term-field" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-custom-term-field">
+        <xs:simpleContent>
+            <xs:extension base="wpml-translate-action"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <!-- Custom Terms Meta/Fields: end -->
+
+    <!-- Custom Fields: start -->
+    <xs:complexType name="wpml-allow-translatable-job-fields">
+        <xs:sequence>
+            <xs:element type="wpml-allow-translatable-job-field" name="allow-translatable-job-field" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-allow-translatable-job-field">
+        <xs:attribute type="xs:string" name="type" use="required"/>
+        <xs:attribute type="xs:string" name="value" use="required"/>
+    </xs:complexType>
+    <!-- Custom Fields: end -->
+
+	<!-- Shortcode list: start -->
+	<xs:simpleType name="wpml-shortcode-list">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[^,]+(, ?[^,]+)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Shortcode list: end -->
+
+
+    <!-- Gutenberg: start -->
+    <xs:complexType name="wpml-gutenberg-blocks">
+        <xs:sequence>
+            <xs:element type="wpml-gutenberg-block" name="gutenberg-block" maxOccurs="unbounded" minOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-gutenberg-block">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element type="wpml-xpath" name="xpath" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element type="wpml-generic-setting-key" name="key" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="type" use="required"/>
+        <xs:attribute type="xs:string" name="label" use="optional"/>
+        <xs:attribute name="translate" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:enumeration value="0"/>
+                    <xs:enumeration value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-xpath">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="type" use="optional"/>
+                <xs:attribute type="xs:string" name="sub-type" use="optional"/>
+                <xs:attribute type="xs:string" name="label" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <!-- Gutenberg: end -->
+
+    <!-- API Page Builders: start -->
+    <xs:complexType name="wpml-elementor-widgets">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget" name="widget" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-beaver-builder-widgets">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget" name="widget" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-cornerstone-widgets">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget" name="widget" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-siteorigin-widgets">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget" name="widget" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element type="wpml-pb-widget-conditions" name="conditions" minOccurs="0"/>
+            <xs:element type="wpml-pb-widget-fields" name="fields" minOccurs="0"/>
+            <xs:element type="wpml-pb-widget-fields-in-item" name="fields-in-item" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element type="wpml-pb-widget-integration-classes" name="integration-classes" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-conditions">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget-condition" name="condition"  maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-condition">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="key" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-fields">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget-field" name="field" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-fields-in-item">
+        <xs:sequence>
+            <xs:element type="wpml-pb-widget-field" name="field"  maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="items_of" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-field">
+        <xs:simpleContent>
+            <xs:extension base="wpml-non-empty-string">
+                <xs:attribute type="xs:string" name="type"/>
+                <xs:attribute type="xs:string" name="sub-type" use="optional"/>
+                <xs:attribute name="editor_type" use="optional">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="LINE"/>
+                            <xs:enumeration value="AREA"/>
+                            <xs:enumeration value="VISUAL"/>
+                            <xs:enumeration value="LINK"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="key_of" use="optional"/>
+                <xs:attribute type="xs:string" name="field_id" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="wpml-pb-widget-integration-classes">
+        <xs:sequence>
+            <xs:element type="wpml-non-empty-string" name="integration-class" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- API Page Builders: end -->
+
+    <!-- Notices:start -->
+    <xs:complexType name="notices">
+        <xs:sequence>
+            <xs:element type="notice" name="notice" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="notice">
+        <xs:all>
+            <xs:element type="notice-conditions" name="conditions" maxOccurs="1" minOccurs="0" />
+            <xs:element type="notice-locations" name="locations" maxOccurs="1" minOccurs="1"/>
+            <xs:element type="wpml-non-empty-string" name="content" maxOccurs="1" minOccurs="1"/>
+        </xs:all>
+        <xs:attribute type="xs:string" name="id" use="required"/>
+        <xs:attribute type="xs:string" name="type" use="optional"/>
+        <xs:attribute type="wpml-integer-boolean" name="dismissible" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="notice-conditions">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="theme" type="xs:string"/>
+            <xs:element name="plugin" type="xs:string"/>
+            <xs:element name="conditions" type="notice-conditions"/>
+        </xs:choice>
+        <xs:attribute name="relation" type="relation-type" use="optional"/>
+    </xs:complexType>
+
+
+    <xs:simpleType name="relation-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AND"/>
+            <xs:enumeration value="OR"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="notice-locations">
+        <xs:sequence>
+            <xs:element type="wpml-non-empty-string" name="screenId" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- Notices:end -->
+
+</xs:schema>

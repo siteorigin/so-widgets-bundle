@@ -17,6 +17,12 @@ use PHPUnit\Framework\TestCase;
 class WpmlConfigTest extends TestCase {
 	private const CONFIG_FILE = __DIR__ . '/../wpml-config.xml';
 
+	/**
+	 * WPML 4.7.4's res/xsd/wpml-config.xsd. WPML drops a config file that fails
+	 * this schema, and every mapping in the file goes with it.
+	 */
+	private const SCHEMA_FILE = __DIR__ . '/fixtures/wpml-config.xsd';
+
 	private const LEGACY_BLOCK = 'sowb/widget-block';
 
 	/**
@@ -52,10 +58,64 @@ class WpmlConfigTest extends TestCase {
 	);
 
 	/**
-	 * The mapping WPML compiled from the shared tree this block used to hold,
-	 * without the keys whose name held ">". A legacy block can hold any
-	 * SiteOrigin widget, third-party ones included, so a path added here
-	 * applies to widgets whose forms can't be checked.
+	 * Fields translators must get, with their editor_type. The block test reads
+	 * its paths from the widget entries, so a field removed from both sections
+	 * fails only here.
+	 */
+	private const REQUIRED_FIELDS = array(
+		'SiteOrigin_Widget_Blog_Widget' => array(
+			'settings>excerpt_trim' => '',
+			'settings>read_more_text' => '',
+			'title' => '',
+		),
+		'SiteOrigin_Widget_Cta_Widget' => array(
+			'button>attributes>title' => '',
+			'button>text' => '',
+			'button>url' => 'LINK',
+		),
+		'SiteOrigin_Widget_GoogleMap_Widget' => array(
+			'settings>destination_url' => 'LINK',
+		),
+		'SiteOrigin_Widget_Hero_Widget' => array(
+			'frames>*>background>alt' => '',
+			'frames>*>background>url' => 'LINK',
+		),
+		'SiteOrigin_Widget_LayoutSlider_Widget' => array(
+			'frames>*>background>alt' => '',
+			'frames>*>background>url' => 'LINK',
+		),
+		'SiteOrigin_Widget_Lottie_Player_Widget' => array(
+			'url' => 'LINK',
+		),
+		'SiteOrigin_Widget_PriceTable_Widget' => array(
+			'columns>*>price' => '',
+			'columns>*>sale_price' => '',
+		),
+		'SiteOrigin_Widget_Recent_Posts_Widget' => array(
+			'recent_settings>excerpt_trim' => '',
+			'recent_settings>read_more_text' => '',
+			'title' => '',
+		),
+		'SiteOrigin_Widget_Simple_Masonry_Widget' => array(
+			'widget_title' => '',
+		),
+		'SiteOrigin_Widget_Video_Widget' => array(
+			'video>external_video' => 'LINK',
+		),
+		'SiteOrigin_Widgets_ContactForm_Widget' => array(
+			'settings>required_field_indicator_message' => '',
+			'settings>success_message' => 'VISUAL',
+		),
+		'SiteOrigin_Widgets_Testimonials_Widget' => array(
+			'testimonials>*>location' => '',
+			'testimonials>*>name' => '',
+		),
+	);
+
+	/**
+	 * The paths WPML matches in a legacy block. These keys apply to every widget
+	 * class in the block, third-party ones included, whose forms can't be
+	 * checked. So a new path stays out, and a block gets it once migrated.
 	 */
 	private const LEGACY_FIELDS = array(
 		'alt',
@@ -205,6 +265,24 @@ class WpmlConfigTest extends TestCase {
 	}
 
 	/**
+	 * @return array<string, string> The editor_type of each field in a widget
+	 *                               entry, keyed by its block path.
+	 */
+	private static function entry_fields( DOMElement $widget ): array {
+		$fields = array();
+
+		foreach ( $widget->getElementsByTagName( 'field' ) as $field ) {
+			$group = $field->parentNode;
+			$items_of = $group->tagName === 'fields-in-item' ? $group->getAttribute( 'items_of' ) : '';
+			$path = self::field_path( $widget->getAttribute( 'name' ), $items_of, trim( $field->textContent ) );
+
+			$fields[ $path ] = $field->getAttribute( 'editor_type' );
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * @return array<string, array> The expected leaf keys of each widget's block.
 	 */
 	public static function widget_entries(): array {
@@ -212,15 +290,12 @@ class WpmlConfigTest extends TestCase {
 
 		foreach ( self::xpath()->query( '/wpml-config/siteorigin-widgets/widget' ) as $widget ) {
 			$widget_class = $widget->getAttribute( 'name' );
-			$expected = array();
-
-			foreach ( $widget->getElementsByTagName( 'field' ) as $field ) {
-				$group = $field->parentNode;
-				$items_of = $group->tagName === 'fields-in-item' ? $group->getAttribute( 'items_of' ) : '';
-				$path = self::field_path( $widget_class, $items_of, trim( $field->textContent ) );
-
-				$expected[ $path ] = $field->getAttribute( 'editor_type' ) === 'LINK' ? 'link' : '';
-			}
+			$expected = array_map(
+				function ( $editor_type ) {
+					return $editor_type === 'LINK' ? 'link' : '';
+				},
+				self::entry_fields( $widget )
+			);
 
 			if ( isset( self::BUILDER_FIELDS[ $widget_class ] ) ) {
 				$expected[ self::BUILDER_FIELDS[ $widget_class ] ] = '';
@@ -231,6 +306,45 @@ class WpmlConfigTest extends TestCase {
 		}
 
 		return $entries;
+	}
+
+	public function test_config_passes_wpml_schema(): void {
+		$previous = libxml_use_internal_errors( true );
+		$document = new DOMDocument();
+		$document->load( self::CONFIG_FILE );
+		$valid = $document->schemaValidate( self::SCHEMA_FILE );
+		$errors = array_map(
+			function ( $error ) {
+				return trim( $error->message );
+			},
+			libxml_get_errors()
+		);
+		libxml_clear_errors();
+		libxml_use_internal_errors( $previous );
+
+		$this->assertTrue( $valid, implode( "\n", $errors ) );
+	}
+
+	public function test_required_fields_are_in_their_widget_entries(): void {
+		$xpath = self::xpath();
+
+		foreach ( self::REQUIRED_FIELDS as $widget_class => $required ) {
+			$widget = $xpath->query( '/wpml-config/siteorigin-widgets/widget[@name="' . $widget_class . '"]' )->item( 0 );
+
+			$this->assertNotNull( $widget, $widget_class );
+			$fields = self::entry_fields( $widget );
+
+			foreach ( $required as $path => $editor_type ) {
+				$this->assertArrayHasKey( $path, $fields, $widget_class );
+				$this->assertSame( $editor_type, $fields[ $path ], "$widget_class $path" );
+			}
+		}
+	}
+
+	public function test_every_block_is_translatable(): void {
+		foreach ( self::blocks() as $block_name => $block ) {
+			$this->assertSame( '1', $block->getAttribute( 'translate' ), $block_name );
+		}
 	}
 
 	public function test_every_block_entry_has_a_source(): void {
