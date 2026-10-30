@@ -96,6 +96,7 @@ const measure = async ( names ) => {
 						'misplaced';
 				} )(),
 				feature: box( li ),
+				text: box( li.querySelector( '.textwidget' ) ),
 				container: box( container ),
 				glyph: before.content,
 				glyphColor: before.color,
@@ -249,6 +250,9 @@ test.describe( 'Features icon settings', { tag: [ '@firefox', '@webkit' ] }, () 
 			// The "right" position puts the icon on the left of the text; below
 			// the breakpoint it stacks above it.
 			expect( measured[ name ].map( ( f ) => f.side ), `${ name }: where the icons render` ).toEqual( [ 'above', width <= BREAKPOINT ? 'above' : 'left' ] );
+
+			// A side icon aligns with the top of the text.
+			measured[ name ].filter( ( f ) => f.side === 'left' ).forEach( ( f ) => expectNear( f.container.top, f.text.top, `${ name }, side icon at ${ width }px: top level with the text` ) );
 
 			measured[ name ].forEach( ( f ) => CHECKS[ name ](
 				f,
