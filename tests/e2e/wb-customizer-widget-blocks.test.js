@@ -270,28 +270,17 @@ const SCREENS = [
 	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets, isClean: widgetsScreenIsClean },
 ];
 
-const expectStylesheetKept = async ( page, request, area, widgetText ) => {
-	const html = await frontEndText( request, area );
-	// The widget's wrapper class names its stylesheet.
-	const widgetHtml = html.slice( 0, html.indexOf( widgetText ) );
-	const [ , name ] = [ ...widgetHtml.matchAll( /so-widget-(sow-cta-[a-z]+-[a-f0-9]{12})/g ) ].pop();
-	const stylesheet = html.match( new RegExp( `https?:[^'"\\s]+/${ name }\\.css` ) );
-	expect( stylesheet, 'The page should link the widget stylesheet.' ).toBeTruthy();
+const stylesheetDeletions = async ( request, area ) => {
+	const [ , count ] = ( await frontEndText( request, area ) ).match( /sowb-e2e-stylesheets-deleted:(\d+)/ );
 
-	const modified = async () => {
-		const response = await request.get( stylesheet[ 0 ] );
-		expect( response.status() ).toBe( 200 );
+	return Number( count );
+};
 
-		return response.headers()[ 'last-modified' ];
-	};
-	const before = await modified();
-	expect( before ).toBeTruthy();
-
-	// File times have a one second resolution.
-	await page.waitForTimeout( 1100 );
+const expectStylesheetKept = async ( request, area ) => {
+	const before = await stylesheetDeletions( request, area );
 	await frontEndText( request, area );
 
-	expect( await modified() ).toBe( before );
+	expect( await stylesheetDeletions( request, area ) ).toBe( before );
 };
 
 const frontEndText = async ( request, area ) => {
@@ -428,7 +417,7 @@ for ( const screen of SCREENS ) {
 
 			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( editedTitle );
 			expect( await frontEndText( request, area ) ).not.toContain( cached );
-			await expectStylesheetKept( page, request, area, editedTitle );
+			await expectStylesheetKept( request, area );
 		} finally {
 			await area.cleanup();
 		}

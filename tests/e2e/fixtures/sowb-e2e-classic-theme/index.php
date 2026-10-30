@@ -20,5 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	dynamic_sidebar( 'sowb-e2e-sidebar' );
 	wp_footer();
 	?>
+	<!-- sowb-e2e-stylesheets-deleted:<?php echo (int) get_option( 'sowb_e2e_stylesheets_deleted' ); ?> -->
 </body>
 </html>
