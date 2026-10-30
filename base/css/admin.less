@@ -1149,8 +1149,8 @@ div.siteorigin-widget-form {
 				}
 			}
 
-			// The form sits in the editor canvas with the theme's editor styles, so
-			// these rules set everything that places the box and tick.
+			// A theme's editor styles reach this form in the canvas, so the box and
+			// tick set their own appearance and placement.
 			input[type=checkbox] {
 				appearance: none;
 				width: 16px;
@@ -1179,6 +1179,16 @@ div.siteorigin-widget-form {
 					border-color: #2271b1;
 					box-shadow: 0 0 0 1px #2271b1;
 					outline: 2px solid transparent;
+				}
+
+				// A forced colors palette can't recolor the tick's SVG, and the native
+				// checkbox follows it. Snapshot sets its appearance with !important.
+				@media (forced-colors: active) {
+					appearance: auto !important;
+
+					&:checked::before {
+						content: none;
+					}
 				}
 			}
 

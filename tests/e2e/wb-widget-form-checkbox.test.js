@@ -135,6 +135,13 @@ test.describe( 'Widget form checkbox in the block editor', () => {
 				width: '21px',
 				height: '21px',
 			} );
+
+			await page.emulateMedia( { forcedColors: 'active' } );
+
+			const forced = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED } );
+
+			expect.soft( forced.ticked.appearance, 'a forced colors palette draws the native checkbox' ).toBe( 'auto' );
+			expect.soft( forced.tickContent, 'the fixed color tick is hidden in forced colors' ).toBe( 'none' );
 		} );
 	}
 } );
