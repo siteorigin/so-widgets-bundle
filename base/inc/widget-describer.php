@@ -226,6 +226,7 @@ class SiteOrigin_Widgets_Widget_Describer {
 				break;
 
 			case 'multiple-media':
+			case 'multiple_media':
 				$schema = array(
 					'type' => 'array',
 					'items' => array( 'type' => 'integer' ),

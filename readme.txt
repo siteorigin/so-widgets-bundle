@@ -109,6 +109,20 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.76.0 - 30 October 2026 =
+* Features: Added Space between icon and text and Space between title and text settings.
+* Price Table: Added a Fonts section to the design settings, with Font and Size settings for the title, subtitle, price, sale price, original price, period, features and button. Empty settings keep the current look.
+* Contact Form: Fixed required Checkboxes, Radio and multiple Select fields not showing their missing message when left empty.
+* Google Maps: Fixed a marker's Place field not working when its repeater item is added or expanded.
+* Widget Block: Kept the HTML anchor and additional CSS classes on save.
+* WPML: Added translation support for the Blog, Recent Posts and Lottie Player Widgets, and fields inside sections and sub-widgets in Widgets Bundle blocks now reach translators.
+* General: Strengthened the check on widget style values, and added a check on each stylesheet before it is compiled into CSS.
+* General: Kept long text in widget form selects clear of the dropdown arrow.
+* General: Centered the Select Content label in link fields on WordPress 7.1.
+* Developer: `sowb/widget-update` now keeps the stored value of fields it doesn't send.
+* Developer: Fixed `default_preset` not applying to new widgets, and `'palettes' => false` not hiding color palettes.
+* Developer: Fixed number fields ignoring a minimum or maximum of zero, Select2 fields dropping `input_css_classes`, and `multiple_media` fields using a string schema instead of an integer array.
+
 = 1.75.0 - 02 October 2026 =
 * Contact Form: Fixed Number field values being left out of the email. They are now listed under the field label with the other message fields.
 * Social Media Buttons: Added a check on network colors and class names before the button CSS is generated. A color that is not valid falls back to the default.

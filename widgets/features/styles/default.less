@@ -5,6 +5,7 @@
 @title_font_style: default;
 @title_size: default;
 @title_color: default;
+@title_margin_bottom: default;
 @title_tag: h5;
 
 @text_font: default;
@@ -26,6 +27,8 @@
 @container_size: 84px;
 @icon_size: 24px;
 @use_icon_size: false;
+@icon_spacing: 10px;
+@icon_spacing_custom: false;
 @link_feature: default;
 @more_text_bottom_align: default;
 
@@ -86,10 +89,10 @@
 			text-align: center;
 
 			.sow-icon-container {
-				margin-bottom: 10px;
+				margin-bottom: @icon_spacing;
 
 				& when not ( @per_row = 1 ) and not ( @more_text_bottom_align = true ) {
-					margin: 0 auto 10px;
+					margin: 0 auto @icon_spacing;
 				}
 			}
 		}
@@ -98,7 +101,7 @@
 			align-items: flex-start;
 
 			.sow-icon-container {
-				margin-right: 10px;
+				margin-right: @icon_spacing;
 			}
 		}
 
@@ -106,7 +109,7 @@
 			align-items: flex-start;
 
 			.sow-icon-container {
-				margin-left: 10px;
+				margin-left: @icon_spacing;
 			}
 		}
 
@@ -133,12 +136,12 @@
 			}
 
 			&.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
-				margin-right: 10px;
+				margin-right: @icon_spacing;
 				margin-left: 0;
 			}
 
 			&.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container {
-				margin-left: 10px;
+				margin-left: @icon_spacing;
 				margin-right: 0;
 			}
 		}
@@ -148,7 +151,7 @@
 			text-align: center;
 
 			.sow-icon-container {
-				margin-top: 10px;
+				margin-top: @icon_spacing;
 			}
 		}
 
@@ -162,6 +165,63 @@
 					& when not ( @more_text_bottom_align = true ) {
 						margin: auto;
 					}
+				}
+			}
+		}
+
+		& when ( @per_row = 1 ) and ( @icon_spacing_custom = true ) {
+			&.sow-icon-container-position-top .sow-icon-container {
+				margin-bottom: @icon_spacing;
+			}
+
+			&.sow-icon-container-position-bottom .sow-icon-container {
+				margin-top: @icon_spacing;
+			}
+		}
+
+		// A set icon spacing is the whole gap between the icon and the text:
+		// the element that meets a top or bottom icon adds no margin of its
+		// own on that side. The text column is a flex item, so these margins
+		// add to the spacing instead of collapsing into it. A list item at the
+		// edge of that element is included, as a theme margin on a list item
+		// passes through the list's edge.
+		& when ( @icon_spacing_custom = true ) {
+			&.sow-icon-container-position-top .textwidget {
+				> :first-child,
+				> .sow-features-feature-content:first-child > :first-child,
+				.sow-features-feature-text:first-child > :first-child,
+				.sow-features-feature-text:first-child > :first-child > li:first-child {
+					margin-top: 0;
+				}
+			}
+
+			// A bottom aligned More link follows the text column and sits
+			// between it and the icon, so only a column with nothing after it
+			// meets the icon.
+			&.sow-icon-container-position-bottom .textwidget:last-child {
+				> :last-child,
+				> .sow-features-feature-text:last-child > :last-child,
+				> .sow-features-feature-text:last-child > :last-child > li:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			// A feature with only a More link has an empty content wrapper
+			// above the link, so the link meets a top icon. This rule stands
+			// alone: a browser without :has() drops it and keeps the link's
+			// own margin.
+			& when not ( @more_text_bottom_align = true ) {
+				&.sow-icon-container-position-top .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text {
+					margin-top: 0;
+				}
+			}
+
+			// With no More link below it, the text stops growing, so a bottom
+			// icon sits the spacing below the text rather than at the foot of
+			// a feature that a taller neighbour stretches.
+			& when ( @more_text_bottom_align = true ) {
+				&.sow-icon-container-position-bottom > .textwidget:last-child {
+					flex-grow: 0;
 				}
 			}
 		}
@@ -257,6 +317,23 @@
 			color: @title_color;
 			font-size: @title_size;
 			font-style: @title_font_style;
+		}
+
+		// A set title spacing is the whole gap to the text: it replaces the
+		// bottom margin of a title that text follows, and the first element
+		// of that text, and a list item at its top, add no top margin (margins
+		// add instead of collapsing in the bottom aligned layout, where the
+		// title and text are flex items). A title with nothing after it has
+		// no gap to set, so it keeps the margin of its tag.
+		& when ( isnumber( @title_margin_bottom ) ) {
+			.sow-features-feature-title:not(:last-child) {
+				margin-bottom: @title_margin_bottom;
+			}
+
+			.sow-features-feature-title + .sow-features-feature-text > :first-child,
+			.sow-features-feature-title + .sow-features-feature-text > :first-child > li:first-child {
+				margin-top: 0;
+			}
 		}
 
 		& when ( @more_text_bottom_align = true ) {
@@ -362,6 +439,60 @@
 
 			.sow-icon-container-position-right .sow-icon-container {
 				margin-right: 0;
+			}
+
+			& when ( @icon_spacing_custom = true ) {
+				.sow-icon-container-position-left .sow-icon-container,
+				.sow-icon-container-position-right .sow-icon-container {
+					margin-bottom: @icon_spacing;
+				}
+
+				// A stacked side icon meets the top of the text, which adds
+				// no margin of its own.
+				.sow-icon-container-position-left .textwidget,
+				.sow-icon-container-position-right .textwidget {
+					> :first-child,
+					> .sow-features-feature-content:first-child > :first-child,
+					.sow-features-feature-text:first-child > :first-child,
+					.sow-features-feature-text:first-child > :first-child > li:first-child {
+						margin-top: 0;
+					}
+				}
+
+				// The same for a More link with nothing above it.
+				& when not ( @more_text_bottom_align = true ) {
+					.sow-icon-container-position-left .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text,
+					.sow-icon-container-position-right .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text {
+						margin-top: 0;
+					}
+				}
+
+				// The bottom aligned More link wraps the icon, and the
+				// desktop side margin of that wrapper rule is as specific.
+				& when ( @more_text_bottom_align = true ) {
+					.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container {
+						margin-left: 0;
+					}
+
+					.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
+						margin-right: 0;
+					}
+
+					// Here a bottom icon shows above the content, so the
+					// spacing goes below it, and the More link, else the top
+					// of the text, adds no margin of its own.
+					.sow-icon-container-position-bottom .sow-icon-container {
+						margin-top: 0;
+						margin-bottom: @icon_spacing;
+					}
+
+					.sow-icon-container-position-bottom > p.sow-more-text,
+					.sow-icon-container-position-bottom > .textwidget:last-child > :first-child,
+					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child,
+					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child > li:first-child {
+						margin-top: 0;
+					}
+				}
 			}
 		}
 	}

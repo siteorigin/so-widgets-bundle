@@ -4,6 +4,28 @@ use Brain\Monkey\Functions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SiteOrigin\Tests\SiteOriginTests;
 
+require_once __DIR__ . '/fixtures/less-canary-stream.php';
+
+if ( ! class_exists( 'SiteOrigin_Widget_GoogleMap_Widget' ) ) {
+	require __DIR__ . '/../widgets/google-map/google-map.php';
+}
+
+if ( ! class_exists( 'SiteOrigin_GoogleMap_Less_Test_Widget' ) ) {
+	/**
+	 * The Google Maps widget, with its global settings fixed so no option is read.
+	 */
+	class SiteOrigin_GoogleMap_Less_Test_Widget extends SiteOrigin_Widget_GoogleMap_Widget {
+		public function get_global_settings( $key = null ) {
+			$values = array(
+				'map_consent'           => false,
+				'responsive_breakpoint' => '780',
+			);
+
+			return ! empty( $key ) ? $values[ $key ] : $values;
+		}
+	}
+}
+
 if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 	/**
 	 * A widget whose LESS writes one setting value into one property.
@@ -33,6 +55,36 @@ if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 	}
 }
 
+if ( ! class_exists( 'SiteOrigin_Less_Values_Test_Widget' ) ) {
+	/**
+	 * A widget whose LESS and setting values a test sets.
+	 */
+	class SiteOrigin_Less_Values_Test_Widget extends SiteOrigin_Widget {
+		public $less = '';
+		public $values = array();
+
+		public function __construct() {
+			parent::__construct( 'so-less-values-test', 'LESS Values Test', array( 'has_preview' => false ), array(), false, __DIR__ );
+		}
+
+		public function get_widget_form() {
+			return array();
+		}
+
+		public function get_less_content( $instance ) {
+			return $this->less;
+		}
+
+		public function get_less_variables( $instance ) {
+			return $this->values;
+		}
+
+		public function get_style_name( $instance ) {
+			return 'default';
+		}
+	}
+}
+
 /**
  * Unit tests for the setting value check in SiteOrigin_Widget::get_instance_css().
  *
@@ -44,7 +96,24 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 		parent::setUp();
 
 		Functions\when( 'apply_filters' )->returnArg( 2 );
+		SiteOrigin_Less_Canary_Stream::register();
+		$this->canary_file = tempnam( sys_get_temp_dir(), 'sow-canary-' );
+		$this->assertIsString( $this->canary_file );
+		$this->assertSame( strlen( SiteOrigin_Less_Canary_Stream::CANARY ), file_put_contents( $this->canary_file, SiteOrigin_Less_Canary_Stream::CANARY ) );
+		SiteOrigin_Less_Canary_Stream::reset();
 	}
+
+	protected function tearDown(): void {
+		SiteOrigin_Less_Canary_Stream::unregister();
+		@unlink( $this->canary_file );
+
+		parent::tearDown();
+	}
+
+	/**
+	 * A physical canary file, removed after each test.
+	 */
+	private $canary_file;
 
 	/**
 	 * Compile a value, and return the CSS without the widget's instance selector.
@@ -187,5 +256,143 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 	#[DataProvider( 'refused_values' )]
 	public function test_refused_value_keeps_the_template_default( $value ) {
 		$this->assertSame( self::css( 'template-default' ), $this->compile( $value ) );
+	}
+
+	/**
+	 * The counters move when the canary is read or probed, so a zero below
+	 * means nothing touched it.
+	 */
+	public function test_canary_wrapper_counts_opens_and_stats() {
+		$this->assertSame( SiteOrigin_Less_Canary_Stream::CANARY, file_get_contents( SiteOrigin_Less_Canary_Stream::url() ) );
+		$this->assertSame( 1, SiteOrigin_Less_Canary_Stream::$opens );
+
+		clearstatcache();
+		$this->assertTrue( file_exists( SiteOrigin_Less_Canary_Stream::url() ) );
+		$this->assertSame( 1, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * Values that would have the compiler read a file, as a template for the path.
+	 */
+	public static function file_reading_values() {
+		return array(
+			'comment around an import'   => array( "1/*\n@import (inline) url(%s);\n*/" ),
+			'backticks around an import' => array( "`1\n@import (inline) url(%s);\n`" ),
+		);
+	}
+
+	#[DataProvider( 'file_reading_values' )]
+	public function test_file_reading_value_reads_nothing( $template ) {
+		SiteOrigin_Less_Canary_Stream::reset();
+
+		$css = $this->compile( sprintf( $template, SiteOrigin_Less_Canary_Stream::url() ) );
+
+		$this->assertSame( self::css( 'template-default' ), $css );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * The Google Maps widget's Height setting, through its own stylesheet.
+	 */
+	private function google_map_css( $height ) {
+		Functions\when( 'siteorigin_widget_get_plugin_dir_path' )->justReturn( __DIR__ . '/../widgets/google-map/' );
+		SiteOrigin_Less_Canary_Stream::reset();
+
+		return ( new SiteOrigin_GoogleMap_Less_Test_Widget() )->get_instance_css( array( 'settings' => array( 'height' => $height ) ) );
+	}
+
+	public function test_google_map_height_is_written_into_the_css() {
+		$this->assertMatchesRegularExpression( '/\.sow-google-map-canvas \{\n  height: 450px;/', $this->google_map_css( '450' ) );
+	}
+
+	public function test_file_reading_google_map_height_reads_nothing() {
+		$css = $this->google_map_css( "1/*\n@import (inline) url(" . SiteOrigin_Less_Canary_Stream::url() . ");\n*/" );
+
+		$this->assertMatchesRegularExpression( '/\.sow-google-map-canvas \{\n  height: 480px;/', $css );
+		$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * The same values with a file on disk. Only the output is checked here;
+	 * the wrapper case above is the one that counts file access.
+	 */
+	#[DataProvider( 'file_reading_values' )]
+	public function test_file_reading_value_keeps_a_disk_file_out_of_the_css( $template ) {
+		$css = $this->compile( sprintf( $template, $this->canary_file ) );
+
+		$this->assertSame( self::css( 'template-default' ), $css );
+		$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css );
+	}
+
+	/**
+	 * Compile LESS with several values, and return the CSS without the
+	 * widget's instance selector.
+	 */
+	private function compile_values( $less, $values ) {
+		$widget = new SiteOrigin_Less_Values_Test_Widget();
+		$widget->less = $less;
+		$widget->values = $values;
+
+		return preg_replace( '/^\.so-widget-so-less-values-test-default-[0-9a-f]{12} /m', '', $widget->get_instance_css( array() ) );
+	}
+
+	/**
+	 * Each value passes the check alone. Substituted one after the other, the
+	 * second would land inside the first and close its string.
+	 */
+	public function test_values_cannot_combine_into_a_file_read() {
+		$less = "@a: a-default;\n@b: b-default;\n.out { p: @a; q: @b; }\n";
+		$b = '" data-uri(\'' . SiteOrigin_Less_Canary_Stream::url() . '\') "';
+
+		foreach ( array( array( 'a' => '"q@b:;"', 'b' => $b ), array( 'b' => $b, 'a' => '"q@b:;"' ) ) as $values ) {
+			SiteOrigin_Less_Canary_Stream::reset();
+
+			$css = $this->compile_values( $less, $values );
+
+			$this->assertSame( ".out {\n  p: \"q@b:;\";\n  q: " . $b . ";\n}", $css, implode( ',', array_keys( $values ) ) );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+		}
+	}
+
+	public function test_value_is_not_searched_for_another_declaration() {
+		$this->assertSame(
+			".out {\n  p: \"@b: x;\";\n  q: 2;\n}",
+			$this->compile_values( "@a: 1;\n@b: 2;\n.out { p: @a; q: @b; }\n", array( 'a' => '"@b: x;"', 'b' => '2' ) )
+		);
+	}
+
+	public function test_name_that_prefixes_another_name() {
+		$less = "@a: 1;\n@a-b: 2;\n.out { p: @a; q: @a-b; }\n";
+
+		$this->assertSame( ".out {\n  p: 3;\n  q: 4;\n}", $this->compile_values( $less, array( 'a' => '3', 'a-b' => '4' ) ) );
+		$this->assertSame( ".out {\n  p: 3;\n  q: 4;\n}", $this->compile_values( $less, array( 'a-b' => '4', 'a' => '3' ) ) );
+		$this->assertSame( ".out {\n  p: 1;\n  q: 4;\n}", $this->compile_values( $less, array( 'a-b' => '4' ) ) );
+	}
+
+	public function test_every_declaration_of_a_name_is_replaced() {
+		$this->assertSame(
+			".out {\n  p: 5;\n}\n.in {\n  p: 5;\n}",
+			$this->compile_values( "@a: 1;\n.out { p: @a; }\n.in { @a: 2; p: @a; }\n", array( 'a' => '5' ) )
+		);
+	}
+
+	public function test_zero_empty_and_literal_values() {
+		$less = "@a: 1;\n@b: 2;\n@c: 3;\n@d: 4;\n@e: 5;\n@f: 6;\n.out { p: @a @b @c @d; q: @e; r: @f; }\n";
+
+		$this->assertSame(
+			".out {\n  p: 0 0 3 4;\n  q: \"$1\";\n  r: \"\\1\";\n}",
+			$this->compile_values( $less, array( 'a' => 0, 'b' => '0', 'c' => '', 'd' => false, 'e' => '"$1"', 'f' => '"\\1"' ) )
+		);
+	}
+
+	public function test_refused_value_beside_an_accepted_value() {
+		$this->assertSame(
+			".out {\n  p: 1;\n  q: 7;\n}",
+			$this->compile_values( "@a: 1;\n@b: 2;\n.out { p: @a; q: @b; }\n", array( 'a' => '1/* x */', 'b' => '7' ) )
+		);
 	}
 }

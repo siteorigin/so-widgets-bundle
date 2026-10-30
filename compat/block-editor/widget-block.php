@@ -852,7 +852,20 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $block;
 		}
 
-		$rendered_widget = $this->get_widget_preview( $block['attrs'], false );
+		// Validate the HTML anchor and Additional CSS classes before the
+		// preview, so the stored markup only ever holds validated values.
+		$attrs = $block['attrs'];
+		$kept  = array();
+		foreach ( array( 'anchor', 'className' ) as $key ) {
+			unset( $attrs[ $key ] );
+			$value = self::get_valid_wrapper_attr( $block['attrs'], $key );
+			if ( $value !== null ) {
+				$attrs[ $key ] = $value;
+				$kept[ $key ]  = $value;
+			}
+		}
+
+		$rendered_widget = $this->get_widget_preview( $attrs, false );
 		if ( is_wp_error( $rendered_widget ) ) {
 			return $rendered_widget;
 		}
@@ -861,8 +874,67 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return new WP_Error( 'rest_invalid_param', __( 'Invalid Widgets Bundle data', 'so-widgets-bundle' ), array( 'status' => 400 ) );
 		}
 
-		$block['attrs'] = $rendered_widget;
+		// The preview returns widget data only, so carry the kept values.
+		$block['attrs'] = array_merge( $rendered_widget, $kept );
 		return $block;
+	}
+
+	/**
+	 * Return the anchor when valid, or the filtered className (valid tokens
+	 * joined by single spaces, at most 255 bytes); null when nothing is kept.
+	 *
+	 * An anchor is kept whole or not at all. A className is filtered token by
+	 * token: only tokens made of letters, digits, `-` and `_` are kept, which
+	 * is the set sanitize_html_class() keeps when the wrapper is rendered. The
+	 * value "0" is never kept, because the render checks use empty().
+	 *
+	 * @param array|ArrayAccess $attrs Block attrs or a WP_REST_Request.
+	 * @param string            $key   'anchor' or 'className'; any other key returns null.
+	 *
+	 * @return string|null
+	 */
+	private static function get_valid_wrapper_attr( $attrs, $key ) {
+		if ( ! isset( $attrs[ $key ] ) || ! is_string( $attrs[ $key ] ) ) {
+			return null;
+		}
+
+		$value = $attrs[ $key ];
+
+		if ( $key === 'anchor' ) {
+			if (
+				$value === '0' ||
+				strlen( $value ) > 255 ||
+				! preg_match( '/\A[^\s\p{Z}\p{Cc}#<>"\'&]+\z/u', $value )
+			) {
+				return null;
+			}
+
+			return $value;
+		}
+
+		if ( $key !== 'className' ) {
+			return null;
+		}
+
+		$class_name = '';
+		foreach ( explode( ' ', $value ) as $token ) {
+			if ( $token === '' || ! preg_match( '/\A[A-Za-z0-9_-]+\z/', $token ) ) {
+				continue;
+			}
+
+			$joined = $class_name === '' ? $token : $class_name . ' ' . $token;
+			if ( strlen( $joined ) > 255 ) {
+				break;
+			}
+
+			$class_name = $joined;
+		}
+
+		if ( $class_name === '' || $class_name === '0' ) {
+			return null;
+		}
+
+		return $class_name;
 	}
 
 	public function get_widget_preview( $block, $just_html = true ) {
@@ -890,6 +962,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$ob_level            = ob_get_level();
 		$anchor_filter_added = false;
 		$prev_widget_anchor  = $this->widgetAnchor;
+		$class_filter        = null;
 
 		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
 
@@ -906,6 +979,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
 					$anchor_filter_added = true;
 				}
+
+				// Add Additional CSS classes to the wrapper, so cached markup has them.
+				$class_name = self::get_valid_wrapper_attr( $block, 'className' );
+				if ( $class_name !== null ) {
+					$class_filter = function ( $class_names ) use ( $class_name ) {
+						return array_merge( $class_names, explode( ' ', $class_name ) );
+					};
+					add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $class_filter );
+				}
+
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $widget_data, $widget_data );
 
@@ -1000,6 +1083,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$this->widgetAnchor = $prev_widget_anchor;
 			}
 
+			if ( $class_filter ) {
+				remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $class_filter );
+			}
+
 			if ( $had_preview_flag ) {
 				$GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] = $prev_preview_flag;
 			} else {
@@ -1047,12 +1134,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	/**
 	 * Floor a widget instance produced from untrusted data.
 	 *
-	 * A string is kept unchanged only when the caller did not supply a value
-	 * at its path, and the stored instance holds the identical string at the
-	 * same path. That is the saved content, still in its own field. Every
-	 * other string is floored: supplied values, values moved to a new path,
-	 * and values the widget's update() or a sanitize filter created or
-	 * changed.
+	 * Fields the caller did not supply keep their stored value. Where no
+	 * supplied path overlaps a path, and the stored instance holds a leaf (a
+	 * non-array value or an empty array) at it, the stored leaf is returned
+	 * exactly, whatever update() made of it. This is decided from the stored
+	 * instance and the supplied paths alone, both taken before update() ran.
+	 *
+	 * Only paths update() still outputs are walked, so keys it drops stay
+	 * dropped. _sow_form_timestamp keeps update()'s value, as it marks this
+	 * write. Every other string is floored: supplied values, and values
+	 * update() or a sanitize filter created at a path the stored instance
+	 * does not hold.
 	 *
 	 * @param mixed $value The normalised instance, or a part of it.
 	 * @param array $path  Keys that lead to $value.
@@ -1060,16 +1152,19 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * @return mixed
 	 */
 	private function floor_untrusted_instance( $value, array $path = array() ) {
-		if ( is_string( $value ) ) {
-			if ( ! SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::paths_overlap( $path, $this->untrusted_write['supplied'] ) ) {
-				$found = false;
-				$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::get_path( $this->untrusted_write['stored'], $path, $found );
+		if (
+			$path !== array( '_sow_form_timestamp' ) &&
+			! SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::paths_overlap( $path, $this->untrusted_write['supplied'] )
+		) {
+			$found = false;
+			$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::get_path( $this->untrusted_write['stored'], $path, $found );
 
-				if ( $found && is_string( $stored ) && $stored === $value ) {
-					return $value;
-				}
+			if ( $found && ( ! is_array( $stored ) || empty( $stored ) ) ) {
+				return $stored;
 			}
+		}
 
+		if ( is_string( $value ) ) {
 			return self::floor_string( $value );
 		}
 
@@ -1090,7 +1185,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * The patch holds only the fields to change. It merges into the stored
 	 * instance field by field, so omitted fields keep their stored value.
 	 * Every supplied string is floored before the widget sees it, the widget's
-	 * update() runs once, and its result is floored again (see
+	 * update() runs once, and in its result omitted fields get their stored
+	 * value back and every other string is floored again (see
 	 * floor_untrusted_instance()) before the markup cache is rebuilt from it.
 	 * The widget must be active; it is never activated here.
 	 *

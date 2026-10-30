@@ -364,16 +364,13 @@
 		$mainForm.data( 'backupDisabled', true );
 
 		let currentWidgetDataJson = sowbSerializeWidgetData( props.attributes.widgetData );
+		const isNewBlock = ! props.attributes.widgetData;
 
-		if ( props.attributes.widgetData ) {
+		if ( ! isNewBlock ) {
 			// If we call `setWidgetFormValues` with the last parameter
 			// ( `triggerChange` ) set to false, it won't show the correct values
 			// for some fields e.g. color and media fields.
 			formForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
-		} else {
-			const initialWidgetData = formForms.getWidgetFormValues( $mainForm );
-			currentWidgetDataJson = sowbSerializeWidgetData( initialWidgetData );
-			props.setAttributes( { widgetData: initialWidgetData } );
 		}
 
 		try {
@@ -381,6 +378,14 @@
 		} catch ( error ) {
 			$mainForm.removeData( 'sowb-block-form-initializing' );
 			throw error;
+		}
+
+		// Read a new block's values after setup, so they include any
+		// values that fields set up, such as a default preset.
+		if ( isNewBlock ) {
+			const initialWidgetData = formForms.getWidgetFormValues( $mainForm );
+			currentWidgetDataJson = sowbSerializeWidgetData( initialWidgetData );
+			props.setAttributes( { widgetData: initialWidgetData } );
 		}
 		bindBlockPreviewHandler();
 		$mainForm.removeData( 'sowb-block-form-initializing' );

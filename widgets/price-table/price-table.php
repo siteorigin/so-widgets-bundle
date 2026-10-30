@@ -217,6 +217,148 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'fonts' => array(
+						'type' => 'section',
+						'label' => __( 'Fonts', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'title' => array(
+								'type' => 'section',
+								'label' => __( 'Title', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'subtitle' => array(
+								'type' => 'section',
+								'label' => __( 'Subtitle', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'price' => array(
+								'type' => 'section',
+								'label' => __( 'Price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'sale_price' => array(
+								'type' => 'section',
+								'label' => __( 'Sale price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'original_price' => array(
+								'type' => 'section',
+								'label' => __( 'Original price', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'period' => array(
+								'type' => 'section',
+								'label' => __( 'Period', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'features' => array(
+								'type' => 'section',
+								'label' => __( 'Features', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+
+							'button' => array(
+								'type' => 'section',
+								'label' => __( 'Button', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'font' => array(
+										'type' => 'font',
+										'label' => __( 'Font', 'so-widgets-bundle' ),
+										'default' => 'default',
+									),
+									'size' => array(
+										'type' => 'measurement',
+										'label' => __( 'Size', 'so-widgets-bundle' ),
+									),
+								),
+							),
+						),
+					),
 				),
 			),
 		);
@@ -304,6 +446,8 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$font_variables = $this->get_font_less_variables( $instance );
+
 		$button_attrs = array(
 			'class' => 'ow-pt-link',
 		);
@@ -321,6 +465,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'button_attrs'         => $button_attrs,
 			'equalize_row_heights' => ! empty( $instance['equalize_row_heights'] ),
 			'any_column_has_image' => $any_column_has_image,
+			'title_has_font'       => isset( $font_variables['title_size'] ) || isset( $font_variables['title_font'] ),
 		);
 	}
 
@@ -377,7 +522,56 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$colors['featured_button_text_color'] = $color->hex;
 		}
 
-		return $colors;
+		return array_merge( $colors, $this->get_font_less_variables( $instance ) );
+	}
+
+	/**
+	 * Get the LESS variables of the font settings in use.
+	 *
+	 * A default font or an empty size adds no variable, which keeps the style
+	 * hash of a widget that doesn't use these settings.
+	 *
+	 * @return array
+	 */
+	private function get_font_less_variables( $instance ) {
+		$less_vars = array();
+		$fonts = $instance['design']['fonts'] ?? array();
+
+		if ( ! is_array( $fonts ) ) {
+			return $less_vars;
+		}
+
+		$parts = array( 'title', 'subtitle', 'price', 'sale_price', 'original_price', 'period', 'features', 'button' );
+
+		foreach ( $parts as $part ) {
+			if ( empty( $fonts[ $part ] ) || ! is_array( $fonts[ $part ] ) ) {
+				continue;
+			}
+
+			$styles = $fonts[ $part ];
+
+			if ( ! empty( $styles['size'] ) ) {
+				$less_vars[ $part . '_size' ] = $styles['size'];
+			}
+
+			if (
+				empty( $styles['font'] ) ||
+				! is_string( $styles['font'] ) ||
+				$styles['font'] === 'default'
+			) {
+				continue;
+			}
+
+			$font = siteorigin_widget_get_font( $styles['font'] );
+			$less_vars[ $part . '_font' ] = $font['family'];
+			$less_vars[ $part . '_font_style' ] = ! empty( $font['style'] ) ? $font['style'] : 'normal';
+
+			if ( ! empty( $font['weight_raw'] ) ) {
+				$less_vars[ $part . '_font_weight' ] = $font['weight_raw'];
+			}
+		}
+
+		return $less_vars;
 	}
 
 	/**

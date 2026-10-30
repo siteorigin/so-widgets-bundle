@@ -46,6 +46,7 @@ var sowbForms = window.sowbForms || {};
 	const repeaterVisibilitySensitiveFieldSelector = [
 		'.siteorigin-widget-field-type-tinymce',
 		'.siteorigin-widget-field-type-date-range',
+		'.siteorigin-widget-field-type-location',
 	].join( ', ' );
 
 	const repeaterImmediateSetupFieldSelector = [
@@ -430,8 +431,10 @@ var sowbForms = window.sowbForms || {};
 					$colorFieldOptions.defaultColor = $colorField.data( 'defaultColor' );
 				}
 
-				if ( $colorField.data( 'palettes' ) ) {
-					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
+				// jQuery reads data-palettes="false" as false, which hides the palettes.
+				const palettes = $colorField.data( 'palettes' );
+				if ( palettes || palettes === false ) {
+					$colorFieldOptions.palettes = palettes;
 				}
 
 				$colorField.wpColorPicker( $colorFieldOptions );

@@ -465,6 +465,39 @@ test( 'saved content in fields the patch omits is kept byte for byte', async () 
 	expect( rendered.body.content.rendered.split( PROBE_RAN ) ).toHaveLength( 2 );
 } );
 
+test( 'omitted fields keep their stored value when update() would reshape them', async () => {
+	// In TinyMCE mode the Editor's update() runs wpautop() and balanceTags()
+	// on the text, and the checkbox field turns 1 into true. Omitted fields
+	// still keep their stored value. Keys update() drops stay dropped, and
+	// _sow_form_timestamp takes update()'s value.
+	positiveControl = true;
+	const text = 'First line\n\nSecond line<iframe src="https://www.youtube.com/embed/x"></iframe>[sowb_e2e_probe]';
+	const postId = await fx.seed( editorSeed( {
+		text,
+		text_selected_editor: 'tinymce',
+		autop: 1,
+		sowb_undeclared: 'x',
+		_sow_form_timestamp: 1,
+	} ), { author: adminId } );
+
+	const data = await expectOk( await widgetUpdate( auth.admin, { post_id: postId, widget_data: { title: 'New' } } ), postId );
+	expect( data.title ).toBe( 'New' );
+	expect( data.text ).toBe( text );
+	expect( data.autop ).toBe( 1 );
+	expect( data ).not.toHaveProperty( 'sowb_undeclared' );
+	expect( typeof data._sow_form_timestamp ).toBe( 'number' );
+	expect( data._sow_form_timestamp ).toBeGreaterThan( 1 );
+
+	const attrs = widgetEntries( ( await fx.stored( postId ) ).blocks )[ 0 ].block.attrs;
+	expect( attrs.widgetMarkup ).toContain( '<iframe' );
+
+	// Positive control: the saved shortcode is live, so the probe detects runs.
+	await fx.resetProbe();
+	const rendered = await call( auth.admin, 'GET', `wp-json/wp/v2/posts/${ postId }?context=edit` );
+	expect( rendered.status ).toBe( 200 );
+	expect( rendered.body.content.rendered.split( PROBE_RAN ) ).toHaveLength( 2 );
+} );
+
 test( 'a value the caller supplies is floored, even when it matches stored content', async () => {
 	// A shortcode in the saved title does not make the same text safe in
 	// another field.
@@ -488,9 +521,10 @@ test( 'a saved value that update() moves into another field is floored', async (
 	// patch supplies no string, so the pre-floor never sees the moved value:
 	// only preservation bound to the field path keeps the saved shortcode from
 	// running in the text field, which the Editor widget passes to
-	// do_shortcode().
+	// do_shortcode(). The seed has no saved text, so the moved copy lands at
+	// a path the stored instance does not hold.
 	const title = 'SOWB_E2E_MOVE_TITLE [sowb_e2e_probe]';
-	const postId = await fx.seed( editorSeed( { title } ), { author: adminId } );
+	const postId = await fx.seed( editorSeed( { title, text: undefined } ), { author: adminId } );
 
 	const data = await expectOk( await widgetUpdate( auth.admin, { post_id: postId, widget_data: { autop: false } } ), postId );
 
@@ -504,6 +538,12 @@ test( 'a saved value that update() moves into another field is floored', async (
 
 	const attrs = widgetEntries( ( await fx.stored( postId ) ).blocks )[ 0 ].block.attrs;
 	expect( attrs.widgetMarkup ).not.toContain( PROBE_RAN );
+
+	// Saved text the patch omits keeps its stored value over the moved copy.
+	const kept = await fx.seed( editorSeed( { title } ), { author: adminId } );
+	const keptData = await expectOk( await widgetUpdate( auth.admin, { post_id: kept, widget_data: { autop: false } } ), kept );
+	expect( keptData.title ).toBe( title );
+	expect( keptData.text ).toBe( '<p>Seed text</p>' );
 } );
 
 test( 'for a user without unfiltered_html, an update matches a core save', async () => {

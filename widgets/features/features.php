@@ -166,6 +166,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Space between title and text', 'so-widgets-bundle' ),
+								'units' => array( 'px', 'em', 'rem' ),
+							),
 						),
 					),
 
@@ -236,6 +241,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Use icon size for custom icon', 'so-widgets-bundle' ),
 				'default' => false,
+			),
+
+			'icon_spacing' => array(
+				'type' => 'measurement',
+				'label' => __( 'Space between icon and text', 'so-widgets-bundle' ),
+				'units' => array( 'px', 'rem' ),
 			),
 
 			'per_row' => array(
@@ -424,6 +435,10 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( ! empty( $fonts['title_options']['margin_bottom'] ) ) {
+			$less_vars['title_margin_bottom'] = $fonts['title_options']['margin_bottom'];
+		}
+
 		$less_vars['container_size'] = $instance['container_size'];
 		$less_vars['icon_size'] = $instance['icon_size'];
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
@@ -432,6 +447,19 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['feature_spacing'] = ! empty( $instance['feature_spacing'] ) ? $instance['feature_spacing'] : '25px';
 		$less_vars['feature_spacing_mobile'] = ! empty( $instance['feature_spacing_mobile'] ) ? $instance['feature_spacing_mobile'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
+
+		// Set only when used, so the variables and style hash of a saved widget stay the same.
+		if ( ! empty( $instance['icon_spacing'] ) ) {
+			$less_vars['icon_spacing'] = $instance['icon_spacing'];
+			$less_vars['icon_spacing_custom'] = 'true';
+		}
+
+		// A set spacing field adds rules to the CSS. This variable has no LESS use: it gives
+		// such a widget a style hash of its own, so its CSS file is compiled with those rules
+		// and never read from a file generated without them under the same hash.
+		if ( ! empty( $instance['icon_spacing'] ) || ! empty( $fonts['title_options']['margin_bottom'] ) ) {
+			$less_vars['spacing_rules'] = '2';
+		}
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
 

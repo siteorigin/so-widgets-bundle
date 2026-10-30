@@ -129,6 +129,22 @@ class SocialMediaButtonsLessCallsTest extends SiteOriginTests {
 		);
 	}
 
+	public function test_color_holding_a_comment_or_line_break_falls_back() {
+		$this->assertSame(
+			'.m( @name:facebook-0, @button_color:#3b5998, @button_color_hover:#3b5998);',
+			$this->calls(
+				array(
+					array(
+						'name'             => 'facebook',
+						'icon_color'       => '#fff/* x */',
+						'icon_color_hover' => "#fff\n#000",
+						'button_color'     => '#3b5998',
+					),
+				)
+			)
+		);
+	}
+
 	public function test_refused_class_drops_only_that_network() {
 		$this->assertSame(
 			'.m( @name:facebook-0, @icon_color:#fff, @icon_color_hover:#fff);',

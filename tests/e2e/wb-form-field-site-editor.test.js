@@ -679,6 +679,11 @@ test(
 		const postQueryDateFrom = postQuerySection.locator( '.sowb-specific-date-after .after-picker' );
 		await ensureElementVisible( postQueryDateFrom, offset );
 
+		// Pikaday reaches the Site Editor canvas through the cloned field
+		// scripts, which can land seconds after the form shows. Wait for the
+		// date range field to attach its pickers before opening one.
+		await expect( admin.editor.canvas.locator( '.pika-single' ).first() ).toBeAttached( { timeout: 30000 } );
+
 		// Activate the Dates From field so that the date picker pops up.
 		await postQueryDateFrom.click( { force: true } );
 		await postQueryDateFrom.focus();

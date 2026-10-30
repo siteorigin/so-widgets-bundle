@@ -76,7 +76,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
 		if ( ! empty( $this->select2 ) ) {
-			if ( ! empty( $this->input_css_classes ) ) {
+			if ( empty( $this->input_css_classes ) ) {
 				$this->input_css_classes = array();
 			}
 			$this->input_css_classes[] = 'sow-select2';

@@ -70,8 +70,9 @@
 		} );
 
 		if ( $presetSelect.data( 'default-preset' ) != undefined ) {
-			// If no value is selected, and there's a default-preset set, load it.
-			if ( $presetSelect.val() == 'default' ) {
+			// Load the default preset for a new widget, or if no value is selected.
+			const isNewWidget = !! $presetSelect.closest( '.siteorigin-widget-form-main' ).data( 'new-instance' );
+			if ( isNewWidget || $presetSelect.val() == 'default' ) {
 				addingDefault = true;
 				$presetSelect.val( $presetSelect.data( 'default-preset' ) );
 			}

@@ -576,6 +576,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$form_options = $this->get_form( $form_type );
 		}
 
+		// A new widget has no saved values, other than the keys that page builders and this form add.
+		$is_new_instance = is_array( $instance ) ?
+			empty( array_diff_key( $instance, array_flip( array( 'panels_info', '_sow_form_id', '_sow_form_timestamp' ) ) ) ) :
+			empty( $instance );
+
 		$instance = $this->normalize_container_values( $form_options, $instance );
 		$instance = $this->modify_instance( $instance );
 		$instance = $this->add_defaults( $form_options, $instance );
@@ -607,7 +612,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr( $class_name ); ?>"
 			 id="<?php echo $form_id; ?>" data-class="<?php echo esc_attr( $this->widget_class ); ?>"
-			 data-id-base="<?php echo esc_attr( $this->id_base ); ?>" style="display: none">
+			 data-id-base="<?php echo esc_attr( $this->id_base ); ?>"
+			 <?php if ( $is_new_instance ) { ?>data-new-instance="1"<?php } ?>
+			 style="display: none">
 			<?php
 			$this->display_teaser_message();
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
@@ -1156,6 +1163,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_less_vars_' . $this->id_base, $less, $vars, $instance, $this );
 
 		if ( ! empty( $vars ) ) {
+			$values = array();
+			$names = array();
+
 			foreach ( $vars as $name => $value ) {
 				// Ignore empty string, false and null values (but keep '0')
 				if ( $value === '' || $value === false || $value === null ) {
@@ -1170,11 +1180,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
-				// A callback keeps $ and \ in the value literal.
+				$values[ $name ] = $value;
+				$names[] = preg_quote( $name, '/' );
+			}
+
+			// One pass over the LESS, so a value is never searched for another
+			// variable's declaration. A callback keeps $ and \ in the value literal.
+			if ( ! empty( $values ) ) {
 				$less = preg_replace_callback(
-					'/\@' . preg_quote( $name ) . ' *\:.*?;/',
-					function () use ( $name, $value ) {
-						return '@' . $name . ': ' . $value . ';';
+					'/\@(' . implode( '|', $names ) . ') *\:.*?;/',
+					function ( $matches ) use ( $values ) {
+						return '@' . $matches[1] . ': ' . $values[ $matches[1] ] . ';';
 					},
 					$less
 				);
@@ -1207,10 +1223,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
 
 			try {
+				// Checked here, after every filter, so it holds whatever compiler a filter supplies.
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( $less );
+
+				if ( $check !== true ) {
+					throw new Exception( sprintf( 'SiteOrigin Widgets: the LESS for %s was not compiled (%s).', $this->id_base, $check ) );
+				}
+
 				if ( method_exists( $compiler, 'compile' ) ) {
 					$css = @ $compiler->compile( $less );
 				}
-			} catch ( Exception $e ) {
+			} catch ( Throwable $e ) {
 				if ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
 					throw $e;
 				}
