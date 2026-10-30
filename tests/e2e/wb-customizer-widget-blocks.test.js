@@ -339,8 +339,9 @@ test.afterAll( async ( { browser } ) => {
 	const requestUtils = await setupRequestUtils();
 	await requestUtils.activateTheme( previousTheme );
 	await setWidgets( browser, async ( page ) => {
-		for ( const id of inactiveWidgets.splice( 0 ) ) {
-			await setWidgetActive( page, id, false );
+		while ( inactiveWidgets.length ) {
+			await setWidgetActive( page, inactiveWidgets[ 0 ], false );
+			inactiveWidgets.shift();
 		}
 	} );
 
