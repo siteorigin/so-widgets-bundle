@@ -738,7 +738,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 				// Widget areas don't store markup for an edited block, so it
 				// renders here. Keep the plain title its cached markup prints.
-				$plain_title = ! $must_render && doing_filter( 'widget_block_content' );
+				// A block in post content printed by a widget isn't in the area.
+				$plain_title = ! $must_render &&
+					doing_filter( 'widget_block_content' ) &&
+					! doing_filter( 'the_content' );
 
 				$widget->widget( array(
 					'before_widget' => '',

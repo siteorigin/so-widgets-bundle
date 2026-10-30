@@ -14,8 +14,11 @@ const {
 } = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
+	WIDGETS_ADMIN,
+	isCardActive,
 	loginPage,
 	makeZip,
+	setWidgetActive,
 } = require( './helpers/widget-block-abilities' );
 
 const THEME_SLUG = 'sowb-e2e-classic-theme';
@@ -299,19 +302,47 @@ const frontEndText = async ( request, area ) => {
 	return response.text();
 };
 
+const REQUIRED_WIDGETS = [ 'accordion', 'blog', 'cta', 'editor' ];
+
 let previousTheme;
 let installedTheme = false;
+const inactiveWidgets = [];
+
+const setWidgets = async ( browser, callback ) => {
+	const page = await browser.newPage();
+
+	try {
+		await loginPage( page );
+		await soGoTo( page, WIDGETS_ADMIN );
+		await callback( page );
+	} finally {
+		await page.close();
+	}
+};
 
 test.beforeAll( async ( { browser } ) => {
 	const requestUtils = await setupRequestUtils();
 	[ previousTheme ] = await themeStylesheets( requestUtils, 'active' );
 	installedTheme = await installClassicTheme( browser, requestUtils );
 	await requestUtils.activateTheme( THEME_SLUG );
+	await setWidgets( browser, async ( page ) => {
+		for ( const id of REQUIRED_WIDGETS ) {
+			if ( ! await isCardActive( page, id ) ) {
+				inactiveWidgets.push( id );
+				await setWidgetActive( page, id, true );
+			}
+		}
+	} );
 } );
 
 test.afterAll( async ( { browser } ) => {
 	const requestUtils = await setupRequestUtils();
 	await requestUtils.activateTheme( previousTheme );
+	await setWidgets( browser, async ( page ) => {
+		for ( const id of inactiveWidgets.splice( 0 ) ) {
+			await setWidgetActive( page, id, false );
+		}
+	} );
 
 	// Never remove a copy this run did not install.
 	if ( installedTheme ) {
@@ -368,6 +399,39 @@ test( 'A widget that always renders keeps its title heading in a widget area.', 
 		expect( await frontEndText( request, area ) ).toContain( `<h3 class="widget-title">${ title }` );
 	} finally {
 		await area.cleanup();
+	}
+} );
+
+test( 'A block in post content printed by a widget keeps its title heading.', async ( { request } ) => {
+	const suffix = uniqueSuffix();
+	const title = `Nested title ${ suffix }`;
+	const requestUtils = await setupRequestUtils();
+	const nested = await requestUtils.createPost( {
+		status: 'publish',
+		title: `Nested post ${ suffix }`,
+		// A post stores no markup for a block whose markup holds a style tag.
+		content: serializeWidgetBlock( 'sowb/siteorigin-widget-accordion-widget', 'SiteOrigin_Widget_Accordion_Widget', {
+			title,
+			panels: [ { title: `Nested panel ${ suffix }`, content_text: '<p>Panel text</p>', initial_state: 'open' } ],
+		} ),
+	} );
+	const area = await seedWidgetArea( [ serializeWidgetBlock( 'sowb/siteorigin-widget-blog-widget', 'SiteOrigin_Widget_Blog_Widget', {
+		template: 'standard',
+		settings: { content: 'full' },
+		posts: `post_type=post&post__in=${ nested.id }`,
+	} ) ] );
+
+	try {
+		const html = await frontEndText( request, area );
+		expect( html ).toContain( `Nested panel ${ suffix }` );
+		expect( html ).toContain( `<h3 class="widget-title">${ title }` );
+	} finally {
+		await area.cleanup();
+		await requestUtils.rest( {
+			method: 'DELETE',
+			path: `/wp/v2/posts/${ nested.id }`,
+			params: { force: true },
+		} );
 	}
 } );
 
@@ -469,9 +533,14 @@ for ( const screen of SCREENS ) {
 		const text = `First save editor ${ suffix }`;
 		const addition = `first save addition ${ suffix }`;
 		const cached = `Cached editor ${ suffix }`;
-		const area = await seedWidgetArea( [ editorBlock( 'Editor title', text, { widgetMarkup: `<div>${ cached }</div>` } ) ] );
+		const area = await seedWidgetArea( [ editorBlock( 'Editor title', text, { widgetMarkup: `<div>Editor title<p>${ cached }</p></div>` } ) ] );
 
 		try {
+			const cachedHtml = await frontEndText( request, area );
+			expect( cachedHtml ).toContain( cached );
+			expect( cachedHtml ).toContain( 'Editor title' );
+			expect( cachedHtml ).not.toContain( '<h3 class="widget-title">Editor title' );
+
 			await doLogin( page );
 			await screen.open( page, area );
 			const form = await openWidgetForm( page, EDITOR_BLOCK, text );
