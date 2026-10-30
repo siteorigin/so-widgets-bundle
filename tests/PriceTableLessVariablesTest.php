@@ -180,7 +180,7 @@ class PriceTableLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The keys every instance returned before the font settings existed.
+	 * The keys of an instance that uses no font setting.
 	 */
 	public function test_instance_without_fonts_adds_no_keys() {
 		$variables = $this->get_less_variables_capturing_errors( array( 'title' => 'Pricing' ) );

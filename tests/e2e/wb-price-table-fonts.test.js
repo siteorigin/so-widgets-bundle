@@ -248,7 +248,7 @@ test.describe( 'Price Table equalized rows with a late web font', () => {
 	);
 
 	test( 'rows are measured again once the font loads', async ( { browser } ) => {
-		const font = await latePage.requestUtils.request.get( new URL( FONT_PATH, latePage.link ).href );
+		const font = await latePage.requestUtils.request.get( `${ process.env.WP_BASE_URL.replace( /\/$/, '' ) }${ FONT_PATH }` );
 
 		expect( font.status() ).toBe( 200 );
 

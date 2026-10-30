@@ -29,11 +29,11 @@ require_once __DIR__ . '/../base/inc/widget-describer.php';
 /**
  * Pins the CSS and LESS variables of the Price Table widget.
  *
- * tests/fixtures/price-table-css.json holds the output captured before the
- * font settings existed. A saved widget that never sets them must keep the
- * same variables, and so the same style hash and CSS.
+ * tests/fixtures/price-table-css.json holds the output of widgets that use no
+ * font setting. Those widgets keep these variables, and so their style hash
+ * and CSS.
  *
- * Re-capture (only on a branch whose output is the intended baseline):
+ * Re-capture (only when the output is meant to change):
  *   SOW_CAPTURE_FIXTURES=1 vendor/bin/phpunit --filter PriceTableFontsTest
  */
 class PriceTableFontsTest extends SiteOriginTests {
