@@ -4032,6 +4032,7 @@
       <fields>
         <field type="Blog: Title">title</field>
         <field type="Blog: Read More Text">settings>read_more_text</field>
+        <field type="Blog: Excerpt Trim Indicator">settings>excerpt_trim</field>
       </fields>
     </widget>
     <widget name="SiteOrigin_Widget_Button_Widget">
@@ -4046,7 +4047,7 @@
         <field type="Contact Form: Title">title</field>
         <field type="Contact Form: Default Subject">settings>default_subject</field>
         <field type="Contact Form: Subject Prefix">settings>subject_prefix</field>
-        <field type="Contact Form: Success Message">settings>success_message</field>
+        <field type="Contact Form: Success Message" editor_type="VISUAL">settings>success_message</field>
         <field type="Contact Form: Submit Text">settings>submit_text</field>
         <field type="Contact Form: Required Field Indicator Message">settings>required_field_indicator_message</field>
       </fields>
@@ -4168,6 +4169,7 @@
       <fields>
         <field type="Recent Posts: Title">title</field>
         <field type="Recent Posts: Read More Text">recent_settings>read_more_text</field>
+        <field type="Recent Posts: Post Excerpt Trim Indicator">recent_settings>excerpt_trim</field>
       </fields>
     </widget>
     <widget name="SiteOrigin_Widget_Simple_Masonry_Widget">
@@ -4222,7 +4224,7 @@
     <widget name="SiteOrigin_Widget_Video_Widget">
       <fields>
         <field type="Video: Title">title</field>
-        <field type="Video: External Video URL">video>external_video</field>
+        <field type="Video: External Video URL" editor_type="LINK">video>external_video</field>
       </fields>
     </widget>
   </siteorigin-widgets>
