@@ -78,6 +78,15 @@ const seedWidgetArea = async ( contents ) => {
 	return {
 		post,
 		sidebar,
+		storedContent: async () => {
+			const stored = await requestUtils.rest( {
+				method: 'GET',
+				path: `/wp/v2/widgets/${ widgets[ 0 ].id }`,
+				params: { context: 'edit' },
+			} );
+
+			return stored.instance.raw.content;
+		},
 		cleanup: async () => {
 			for ( const widget of widgets ) {
 				await requestUtils.rest( {
@@ -129,7 +138,7 @@ const openWidgetForm = async ( page, blockName, marker ) => {
 
 	await page.evaluate( ( id ) => window.wp.data.dispatch( 'core/block-editor' ).selectBlock( id ), clientId );
 	// The narrow Customizer panel can place the toolbar under its sticky header.
-	await page.getByRole( 'button', { name: 'Edit widget.', exact: true } ).click( { force: true } );
+	await page.getByRole( 'button', { name: 'Edit widget.', exact: true } ).dispatchEvent( 'click' );
 	const form = page.locator( `[data-block="${ clientId }"] .siteorigin-widget-form-main[data-class]` );
 	await expect( form ).toBeVisible( { timeout: 20000 } );
 	await expect.poll( () => form.evaluate(
@@ -173,9 +182,18 @@ const updateWidgets = async ( page ) => {
 	await pressWithMouse( page, page.getByRole( 'button', { name: 'Update', exact: true } ) );
 };
 
+const customizerIsClean = ( page ) => page.evaluate( () => (
+	window.wp.customize.state( 'saved' ).get() &&
+	Object.keys( window.wp.customize.dirtyValues() ).length === 0
+) );
+
+const widgetsScreenIsClean = async ( page ) => (
+	await page.getByRole( 'button', { name: 'Update', exact: true } ).getAttribute( 'aria-disabled' ) === 'true'
+);
+
 const SCREENS = [
-	{ name: 'Customizer', open: openCustomizer, save: publish },
-	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets },
+	{ name: 'Customizer', open: openCustomizer, save: publish, isClean: customizerIsClean },
+	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets, isClean: widgetsScreenIsClean },
 ];
 
 const expectStylesheetKept = async ( page, request, area ) => {
@@ -244,6 +262,64 @@ test( 'Saved widget blocks open and publish in the Customizer.', async ( { page,
 } );
 
 for ( const screen of SCREENS ) {
+	test( `${ screen.name }: opening a saved block changes nothing.`, async ( { page } ) => {
+		const suffix = uniqueSuffix();
+		const text = `Clean open editor ${ suffix }`;
+		const area = await seedWidgetArea( [ editorBlock( 'Editor title', text ) ] );
+
+		try {
+			await doLogin( page );
+			const previewed = page.waitForResponse( '**/sowb/v1/widgets/previews*' );
+			await screen.open( page, area );
+			await previewed;
+
+			await expect( page.locator( `[data-type="${ EDITOR_BLOCK }"]` ).filter( { hasText: text } ) )
+				.toBeVisible( { timeout: 20000 } );
+			await expect.poll( () => screen.isClean( page ) ).toBe( true );
+			// Hold the check long enough for a late attribute write to land.
+			await page.waitForTimeout( 1000 );
+			expect( await screen.isClean( page ) ).toBe( true );
+		} finally {
+			await area.cleanup();
+		}
+	} );
+
+	test( `${ screen.name }: a late preview cannot change a saved block.`, async ( { page } ) => {
+		const suffix = uniqueSuffix();
+		const title = `Late preview CTA ${ suffix }`;
+		const editedTitle = `Late preview edited CTA ${ suffix }`;
+		const area = await seedWidgetArea( [ ctaBlock( title ) ] );
+
+		try {
+			await doLogin( page );
+			await screen.open( page, area );
+			const form = await openWidgetForm( page, CTA_BLOCK, title );
+
+			let releasePreview;
+			const held = new Promise( ( resolve ) => {
+				releasePreview = resolve;
+			} );
+			await page.route( '**/sowb/v1/widgets/previews*', async ( route ) => {
+				await held;
+				await route.continue().catch( () => {} );
+			} );
+
+			await widgetTitle( form ).fill( editedTitle );
+			await widgetTitle( form ).press( 'Tab' );
+			await page.waitForTimeout( 500 );
+			await screen.save( page );
+			await expect.poll( () => area.storedContent(), { timeout: 20000 } ).toContain( editedTitle );
+
+			releasePreview();
+			await page.waitForTimeout( 1500 );
+
+			await expect.poll( () => screen.isClean( page ) ).toBe( true );
+			expect( await area.storedContent() ).not.toMatch( /"widgetMarkup":"/ );
+		} finally {
+			await area.cleanup();
+		}
+	} );
+
 	test( `${ screen.name }: a field edit reaches the front end on the first save.`, async ( { page, request } ) => {
 		const suffix = uniqueSuffix();
 		const title = `First save CTA ${ suffix }`;

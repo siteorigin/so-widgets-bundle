@@ -195,10 +195,14 @@
 					previewInitialized: false,
 				} );
 
-				props.setAttributes( {
-					widgetMarkup: widgetPreview.html,
-					widgetIcons: widgetPreview.widgetIcons,
-				} );
+				// A saved widget area keeps its stored block, so a preview can
+				// neither mark it as changed nor put old markup back.
+				if ( ! sowbIsWidgetScreen() ) {
+					props.setAttributes( {
+						widgetMarkup: widgetPreview.html,
+						widgetIcons: widgetPreview.widgetIcons,
+					} );
+				}
 			} )
 			.fail( ( response ) => {
 				if ( response && response.statusText === 'abort' ) {
@@ -665,10 +669,12 @@
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				props.setAttributes( {
-					widgetMarkup: null,
-					widgetIcons: null
-				} );
+				if ( ! sowbIsWidgetScreen() ) {
+					props.setAttributes( {
+						widgetMarkup: null,
+						widgetIcons: null
+					} );
+				}
 
 				sowbGenerateWidgetPreview(
 					props,
