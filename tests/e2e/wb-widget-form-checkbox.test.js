@@ -3,11 +3,9 @@ const {
 	test
 } = require( '@playwright/test' );
 
-const {
-	doLogin,
-	setupRequestUtils,
-} = require( 'siteorigin-tests-common/playwright/common' );
+const { doLogin } = require( 'siteorigin-tests-common/playwright/common' );
 
+const { useFeaturesPage } = require( './helpers/features' );
 const { widgetBlock } = require( './helpers/widget-block-abilities' );
 
 /**
@@ -28,34 +26,50 @@ const THEMES = [
 		// Leaves the checkbox to core.
 		name: 'Twenty Twenty-Five',
 		preview: 'twentytwentyfive',
-		rendered: ( { snapshotStyles, manropePreset } ) => ! snapshotStyles && manropePreset,
+		rendered: ( { snapshotStyles, twentyTwentyFiveAssets } ) => ! snapshotStyles && twentyTwentyFiveAssets,
 	},
 ];
 
-const CHECKBOX = '.siteorigin-widget-field-equalize_row_heights input[type="checkbox"]';
+const TICKED = '.siteorigin-widget-field-equalize_row_heights input[type="checkbox"]';
+const UNTICKED = '.siteorigin-widget-field-button_new_window input[type="checkbox"]';
+
+const WHITE_BOX = {
+	appearance: 'none',
+	background: 'rgb(255, 255, 255)',
+	border: 'rgb(140, 143, 148)',
+	width: '16px',
+	height: '16px',
+};
 
 /**
  * Runs in the editor canvas: the theme that reached it, and the computed
- * styles of the box and its tick.
+ * styles of a ticked box, its tick, and an unticked box.
  */
-const measure = ( selector ) => {
-	const input = document.querySelector( selector );
-	const box = getComputedStyle( input );
-	const tick = getComputedStyle( input, '::before' );
+const measure = ( { ticked, unticked } ) => {
+	const box = ( selector ) => {
+		const style = getComputedStyle( document.querySelector( selector ) );
+
+		return {
+			appearance: style.appearance,
+			background: style.backgroundColor,
+			border: style.borderTopColor,
+			width: style.width,
+			height: style.height,
+		};
+	};
+	const tick = getComputedStyle( document.querySelector( ticked ), '::before' );
 
 	return {
 		theme: {
 			snapshotStyles: !! document.querySelector( 'link[href*="/themes/siteorigin-snapshot/"]' ),
-			manropePreset: !! getComputedStyle( document.body ).getPropertyValue( '--wp--preset--font-family--manrope' ),
+			twentyTwentyFiveAssets: document.documentElement.outerHTML.includes( '/themes/twentytwentyfive/' ),
 		},
-		box: {
-			appearance: box.appearance,
-			background: box.backgroundColor,
-			border: box.borderTopColor,
-			width: box.width,
-			height: box.height,
-		},
+		ticked: box( ticked ),
+		unticked: box( unticked ),
+		tickContent: tick.content,
 		tick: {
+			display: tick.display,
+			visibility: tick.visibility,
 			position: tick.position,
 			float: tick.float,
 			transform: tick.transform,
@@ -68,47 +82,22 @@ const measure = ( selector ) => {
 };
 
 test.describe( 'Widget form checkbox in the block editor', () => {
-	let requestUtils;
-	let pageId;
-
-	test.beforeAll( async () => {
-		requestUtils = await setupRequestUtils();
-
-		const created = await requestUtils.rest( {
-			method: 'POST',
-			path: '/wp/v2/pages',
-			data: {
-				title: 'Widget form checkbox (e2e)',
-				status: 'publish',
-				content: widgetBlock( 'sowb/siteorigin-widget-pricetable-widget', {
-					widgetClass: 'SiteOrigin_Widget_PriceTable_Widget',
-					widgetData: {
-						columns: [ { title: 'One', price: '1' } ],
-						equalize_row_heights: true,
-					},
-				} ),
+	const checkboxPage = useFeaturesPage(
+		test,
+		'Widget form checkbox (e2e)',
+		() => widgetBlock( 'sowb/siteorigin-widget-pricetable-widget', {
+			widgetClass: 'SiteOrigin_Widget_PriceTable_Widget',
+			widgetData: {
+				columns: [ { title: 'One', price: '1' } ],
+				equalize_row_heights: true,
 			},
-		} );
-
-		pageId = created.id;
-	} );
-
-	test.afterAll( async () => {
-		if ( pageId ) {
-			const deleted = await requestUtils.rest( {
-				method: 'DELETE',
-				path: `/wp/v2/pages/${ pageId }`,
-				params: { force: true },
-			} );
-
-			expect( deleted.deleted ).toBe( true );
-		}
-	} );
+		} )
+	);
 
 	for ( const theme of THEMES ) {
 		test( `a ticked checkbox is a white box with the tick core places in ${ theme.name }`, async ( { page } ) => {
 			await doLogin( page );
-			await page.goto( `/wp-admin/post.php?post=${ pageId }&action=edit&wp_theme_preview=${ theme.preview }` );
+			await page.goto( `/wp-admin/post.php?post=${ checkboxPage.id }&action=edit&wp_theme_preview=${ theme.preview }` );
 			await page.locator( 'iframe[name="editor-canvas"]' ).waitFor( { timeout: 30000 } );
 
 			const canvas = page.frameLocator( 'iframe[name="editor-canvas"]' );
@@ -124,21 +113,20 @@ test.describe( 'Widget form checkbox in the block editor', () => {
 
 			await block.click( { position: { x: 40, y: 40 } } );
 			await page.getByRole( 'button', { name: 'Edit widget.' } ).click();
-			await expect( block.locator( CHECKBOX ) ).toBeChecked( { timeout: 30000 } );
+			await expect( block.locator( TICKED ) ).toBeChecked( { timeout: 30000 } );
+			await expect( block.locator( UNTICKED ) ).not.toBeChecked();
 
 			const frame = page.frames().find( ( f ) => f.name() === 'editor-canvas' );
-			const m = await frame.evaluate( measure, CHECKBOX );
+			const m = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED } );
 
 			expect( theme.rendered( m.theme ), `${ theme.name } reached the canvas: ${ JSON.stringify( m.theme ) }` ).toBeTruthy();
 
-			expect.soft( m.box ).toEqual( {
-				appearance: 'none',
-				background: 'rgb(255, 255, 255)',
-				border: 'rgb(140, 143, 148)',
-				width: '16px',
-				height: '16px',
-			} );
+			expect.soft( m.ticked, 'ticked box' ).toEqual( WHITE_BOX );
+			expect.soft( m.unticked, 'unticked box' ).toEqual( WHITE_BOX );
+			expect.soft( m.tickContent, 'the tick is the blue SVG' ).toContain( 'fill%3D%27%233582c4%27' );
 			expect.soft( m.tick ).toEqual( {
+				display: 'block',
+				visibility: 'visible',
 				position: 'static',
 				float: 'left',
 				transform: 'none',
