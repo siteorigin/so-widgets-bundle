@@ -4,11 +4,13 @@ on:
     paths:
       - wpml-config.xml
       - tests/WpmlConfigTest.php
+      - tests/fixtures/wpml-config.xsd
       - .github/workflows/wpml-config.yml
   pull_request:
     paths:
       - wpml-config.xml
       - tests/WpmlConfigTest.php
+      - tests/fixtures/wpml-config.xsd
       - .github/workflows/wpml-config.yml
 permissions:
   contents: read

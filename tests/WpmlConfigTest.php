@@ -347,6 +347,13 @@ class WpmlConfigTest extends TestCase {
 		}
 	}
 
+	/**
+	 * WPML reads an <xpath> as one more mapping, and the tests here read keys.
+	 */
+	public function test_blocks_hold_no_xpath_mappings(): void {
+		$this->assertSame( 0, self::xpath()->query( '/wpml-config/gutenberg-blocks//xpath' )->length );
+	}
+
 	public function test_every_block_entry_has_a_source(): void {
 		$expected = array_map( array( self::class, 'block_name' ), array_keys( self::widget_entries() ) );
 		array_push( $expected, self::BUTTON_GRID_BLOCK, self::LEGACY_BLOCK );
@@ -375,12 +382,10 @@ class WpmlConfigTest extends TestCase {
 	}
 
 	public function test_legacy_block_keeps_its_mapping(): void {
-		$expected = self::LEGACY_FIELDS;
-		$actual = array_keys( self::block_leaves( self::blocks()[ self::LEGACY_BLOCK ] ) );
-		sort( $expected );
-		sort( $actual );
+		$expected = array_fill_keys( self::LEGACY_FIELDS, '' );
+		ksort( $expected );
 
-		$this->assertSame( $expected, $actual );
+		$this->assertSame( $expected, self::block_leaves( self::blocks()[ self::LEGACY_BLOCK ] ) );
 	}
 
 	public function test_builder_fields_are_keys_without_children(): void {
