@@ -735,7 +735,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 				// A block edited in a widget area renders here, as nothing rebuilds
 				// its markup. Keep the plain title its cached markup printed.
-				$plain_title = ! $must_render && ! empty( $instance['_sow_plain_title'] );
+				$plain_title = ! $must_render &&
+					! empty( $instance['_sow_plain_title'] ) &&
+					doing_filter( 'widget_block_content' );
+				unset( $instance['_sow_plain_title'] );
 
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
