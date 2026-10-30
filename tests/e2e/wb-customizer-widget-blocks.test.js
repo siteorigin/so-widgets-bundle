@@ -213,8 +213,7 @@ const openWidgetForm = async ( page, blockName, marker ) => {
 	}, { timeout: 20000 } ).toBe( true );
 
 	await page.evaluate( ( id ) => window.wp.data.dispatch( 'core/block-editor' ).selectBlock( id ), clientId );
-	// The narrow Customizer panel can place the toolbar under its sticky header.
-	await page.getByRole( 'button', { name: 'Edit widget.', exact: true } ).dispatchEvent( 'click' );
+	await page.getByRole( 'button', { name: 'Edit widget.', exact: true } ).click();
 	const form = page.locator( `[data-block="${ clientId }"] .siteorigin-widget-form-main[data-class]` );
 	await expect( form ).toBeVisible( { timeout: 20000 } );
 	await expect.poll( () => form.evaluate(
@@ -278,7 +277,15 @@ const stylesheetChanges = async ( request, area ) => {
 	return Number( count );
 };
 
-const expectStylesheetKept = async ( request, area ) => {
+const expectStylesheetKept = async ( request, area, widgetText ) => {
+	const html = await frontEndText( request, area );
+	// The widget's wrapper class names its stylesheet.
+	const widgetHtml = html.slice( 0, html.indexOf( widgetText ) );
+	const [ , name ] = [ ...widgetHtml.matchAll( /so-widget-(sow-cta-[a-z]+-[a-f0-9]{12})/g ) ].pop();
+	const stylesheet = html.match( new RegExp( `https?:[^'"\\s]+/${ name }\\.css` ) );
+	expect( stylesheet, 'The page should link the widget stylesheet.' ).toBeTruthy();
+	expect( ( await request.get( stylesheet[ 0 ] ) ).status() ).toBe( 200 );
+
 	const before = await stylesheetChanges( request, area );
 	await frontEndText( request, area );
 
@@ -367,6 +374,11 @@ for ( const screen of SCREENS ) {
 			// Hold the check long enough for a late attribute write to land.
 			await page.waitForTimeout( 1000 );
 			expect( await screen.isClean( page ) ).toBe( true );
+
+			const dialogs = [];
+			page.on( 'dialog', ( dialog ) => dialogs.push( dialog.type() ) );
+			await soGoTo( page, 'wp-admin/index.php' );
+			expect( dialogs ).toEqual( [] );
 		} finally {
 			await area.cleanup();
 		}
@@ -427,7 +439,7 @@ for ( const screen of SCREENS ) {
 
 			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( editedTitle );
 			expect( await frontEndText( request, area ) ).not.toContain( cached );
-			await expectStylesheetKept( request, area );
+			await expectStylesheetKept( request, area, editedTitle );
 		} finally {
 			await area.cleanup();
 		}
