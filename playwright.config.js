@@ -13,31 +13,16 @@ const ABILITY_SPECS = /[\\/]wb-(?:abilities|abilities-mcp|widget-block-abilities
 const ABILITIES_PROJECT = 'abilities';
 
 /**
- * The Features specs render in a second theme through core's theme preview.
- * They run in projects of their own, which depend on a setup project that
- * installs that theme once, before any of them, and a teardown that removes
- * it when the setup installed it. Firefox and WebKit run only the specs
- * tagged @firefox or @webkit, which are Features specs.
+ * The Features specs run in Chrome in a project of their own, and are the
+ * specs tagged @firefox and @webkit, which the Firefox and WebKit projects
+ * run. The runner runs each project as a pass of its own.
  */
 const FEATURES_SPECS = /[\\/]wb-features-[^\\/]+\.test\.js$/;
 const FEATURES_PROJECT = 'Chrome Features';
-const FEATURES_SETUP_PROJECT = 'features setup';
-const FEATURES_TEARDOWN_PROJECT = 'features teardown';
 
 const [ browserProject ] = config.projects;
 
 config.projects = [
-	{
-		...browserProject,
-		name: FEATURES_SETUP_PROJECT,
-		testMatch: /[\\/]features\.setup\.js$/,
-		teardown: FEATURES_TEARDOWN_PROJECT,
-	},
-	{
-		...browserProject,
-		name: FEATURES_TEARDOWN_PROJECT,
-		testMatch: /[\\/]features\.teardown\.js$/,
-	},
 	{
 		...browserProject,
 		testIgnore: [ ABILITY_SPECS, FEATURES_SPECS ],
@@ -46,7 +31,6 @@ config.projects = [
 		...browserProject,
 		name: FEATURES_PROJECT,
 		testMatch: FEATURES_SPECS,
-		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 	{
 		...browserProject,
@@ -59,14 +43,12 @@ config.projects = [
 		use: devices[ 'Desktop Firefox' ],
 		grep: /@firefox/,
 		testIgnore: ABILITY_SPECS,
-		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 	{
 		name: 'WebKit',
 		use: devices[ 'Desktop Safari' ],
 		grep: /@webkit/,
 		testIgnore: ABILITY_SPECS,
-		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 ];
 
