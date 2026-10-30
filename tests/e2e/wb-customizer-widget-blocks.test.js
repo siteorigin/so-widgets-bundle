@@ -476,6 +476,9 @@ for ( const screen of SCREENS ) {
 			const html = await frontEndText( request, area );
 			expect( html ).toContain( text );
 			expect( html ).not.toContain( cached );
+			// An edit keeps the plain title that cached markup prints.
+			expect( html ).toContain( 'Editor title' );
+			expect( html ).not.toContain( '<h3 class="widget-title">Editor title' );
 
 			await screen.open( page, area );
 			const reopened = await openWidgetForm( page, EDITOR_BLOCK, addition );
