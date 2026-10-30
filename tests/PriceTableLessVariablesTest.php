@@ -170,4 +170,134 @@ class PriceTableLessVariablesTest extends SiteOriginTests {
 		$this->assertSame( '#FFFFFF', $colors['button_text_color'] );
 		$this->assertSame( '#FFFFFF', $colors['featured_button_text_color'] );
 	}
+
+	private static function font_parts() {
+		return array( 'title', 'subtitle', 'price', 'sale_price', 'original_price', 'period', 'features', 'button' );
+	}
+
+	private static function with_fonts( $fonts ) {
+		return array( 'design' => array( 'fonts' => $fonts ) );
+	}
+
+	/**
+	 * The keys every instance returned before the font settings existed.
+	 */
+	public function test_instance_without_fonts_adds_no_keys() {
+		$variables = $this->get_less_variables_capturing_errors( array( 'title' => 'Pricing' ) );
+
+		$this->assertSame( array(), $this->php_errors );
+		$this->assertSame(
+			array(
+				'header_color',
+				'featured_header_color',
+				'header_text_color',
+				'featured_header_text_color',
+				'feature_text_color',
+				'button_container_color',
+				'button_background_color',
+				'featured_button_background_color',
+			),
+			array_keys( $variables )
+		);
+	}
+
+	public function test_default_fonts_and_empty_sizes_keep_the_variables_and_style_hash() {
+		$widget = $this->widget();
+		$legacy = array( 'title' => 'Pricing' );
+		$fonts = array_fill_keys(
+			self::font_parts(),
+			array(
+				'font' => 'default',
+				'size' => '',
+			)
+		);
+
+		$instances = array(
+			'default and empty' => self::with_fonts( $fonts ),
+			'empty font' => self::with_fonts( array( 'title' => array( 'font' => '', 'size' => '' ) ) ),
+			'through add_defaults()' => $widget->add_defaults( $widget->form_options(), $legacy ),
+		);
+
+		$this->assertSame( 'default', $instances['through add_defaults()']['design']['fonts']['price']['font'] );
+
+		foreach ( $instances as $name => $instance ) {
+			$this->assertSame( $this->font_keys( $widget->get_less_variables( $legacy ) ), $this->font_keys( $widget->get_less_variables( $instance ) ), $name );
+		}
+
+		$this->assertSame(
+			$widget->get_style_hash( $legacy ),
+			$widget->get_style_hash( self::with_fonts( $fonts ) )
+		);
+	}
+
+	/**
+	 * The keys of a variables array that aren't colors.
+	 */
+	private function font_keys( $variables ) {
+		return array_values( array_filter( array_keys( $variables ), fn( $key ) => strpos( $key, 'color' ) === false ) );
+	}
+
+	public function test_each_part_passes_its_own_size() {
+		foreach ( self::font_parts() as $part ) {
+			$variables = $this->widget()->get_less_variables(
+				self::with_fonts( array( $part => array( 'font' => 'default', 'size' => '24px' ) ) )
+			);
+
+			$this->assertSame( array( $part . '_size' ), $this->font_keys( $variables ) );
+			$this->assertSame( '24px', $variables[ $part . '_size' ] );
+		}
+	}
+
+	public function test_web_safe_font_passes_its_stack_and_a_normal_style() {
+		$variables = $this->widget()->get_less_variables(
+			self::with_fonts( array( 'sale_price' => array( 'font' => 'Georgia', 'size' => '' ) ) )
+		);
+
+		$this->assertSame( 'Georgia, Times, Times New Roman, serif', $variables['sale_price_font'] );
+		$this->assertSame( 'normal', $variables['sale_price_font_style'] );
+		$this->assertArrayNotHasKey( 'sale_price_font_weight', $variables );
+	}
+
+	public function test_google_font_passes_its_family_weight_and_style() {
+		$variables = $this->widget()->get_less_variables(
+			self::with_fonts(
+				array(
+					'price' => array( 'font' => 'Open Sans:700' ),
+					'original_price' => array( 'font' => 'Open Sans:700italic' ),
+				)
+			)
+		);
+
+		$this->assertSame( 'Open Sans', $variables['price_font'] );
+		$this->assertSame( '700', $variables['price_font_weight'] );
+		$this->assertSame( 'normal', $variables['price_font_style'] );
+
+		$this->assertSame( 'Open Sans', $variables['original_price_font'] );
+		$this->assertSame( '700', $variables['original_price_font_weight'] );
+		$this->assertSame( 'italic', $variables['original_price_font_style'] );
+	}
+
+	public function test_font_variant_without_a_weight_passes_no_weight() {
+		$variables = $this->widget()->get_less_variables(
+			self::with_fonts( array( 'title' => array( 'font' => 'Open Sans:italic' ) ) )
+		);
+
+		$this->assertSame( 'italic', $variables['title_font_style'] );
+		$this->assertArrayNotHasKey( 'title_font_weight', $variables );
+	}
+
+	public function test_fonts_of_the_wrong_type_add_no_keys_and_no_warnings() {
+		$instances = array(
+			self::with_fonts( 'fonts' ),
+			self::with_fonts( array( 'title' => 'font' ) ),
+			self::with_fonts( array( 'title' => array( 'font' => array( 'Georgia' ) ) ) ),
+		);
+
+		foreach ( $instances as $instance ) {
+			$variables = $this->get_less_variables_capturing_errors( $instance );
+
+			$this->assertSame( array(), $this->php_errors );
+			$this->assertSame( array(), $this->font_keys( $variables ) );
+		}
+	}
 }

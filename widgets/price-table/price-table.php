@@ -519,7 +519,56 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$colors['featured_button_text_color'] = $color->hex;
 		}
 
-		return $colors;
+		return array_merge( $colors, $this->get_font_less_variables( $instance ) );
+	}
+
+	/**
+	 * Get the LESS variables of the font settings in use.
+	 *
+	 * A default font or an empty size adds no variable, which keeps the style
+	 * hash of a widget that doesn't use these settings.
+	 *
+	 * @return array
+	 */
+	private function get_font_less_variables( $instance ) {
+		$less_vars = array();
+		$fonts = $instance['design']['fonts'] ?? array();
+
+		if ( ! is_array( $fonts ) ) {
+			return $less_vars;
+		}
+
+		$parts = array( 'title', 'subtitle', 'price', 'sale_price', 'original_price', 'period', 'features', 'button' );
+
+		foreach ( $parts as $part ) {
+			if ( empty( $fonts[ $part ] ) || ! is_array( $fonts[ $part ] ) ) {
+				continue;
+			}
+
+			$styles = $fonts[ $part ];
+
+			if ( ! empty( $styles['size'] ) ) {
+				$less_vars[ $part . '_size' ] = $styles['size'];
+			}
+
+			if (
+				empty( $styles['font'] ) ||
+				! is_string( $styles['font'] ) ||
+				$styles['font'] === 'default'
+			) {
+				continue;
+			}
+
+			$font = siteorigin_widget_get_font( $styles['font'] );
+			$less_vars[ $part . '_font' ] = $font['family'];
+			$less_vars[ $part . '_font_style' ] = ! empty( $font['style'] ) ? $font['style'] : 'normal';
+
+			if ( ! empty( $font['weight_raw'] ) ) {
+				$less_vars[ $part . '_font_weight' ] = $font['weight_raw'];
+			}
+		}
+
+		return $less_vars;
 	}
 
 	/**
