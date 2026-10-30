@@ -368,12 +368,16 @@ for ( const screen of SCREENS ) {
 			await screen.open( page, area );
 			await previewed;
 
-			await expect( page.locator( `[data-type="${ EDITOR_BLOCK }"]` ).filter( { hasText: text } ) )
-				.toBeVisible( { timeout: 20000 } );
+			const block = page.locator( `[data-type="${ EDITOR_BLOCK }"]` ).filter( { hasText: text } );
+			await expect( block ).toBeVisible( { timeout: 20000 } );
 			await expect.poll( () => screen.isClean( page ) ).toBe( true );
 			// Hold the check long enough for a late attribute write to land.
 			await page.waitForTimeout( 1000 );
 			expect( await screen.isClean( page ) ).toBe( true );
+
+			// Browsers only ask before leaving a page the user has interacted with.
+			await block.click();
+			expect( await page.evaluate( () => navigator.userActivation.hasBeenActive ) ).toBe( true );
 
 			const dialogs = [];
 			page.on( 'dialog', ( dialog ) => dialogs.push( dialog.type() ) );
