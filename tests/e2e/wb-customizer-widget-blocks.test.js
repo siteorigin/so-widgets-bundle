@@ -196,9 +196,12 @@ const SCREENS = [
 	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets, isClean: widgetsScreenIsClean },
 ];
 
-const expectStylesheetKept = async ( page, request, area ) => {
+const expectStylesheetKept = async ( page, request, area, widgetText ) => {
 	const html = await frontEndText( request, area );
-	const stylesheet = html.match( /https?:[^'"\s]+\/sow-cta-[^'"\s]+\.css/ );
+	// The widget's wrapper class names its stylesheet.
+	const widgetHtml = html.slice( 0, html.indexOf( widgetText ) );
+	const [ , name ] = [ ...widgetHtml.matchAll( /so-widget-(sow-cta-[a-z]+-[a-f0-9]{12})/g ) ].pop();
+	const stylesheet = html.match( new RegExp( `https?:[^'"\\s]+/${ name }\\.css` ) );
 	expect( stylesheet, 'The page should link the widget stylesheet.' ).toBeTruthy();
 
 	const modified = async () => {
@@ -336,7 +339,7 @@ for ( const screen of SCREENS ) {
 
 			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( editedTitle );
 			expect( await frontEndText( request, area ) ).not.toContain( cached );
-			await expectStylesheetKept( page, request, area );
+			await expectStylesheetKept( page, request, area, editedTitle );
 		} finally {
 			await area.cleanup();
 		}
