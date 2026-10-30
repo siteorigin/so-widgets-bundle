@@ -382,7 +382,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if (
 			empty( $current_screen ) ||
-			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ) )
+			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets', 'customize' ) )
 		) {
 			return;
 		}
