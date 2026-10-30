@@ -7,6 +7,7 @@
  * @var $button_attrs boolean
  * @var $equalize_row_heights boolean
  * @var $any_column_has_image boolean
+ * @var $title_has_font boolean
  */
 
 $initial_button_attrs = $button_attrs;
@@ -24,7 +25,13 @@ if ( ! empty( $title ) ) {
 		<div class="ow-pt-column <?php echo $this->get_column_classes( $column, $i, $columns ); ?>"
 			style="width: <?php echo round( 100 / count( $columns ), 3 ); ?>%">
 			<div class="ow-pt-title">
-				<?php echo wp_kses_post( $column['title'] ); ?>
+				<?php if ( $title_has_font ) { ?>
+					<div class="ow-pt-title-text">
+						<?php echo wp_kses_post( $column['title'] ); ?>
+					</div>
+				<?php } else { ?>
+					<?php echo wp_kses_post( $column['title'] ); ?>
+				<?php } ?>
 				<?php if ( ! empty( $column['subtitle'] ) ) { ?>
 					<div class="ow-pt-subtitle">
 						<?php echo wp_kses_post( $column['subtitle'] ); ?>
