@@ -42,7 +42,7 @@ const themeStylesheets = async ( requestUtils, status ) => {
  */
 const installClassicTheme = async ( browser, requestUtils ) => {
 	if ( ( await themeStylesheets( requestUtils, 'active,inactive' ) ).includes( THEME_SLUG ) ) {
-		return;
+		return false;
 	}
 
 	const entries = fs.readdirSync( THEME_DIR ).map( ( file ) => ( {
@@ -70,6 +70,8 @@ const installClassicTheme = async ( browser, requestUtils ) => {
 		await page.close();
 		fs.rmSync( tempDir, { recursive: true, force: true } );
 	}
+
+	return true;
 };
 
 const removeClassicTheme = async ( browser ) => {
@@ -270,17 +272,17 @@ const SCREENS = [
 	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets, isClean: widgetsScreenIsClean },
 ];
 
-const stylesheetDeletions = async ( request, area ) => {
-	const [ , count ] = ( await frontEndText( request, area ) ).match( /sowb-e2e-stylesheets-deleted:(\d+)/ );
+const stylesheetChanges = async ( request, area ) => {
+	const [ , count ] = ( await frontEndText( request, area ) ).match( /sowb-e2e-stylesheet-writes:(\d+)/ );
 
 	return Number( count );
 };
 
 const expectStylesheetKept = async ( request, area ) => {
-	const before = await stylesheetDeletions( request, area );
+	const before = await stylesheetChanges( request, area );
 	await frontEndText( request, area );
 
-	expect( await stylesheetDeletions( request, area ) ).toBe( before );
+	expect( await stylesheetChanges( request, area ) ).toBe( before );
 };
 
 const frontEndText = async ( request, area ) => {
@@ -291,18 +293,23 @@ const frontEndText = async ( request, area ) => {
 };
 
 let previousTheme;
+let installedTheme = false;
 
 test.beforeAll( async ( { browser } ) => {
 	const requestUtils = await setupRequestUtils();
 	[ previousTheme ] = await themeStylesheets( requestUtils, 'active' );
-	await installClassicTheme( browser, requestUtils );
+	installedTheme = await installClassicTheme( browser, requestUtils );
 	await requestUtils.activateTheme( THEME_SLUG );
 } );
 
 test.afterAll( async ( { browser } ) => {
 	const requestUtils = await setupRequestUtils();
 	await requestUtils.activateTheme( previousTheme );
-	await removeClassicTheme( browser );
+
+	// Never remove a copy this run did not install.
+	if ( installedTheme ) {
+		await removeClassicTheme( browser );
+	}
 } );
 
 test.beforeEach( async ( { page } ) => {
@@ -391,10 +398,13 @@ for ( const screen of SCREENS ) {
 			await screen.save( page );
 			await expect.poll( () => area.storedContent(), { timeout: 20000 } ).toContain( editedTitle );
 
+			const previewed = page.waitForResponse( '**/sowb/v1/widgets/previews*' );
 			releasePreview();
-			await page.waitForTimeout( 1500 );
+			expect( ( await previewed ).status() ).toBe( 200 );
+			// The response handler runs after the response arrives.
+			await page.waitForTimeout( 500 );
 
-			await expect.poll( () => screen.isClean( page ) ).toBe( true );
+			expect( await screen.isClean( page ) ).toBe( true );
 			expect( await area.storedContent() ).not.toMatch( /"widgetMarkup":"/ );
 		} finally {
 			await area.cleanup();
@@ -437,13 +447,23 @@ for ( const screen of SCREENS ) {
 			const body = form.frameLocator( 'iframe' ).first().locator( 'body' );
 			await expect( body ).toContainText( text );
 			await body.click();
-			await page.keyboard.press( 'ControlOrMeta+End' );
+			await page.evaluate( () => {
+				const editor = window.tinymce.activeEditor;
+				editor.selection.select( editor.getBody(), true );
+				editor.selection.collapse( false );
+			} );
 			// Typed at a person's pace: the Customizer refocuses the frame shortly after the first key.
 			await page.keyboard.type( ` ${ addition }`, { delay: 60 } );
 			await screen.save( page );
 
 			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( addition );
-			expect( await frontEndText( request, area ) ).not.toContain( cached );
+			const html = await frontEndText( request, area );
+			expect( html ).toContain( text );
+			expect( html ).not.toContain( cached );
+
+			await screen.open( page, area );
+			const reopened = await openWidgetForm( page, EDITOR_BLOCK, addition );
+			await expect( reopened.frameLocator( 'iframe' ).first().locator( 'body' ) ).toContainText( `${ text } ${ addition }` );
 		} finally {
 			await area.cleanup();
 		}

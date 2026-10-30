@@ -11,6 +11,8 @@ add_action( 'widgets_init', function () {
 	) );
 } );
 
-add_action( 'siteorigin_widgets_stylesheet_deleted', function () {
-	update_option( 'sowb_e2e_stylesheets_deleted', (int) get_option( 'sowb_e2e_stylesheets_deleted' ) + 1 );
-} );
+$sowb_e2e_count_stylesheet_write = function () {
+	update_option( 'sowb_e2e_stylesheet_writes', (int) get_option( 'sowb_e2e_stylesheet_writes' ) + 1 );
+};
+add_action( 'siteorigin_widgets_stylesheet_added', $sowb_e2e_count_stylesheet_write );
+add_action( 'siteorigin_widgets_stylesheet_deleted', $sowb_e2e_count_stylesheet_write );
