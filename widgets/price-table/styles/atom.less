@@ -41,6 +41,16 @@
 @button_font_style: default;
 @button_size: 0.9em;
 
+// A part inside a container with a fixed size. A relative size is divided by
+// that size, so it's relative to the column like every other part.
+.contained-size(@size, @container) when (isem(@size)), (ispercentage(@size)) {
+	font-size: (@size / @container);
+}
+
+.contained-size(@size, @container) when not (isem(@size)) and not (ispercentage(@size)) {
+	font-size: @size;
+}
+
 /* Header colors */
 @header_color: #65707f;
 @featured_header_color: lighten(#65707f, 5%);
@@ -79,7 +89,7 @@
 
 			.ow-pt-title-text {
 				.font(@title_font, @title_font_weight);
-				font-size: @title_size;
+				.contained-size(@title_size, 1.1);
 				font-style: @title_font_style;
 			}
 
@@ -189,7 +199,7 @@
 					margin: 0;
 				  	display: inline-block;
 					.font(@features_font, @features_font_weight);
-					font-size: @features_size;
+					.contained-size(@features_size, 0.925);
 					font-style: @features_font_style;
 				}
 

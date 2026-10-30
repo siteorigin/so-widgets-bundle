@@ -298,13 +298,39 @@ class PriceTableFontsTest extends SiteOriginTests {
 		$this->assertStringNotContainsString( 'font-family', $rules[ "$column .ow-pt-features" ] );
 	}
 
-	public function test_an_entered_features_size_equal_to_the_container_size_still_applies() {
-		$rules = $this->rules( self::with_fonts( array( 'features' => array( 'size' => '0.925em' ) ) ) );
+	/**
+	 * Selector of the rule holding a part's size, and the size each entered
+	 * value compiles to. Title and Features sit inside a container with a
+	 * fixed size, so a relative size is divided by it.
+	 */
+	public static function entered_sizes() {
+		$column = '.ow-pt-columns-atom .ow-pt-column';
+		$title = "$column .ow-pt-title .ow-pt-title-text";
+		$features = "$column .ow-pt-features .ow-pt-feature p";
 
-		$this->assertStringContainsString(
-			'font-size: 0.925em',
-			$rules['.ow-pt-columns-atom .ow-pt-column .ow-pt-features .ow-pt-feature p']
+		return array(
+			'title, today\'s size' => array( 'title', $title, '1.1em', '1em' ),
+			'title, em' => array( 'title', $title, '2.2em', '2em' ),
+			'title, %' => array( 'title', $title, '220%', '200%' ),
+			'title, px' => array( 'title', $title, '32px', '32px' ),
+			'title, rem' => array( 'title', $title, '1.5rem', '1.5rem' ),
+			'features, today\'s size' => array( 'features', $features, '0.925em', '1em' ),
+			'features, em' => array( 'features', $features, '1.85em', '2em' ),
+			'features, %' => array( 'features', $features, '185%', '200%' ),
+			'features, px' => array( 'features', $features, '18px', '18px' ),
+			'subtitle, today\'s size' => array( 'subtitle', "$column .ow-pt-title .ow-pt-subtitle", '0.9em', '0.9em' ),
+			'price, today\'s size' => array( 'price', "$column .ow-pt-details .ow-pt-price", '2.5em', '2.5em' ),
+			'sale price, today\'s size' => array( 'sale_price', "$column.ow-pt-on-sale .ow-pt-sale-price", '2.5em', '2.5em' ),
+			'original price, today\'s size' => array( 'original_price', "$column.ow-pt-on-sale .ow-pt-price", '1.8em', '1.8em' ),
+			'button, today\'s size' => array( 'button', "$column .ow-pt-button a.ow-pt-link", '0.9em', '0.9em' ),
 		);
+	}
+
+	#[DataProvider( 'entered_sizes' )]
+	public function test_an_entered_size_is_relative_to_the_column( $part, $selector, $entered, $compiled ) {
+		$rules = $this->rules( self::with_fonts( array( $part => array( 'size' => $entered ) ) ) );
+
+		$this->assertMatchesRegularExpression( '/font-size: ' . preg_quote( $compiled, '/' ) . '(;|$)/', $rules[ $selector ] );
 	}
 
 	private function title_has_font( $instance ) {

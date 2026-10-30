@@ -50,7 +50,15 @@ const TABLES = {
 	price: { price: ONE_PART },
 	salePrice: { sale_price: ONE_PART },
 	originalPrice: { original_price: ONE_PART },
-	featuresAtContainerSize: { features: { size: '0.925em' } },
+	todaysSizes: {
+		title: { size: '1.1em' },
+		subtitle: { size: '0.9em' },
+		price: { size: '2.5em' },
+		sale_price: { size: '2.5em' },
+		original_price: { size: '1.8em' },
+		features: { size: '0.925em' },
+		button: { size: '0.9em' },
+	},
 	largeFeatures: { features: { size: '24px' } },
 	normalSubtitle: { subtitle: { font: 'Arial' } },
 	italicSubtitle: { subtitle: { font: 'Roboto:400italic' } },
@@ -103,6 +111,7 @@ const measure = () => {
 			originalPrice: font( sale.querySelector( '.ow-pt-price' ) ),
 			period: font( plain.querySelector( '.ow-pt-per' ) ),
 			features: font( plain.querySelector( '.sow-feature-text p' ) ),
+			featuresContainer: font( plain.querySelector( '.ow-pt-features' ) ),
 			icon: font( plain.querySelector( '.sow-feature-icon > *' ) ),
 			button: font( plain.querySelector( 'a.ow-pt-link' ) ),
 		};
@@ -192,9 +201,17 @@ test.describe( 'Price Table font settings', () => {
 				const m = await measured( browser, width, theme );
 
 				expect.soft( m.control.features.size, 'the theme rule applies to an untouched table' ).toBe( '11px' );
-				expect.soft( parseFloat( m.featuresAtContainerSize.features.size ), 'an entered 0.925em' ).toBeGreaterThan( 11 );
+				expect.soft( m.todaysSizes.features.size, 'an entered 0.925em' ).toBe( m.control.featuresContainer.size );
 				expect.soft( m.largeFeatures.features.size, 'an entered 24px' ).toBe( '24px' );
 				expect.soft( m.largeFeatures.icon, 'icon beside changed text' ).toEqual( m.control.icon );
+			} );
+
+			test( `a part set to today's size measures the same ${ at }`, async ( { browser } ) => {
+				const m = await measured( browser, width, theme );
+
+				for ( const part of [ 'title', 'subtitle', 'price', 'salePrice', 'originalPrice', 'button' ] ) {
+					expect.soft( m.todaysSizes[ part ].size, part ).toBe( m.control[ part ].size );
+				}
 			} );
 
 			test( `a chosen font sets its own style over the theme's ${ at }`, async ( { browser } ) => {
