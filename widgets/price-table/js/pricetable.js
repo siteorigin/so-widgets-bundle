@@ -11,7 +11,7 @@ jQuery( function ( $ ) {
 				return $priceTable;
 			}
 
-			function resizePriceTable() {
+			function equalizeRowHeights() {
 				$priceTable.find('.sow-equalize-row-heights').each(function () {
 					var $pt = $(this);
 					var equalizeHeights = function (selector) {
@@ -36,6 +36,10 @@ jQuery( function ( $ ) {
 					var selectors = ['.ow-pt-title', '.ow-pt-details', '.ow-pt-image', '.ow-pt-features', '.ow-pt-button'];
 					selectors.forEach(equalizeHeights);
 				});
+			}
+
+			function resizePriceTable() {
+				equalizeRowHeights();
 
 				$('.ow-pt-icon[data-icon]').each(function () {
 					var $$ = $(this);
@@ -60,6 +64,11 @@ jQuery( function ( $ ) {
 
 			resizePriceTable();
 			$(window).on( 'resize orientationchange', resizePriceTable );
+
+			// A web font can arrive after the first measure and change the row heights.
+			if ( document.fonts && document.fonts.ready ) {
+				document.fonts.ready.then( equalizeRowHeights );
+			}
 
 			$priceTable.data( 'initialized', true );
 		} );

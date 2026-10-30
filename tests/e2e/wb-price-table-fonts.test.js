@@ -207,3 +207,69 @@ test.describe( 'Price Table font settings', () => {
 		}
 	}
 } );
+
+test.describe( 'Price Table equalized rows with a late web font', () => {
+	// Wider than the fallback, so the long title wraps only once it arrives.
+	const FONT_PATH = '/wp-content/themes/twentytwentyfive/assets/fonts/fira-code/FiraCode-VariableFont_wght.woff2';
+	const FONT_DELAY = 1000;
+
+	const latePage = useFeaturesPage(
+		test,
+		'Price Table late font (e2e)',
+		() => widgetBlock( 'sowb/siteorigin-widget-pricetable-widget', {
+			widgetClass: 'SiteOrigin_Widget_PriceTable_Widget',
+			widgetData: {
+				columns: [
+					column( { title: 'Twenty four letters wide' } ),
+					column( {} ),
+					column( {} ),
+				],
+				equalize_row_heights: true,
+				design: { fonts: { title: { font: 'Roboto', size: '30px' } } },
+			},
+		} )
+	);
+
+	test( 'rows are measured again once the font loads', async ( { browser } ) => {
+		const font = await latePage.requestUtils.request.get( new URL( FONT_PATH, latePage.link ).href );
+
+		expect( font.status() ).toBe( 200 );
+
+		const body = await font.body();
+
+		const page = await openFeaturesPage( browser, latePage, {
+			width: 1280,
+			beforeLoad: async ( p ) => {
+				await p.route( /fonts\.googleapis\.com/, ( route ) => route.fulfill( {
+					contentType: 'text/css',
+					body: `@font-face { font-family: 'Roboto'; src: url('https://fonts.gstatic.com/late.woff2') format('woff2'); font-display: swap; }`,
+				} ) );
+				await p.route( /fonts\.gstatic\.com/, async ( route ) => {
+					await new Promise( ( resolve ) => setTimeout( resolve, FONT_DELAY ) );
+					await route.fulfill( {
+						contentType: 'font/woff2',
+						headers: { 'access-control-allow-origin': '*' },
+						body,
+					} );
+				} );
+			},
+		} );
+
+		await page.waitForFunction( () => Array.from( document.fonts ).some( ( face ) => face.family.includes( 'Roboto' ) && face.status === 'loaded' ) );
+		await page.waitForTimeout( 250 );
+
+		const titles = await page.$$eval( '.ow-pt-title', ( elements ) => elements.map( ( el ) => ( {
+			height: el.clientHeight,
+			content: el.scrollHeight,
+		} ) ) );
+
+		await page.context().close();
+
+		console.log( `Title rows after the font loaded: ${ JSON.stringify( titles ) }` );
+
+		for ( const title of titles ) {
+			expect.soft( title.height, 'rows match' ).toBe( titles[ 0 ].height );
+			expect.soft( title.content, 'the title fits its row' ).toBeLessThanOrEqual( title.height );
+		}
+	} );
+} );
