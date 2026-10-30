@@ -539,6 +539,7 @@ module.exports = {
 	isCardActive,
 	login,
 	loginPage,
+	makeZip,
 	newVisitor,
 	paragraph,
 	removeFixture,

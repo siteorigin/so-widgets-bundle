@@ -1,3 +1,7 @@
+const fs = require( 'fs' );
+const os = require( 'os' );
+const path = require( 'path' );
+
 const {
 	expect,
 	test,
@@ -9,10 +13,80 @@ const {
 	soGoTo,
 } = require( 'siteorigin-tests-common/playwright/common' );
 
+const {
+	loginPage,
+	makeZip,
+} = require( './helpers/widget-block-abilities' );
+
+const THEME_SLUG = 'sowb-e2e-classic-theme';
+const THEME_DIR = path.resolve( __dirname, 'fixtures', THEME_SLUG );
+
 const EDITOR_BLOCK = 'sowb/siteorigin-widget-editor-widget';
 const CTA_BLOCK = 'sowb/siteorigin-widget-cta-widget';
 
 const uniqueSuffix = () => `${ Date.now() }-${ Math.floor( Math.random() * 1e6 ) }`;
+
+const themeStylesheets = async ( requestUtils, status ) => {
+	const themes = await requestUtils.rest( {
+		method: 'GET',
+		path: '/wp/v2/themes',
+		params: { status },
+	} );
+
+	return themes.map( ( theme ) => theme.stylesheet );
+};
+
+/**
+ * Install the classic theme fixture through the real theme upload screen.
+ * The Customizer hides its Widgets panel on a block theme.
+ */
+const installClassicTheme = async ( browser, requestUtils ) => {
+	if ( ( await themeStylesheets( requestUtils, 'active,inactive' ) ).includes( THEME_SLUG ) ) {
+		return;
+	}
+
+	const entries = fs.readdirSync( THEME_DIR ).map( ( file ) => ( {
+		name: `${ THEME_SLUG }/${ file }`,
+		data: fs.readFileSync( path.join( THEME_DIR, file ) ),
+	} ) );
+	const tempDir = fs.mkdtempSync( path.join( os.tmpdir(), 'sowb-e2e-' ) );
+	const zipPath = path.join( tempDir, `${ THEME_SLUG }.zip` );
+	fs.writeFileSync( zipPath, makeZip( entries ) );
+
+	const page = await browser.newPage();
+
+	try {
+		await loginPage( page );
+		await soGoTo( page, 'wp-admin/theme-install.php' );
+		await page.locator( '.upload-view-toggle' ).click();
+		await page.locator( '#themezip' ).waitFor( { state: 'attached' } );
+		await page.setInputFiles( '#themezip', zipPath );
+		await Promise.all( [
+			page.waitForNavigation(),
+			page.click( '#install-theme-submit' ),
+		] );
+		await expect( page.locator( '#wpbody-content' ) ).toContainText( 'Theme installed successfully' );
+	} finally {
+		await page.close();
+		fs.rmSync( tempDir, { recursive: true, force: true } );
+	}
+};
+
+const removeClassicTheme = async ( browser ) => {
+	const page = await browser.newPage();
+
+	try {
+		await loginPage( page );
+		await soGoTo( page, 'wp-admin/themes.php' );
+		const deleteLink = await page.evaluate( ( slug ) => window._wpThemeSettings.themes
+			.find( ( theme ) => theme.id === slug )?.actions.delete, THEME_SLUG );
+		if ( deleteLink ) {
+			await page.goto( deleteLink.replace( /&amp;/g, '&' ) );
+		}
+	} finally {
+		await page.close();
+	}
+};
 
 const serializeWidgetBlock = ( name, widgetClass, widgetData, extraAttributes = {} ) => {
 	const attributes = JSON.stringify( { widgetClass, widgetData, ...extraAttributes } )
@@ -48,7 +122,7 @@ const seedWidgetArea = async ( contents ) => {
 		params: { context: 'edit' },
 	} );
 	const sidebar = sidebars.find( ( item ) => item.status === 'active' );
-	expect( sidebar, 'These tests need a classic theme with a widget area.' ).toBeTruthy();
+	expect( sidebar, 'The classic theme fixture should provide a widget area.' ).toBeTruthy();
 
 	const post = await requestUtils.createPost( {
 		status: 'publish',
@@ -226,6 +300,21 @@ const frontEndText = async ( request, area ) => {
 
 	return response.text();
 };
+
+let previousTheme;
+
+test.beforeAll( async ( { browser } ) => {
+	const requestUtils = await setupRequestUtils();
+	[ previousTheme ] = await themeStylesheets( requestUtils, 'active' );
+	await installClassicTheme( browser, requestUtils );
+	await requestUtils.activateTheme( THEME_SLUG );
+} );
+
+test.afterAll( async ( { browser } ) => {
+	const requestUtils = await setupRequestUtils();
+	await requestUtils.activateTheme( previousTheme );
+	await removeClassicTheme( browser );
+} );
 
 test.beforeEach( async ( { page } ) => {
 	page.on( 'dialog', ( dialog ) => dialog.accept() );
