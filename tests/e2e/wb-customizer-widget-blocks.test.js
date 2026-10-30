@@ -356,6 +356,21 @@ test( 'Saved widget blocks open and publish in the Customizer.', async ( { page,
 	}
 } );
 
+test( 'A widget that always renders keeps its title heading in a widget area.', async ( { request } ) => {
+	const title = `Heading blog ${ uniqueSuffix() }`;
+	const area = await seedWidgetArea( [ serializeWidgetBlock( 'sowb/siteorigin-widget-blog-widget', 'SiteOrigin_Widget_Blog_Widget', {
+		title,
+		template: 'standard',
+		posts: 'post_type=post&posts_per_page=1',
+	} ) ] );
+
+	try {
+		expect( await frontEndText( request, area ) ).toContain( `<h3 class="widget-title">${ title }` );
+	} finally {
+		await area.cleanup();
+	}
+} );
+
 for ( const screen of SCREENS ) {
 	test( `${ screen.name }: opening a saved block changes nothing.`, async ( { page } ) => {
 		const suffix = uniqueSuffix();
