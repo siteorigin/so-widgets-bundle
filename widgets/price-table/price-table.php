@@ -446,6 +446,8 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$font_variables = $this->get_font_less_variables( $instance );
+
 		$button_attrs = array(
 			'class' => 'ow-pt-link',
 		);
@@ -463,6 +465,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'button_attrs'         => $button_attrs,
 			'equalize_row_heights' => ! empty( $instance['equalize_row_heights'] ),
 			'any_column_has_image' => $any_column_has_image,
+			'title_has_font'       => isset( $font_variables['title_size'] ) || isset( $font_variables['title_font'] ),
 		);
 	}
 
