@@ -393,6 +393,7 @@ test( 'A widget that always renders keeps its title heading in a widget area.', 
 		title,
 		template: 'standard',
 		posts: 'post_type=post&posts_per_page=1',
+		_sow_plain_title: true,
 	} ) ] );
 
 	try {
