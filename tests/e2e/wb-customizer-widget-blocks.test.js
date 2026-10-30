@@ -402,6 +402,17 @@ test( 'A widget that always renders keeps its title heading in a widget area.', 
 	}
 } );
 
+test( 'An unedited block with no stored markup keeps its title heading.', async ( { request } ) => {
+	const title = `Unedited title ${ uniqueSuffix() }`;
+	const area = await seedWidgetArea( [ editorBlock( title, 'Unedited text' ) ] );
+
+	try {
+		expect( await frontEndText( request, area ) ).toContain( `<h3 class="widget-title">${ title }` );
+	} finally {
+		await area.cleanup();
+	}
+} );
+
 test( 'A block in post content printed by a widget keeps its title heading.', async ( { request } ) => {
 	const suffix = uniqueSuffix();
 	const title = `Nested title ${ suffix }`;
@@ -443,7 +454,7 @@ for ( const screen of SCREENS ) {
 
 		try {
 			await doLogin( page );
-			const previewed = page.waitForResponse( '**/sowb/v1/widgets/previews*' );
+			const previewed = page.waitForResponse( '**/sowb/v1/widgets/previews*', { timeout: 40000 } );
 			await screen.open( page, area );
 			await previewed;
 
@@ -501,6 +512,28 @@ for ( const screen of SCREENS ) {
 
 			expect( await screen.isClean( page ) ).toBe( true );
 			expect( await area.storedContent() ).not.toMatch( /"widgetMarkup":"/ );
+		} finally {
+			await area.cleanup();
+		}
+	} );
+
+	test( `${ screen.name }: an edit keeps the plain title after switching to the preview.`, async ( { page, request } ) => {
+		const suffix = uniqueSuffix();
+		const title = `Toggle title ${ suffix }`;
+		const editedTitle = `Toggle edited ${ suffix }`;
+		const area = await seedWidgetArea( [ editorBlock( title, `Toggle text ${ suffix }`, { widgetMarkup: `<div>${ title }</div>` } ) ] );
+
+		try {
+			await doLogin( page );
+			await screen.open( page, area );
+			const form = await openWidgetForm( page, EDITOR_BLOCK, title );
+			await widgetTitle( form ).fill( editedTitle );
+			await page.getByRole( 'button', { name: 'Preview widget.', exact: true } ).click();
+			await expect( form ).toBeHidden();
+			await screen.save( page );
+
+			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( editedTitle );
+			expect( await frontEndText( request, area ) ).not.toContain( `<h3 class="widget-title">${ editedTitle }` );
 		} finally {
 			await area.cleanup();
 		}

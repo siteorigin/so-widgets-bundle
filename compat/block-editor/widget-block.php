@@ -733,15 +733,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$anchor_filter_added = true;
 				}
 
+				// A block edited in a widget area renders here, as nothing rebuilds
+				// its markup. Keep the plain title its cached markup printed.
+				$plain_title = ! $must_render && ! empty( $instance['_sow_plain_title'] );
+
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
-
-				// Widget areas don't store markup for an edited block, so it
-				// renders here. Keep the plain title its cached markup prints.
-				// A block in post content printed by a widget isn't in the area.
-				$plain_title = ! $must_render &&
-					doing_filter( 'widget_block_content' ) &&
-					! doing_filter( 'the_content' );
 
 				$widget->widget( array(
 					'before_widget' => '',
