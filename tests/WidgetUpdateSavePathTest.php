@@ -336,4 +336,27 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 
 		$this->assertSame( array(), $received['design'] );
 	}
+
+	public function test_block_render_keeps_the_stylesheet() {
+		$deleted = false;
+		Functions\when( 'do_action' )->alias(
+			function ( $hook ) use ( &$deleted ) {
+				if ( $hook === 'siteorigin_widgets_stylesheet_deleted' ) {
+					$deleted = true;
+				}
+			}
+		);
+
+		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+
+		try {
+			$this->run_capturing_errors(
+				fn() => $this->widget()->update( $this->complete_instance(), $this->complete_instance() )
+			);
+		} finally {
+			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
+		}
+
+		$this->assertFalse( $deleted );
+	}
 }
