@@ -141,14 +141,62 @@ const openWidgetForm = async ( page, blockName, marker ) => {
 
 const widgetTitle = ( form ) => form.locator( 'input[name$="[title]"]:not([name*="[button]"])' );
 
+// A real press, so the field loses focus the way it does for a person. A locator
+// click would wait for the button and hide what that press does to it.
+const pressWithMouse = async ( page, button ) => {
+	await button.scrollIntoViewIfNeeded();
+	const box = await button.boundingBox();
+	await page.mouse.click( box.x + ( box.width / 2 ), box.y + ( box.height / 2 ) );
+};
+
 const publish = async ( page ) => {
 	const saved = page.waitForResponse( ( response ) => {
 		const data = response.request().postData();
 		return response.url().includes( 'admin-ajax.php' ) && data &&
 			new URLSearchParams( data ).get( 'action' ) === 'customize_save';
 	} );
-	await page.locator( '#save' ).click();
+	await pressWithMouse( page, page.locator( '#save' ) );
 	expect( ( await ( await saved ).json() ).success ).toBe( true );
+};
+
+const openWidgetsScreen = async ( page ) => {
+	await soGoTo( page, 'wp-admin/widgets.php' );
+	await expect( page.locator( '.edit-widgets-header' ) ).toBeVisible( { timeout: 20000 } );
+	const welcome = page.getByRole( 'dialog' ).getByRole( 'button', { name: 'Close' } );
+	await welcome.waitFor( { state: 'visible', timeout: 3000 } ).catch( () => {} );
+	if ( await welcome.isVisible() ) {
+		await welcome.click();
+	}
+};
+
+const updateWidgets = async ( page ) => {
+	await pressWithMouse( page, page.getByRole( 'button', { name: 'Update', exact: true } ) );
+};
+
+const SCREENS = [
+	{ name: 'Customizer', open: openCustomizer, save: publish },
+	{ name: 'Widgets screen', open: openWidgetsScreen, save: updateWidgets },
+];
+
+const expectStylesheetKept = async ( page, request, area ) => {
+	const html = await frontEndText( request, area );
+	const stylesheet = html.match( /https?:[^'"\s]+\/sow-cta-[^'"\s]+\.css/ );
+	expect( stylesheet, 'The page should link the widget stylesheet.' ).toBeTruthy();
+
+	const modified = async () => {
+		const response = await request.get( stylesheet[ 0 ] );
+		expect( response.status() ).toBe( 200 );
+
+		return response.headers()[ 'last-modified' ];
+	};
+	const before = await modified();
+	expect( before ).toBeTruthy();
+
+	// File times have a one second resolution.
+	await page.waitForTimeout( 1100 );
+	await frontEndText( request, area );
+
+	expect( await modified() ).toBe( before );
 };
 
 const frontEndText = async ( request, area ) => {
@@ -194,3 +242,52 @@ test( 'Saved widget blocks open and publish in the Customizer.', async ( { page,
 		await area.cleanup();
 	}
 } );
+
+for ( const screen of SCREENS ) {
+	test( `${ screen.name }: a field edit reaches the front end on the first save.`, async ( { page, request } ) => {
+		const suffix = uniqueSuffix();
+		const title = `First save CTA ${ suffix }`;
+		const editedTitle = `First save edited CTA ${ suffix }`;
+		const cached = `Cached CTA ${ suffix }`;
+		const area = await seedWidgetArea( [ ctaBlock( title, { widgetMarkup: `<div>${ cached }</div>` } ) ] );
+
+		try {
+			await doLogin( page );
+			await screen.open( page, area );
+			const form = await openWidgetForm( page, CTA_BLOCK, title );
+			await widgetTitle( form ).fill( editedTitle );
+			await screen.save( page );
+
+			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( editedTitle );
+			expect( await frontEndText( request, area ) ).not.toContain( cached );
+			await expectStylesheetKept( page, request, area );
+		} finally {
+			await area.cleanup();
+		}
+	} );
+
+	test( `${ screen.name }: a rich text edit reaches the front end on the first save.`, async ( { page, request } ) => {
+		const suffix = uniqueSuffix();
+		const text = `First save editor ${ suffix }`;
+		const addition = `first save addition ${ suffix }`;
+		const cached = `Cached editor ${ suffix }`;
+		const area = await seedWidgetArea( [ editorBlock( 'Editor title', text, { widgetMarkup: `<div>${ cached }</div>` } ) ] );
+
+		try {
+			await doLogin( page );
+			await screen.open( page, area );
+			const form = await openWidgetForm( page, EDITOR_BLOCK, text );
+			const body = form.frameLocator( 'iframe' ).first().locator( 'body' );
+			await expect( body ).toContainText( text );
+			await body.click();
+			await page.keyboard.press( 'ControlOrMeta+End' );
+			await page.keyboard.type( ` ${ addition }` );
+			await screen.save( page );
+
+			await expect.poll( () => frontEndText( request, area ), { timeout: 20000 } ).toContain( addition );
+			expect( await frontEndText( request, area ) ).not.toContain( cached );
+		} finally {
+			await area.cleanup();
+		}
+	} );
+}

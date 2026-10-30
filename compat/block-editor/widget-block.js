@@ -416,7 +416,13 @@
 				}
 
 				$mainForm.data( 'sowb-block-last-widget-data-json', widgetDataJson );
-				props.setAttributes( { widgetData: widgetData } );
+				// Nothing rebuilds the markup when a widget area saves, so clear it
+				// for the front end to render the current data.
+				props.setAttributes( sowbIsWidgetScreen() ? {
+					widgetData: widgetData,
+					widgetMarkup: null,
+					widgetIcons: null,
+				} : { widgetData: widgetData } );
 
 				// Set up a preview debounce timer to prevent multiple requests.
 				var oldTimer = $mainForm.data( 'sowb-preview-timer' );
@@ -1372,6 +1378,13 @@ const sowbResolveSiteEditorFrame = ( frame = null ) => {
 
 	return null;
 };
+
+/**
+ * Checks if the blocks are being edited in a theme widget area.
+ *
+ * @returns {boolean} True on the Widgets screen and in the Customizer.
+ */
+const sowbIsWidgetScreen = () => [ 'customize', 'widgets' ].includes( window.pagenow );
 
 /**
  * Gets the widget form inside a specific block in either the main editor, or iframe.
