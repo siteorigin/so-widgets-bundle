@@ -50,6 +50,8 @@ class LessValueGuardTest extends TestCase {
 			'quoted punctuation'          => array( '"a;b {x} @import data-uri("' ),
 			'quoted function name'        => array( '"datauri(probe.txt)"' ),
 			'box shadow'                  => array( '0 2px 4px rgba(0,0,0,.2)' ),
+			'quoted comment'              => array( '"/* x */"' ),
+			'quoted import'               => array( '"@import x"' ),
 		);
 	}
 
@@ -79,6 +81,16 @@ class LessValueGuardTest extends TestCase {
 			'datauri in a function'      => array( 'fade(datauri("probe.txt"), 50%)', 'resource read' ),
 			'block holding an import'    => array( '{ @import "probe.less"; }', 'not one value' ),
 			'block holding declarations' => array( '{ color: red; }', 'not one value' ),
+			'block comment'              => array( '1/* x */', 'comment' ),
+			'comment only'               => array( '/* x */', 'comment' ),
+			'comment between values'     => array( '1 /* x */ 2', 'comment' ),
+			'reported shape'             => array( "1/*\n@import (inline) url(probe.txt);\n*/", 'line break' ),
+			'backtick javascript'        => array( '`1+1`', 'javascript' ),
+			'line feed'                  => array( "1\n2", 'line break' ),
+			'crlf'                       => array( "1\r\n2", 'line break' ),
+			'carriage return'            => array( "1\r2", 'line break' ),
+			'vertical tab'               => array( "1\x0B2", 'line break' ),
+			'form feed'                  => array( "1\x0C2", 'line break' ),
 		);
 	}
 
@@ -179,6 +191,13 @@ class LessValueGuardTest extends TestCase {
 		$this->assertSame(
 			'not one mixin call',
 			SiteOrigin_Widgets_Less_Value_Guard::check_mixin_call( '( @name:facebook-0) !important;', array( 'name' ) )
+		);
+	}
+
+	public function test_refuses_a_mixin_call_with_a_line_break_between_arguments() {
+		$this->assertSame(
+			'line break',
+			SiteOrigin_Widgets_Less_Value_Guard::check_mixin_call( "( @name:facebook-0,\n @icon_color:#fff);", array( 'name', 'icon_color' ) )
 		);
 	}
 

@@ -1163,6 +1163,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_less_vars_' . $this->id_base, $less, $vars, $instance, $this );
 
 		if ( ! empty( $vars ) ) {
+			$values = array();
+			$names = array();
+
 			foreach ( $vars as $name => $value ) {
 				// Ignore empty string, false and null values (but keep '0')
 				if ( $value === '' || $value === false || $value === null ) {
@@ -1177,11 +1180,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
-				// A callback keeps $ and \ in the value literal.
+				$values[ $name ] = $value;
+				$names[] = preg_quote( $name, '/' );
+			}
+
+			// One pass over the LESS, so a value is never searched for another
+			// variable's declaration. A callback keeps $ and \ in the value literal.
+			if ( ! empty( $values ) ) {
 				$less = preg_replace_callback(
-					'/\@' . preg_quote( $name ) . ' *\:.*?;/',
-					function () use ( $name, $value ) {
-						return '@' . $name . ': ' . $value . ';';
+					'/\@(' . implode( '|', $names ) . ') *\:.*?;/',
+					function ( $matches ) use ( $values ) {
+						return '@' . $matches[1] . ': ' . $values[ $matches[1] ] . ';';
 					},
 					$less
 				);
@@ -1214,10 +1223,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
 
 			try {
+				// Checked here, after every filter, so it holds whatever compiler a filter supplies.
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( $less );
+
+				if ( $check !== true ) {
+					throw new Exception( sprintf( 'SiteOrigin Widgets: the LESS for %s was not compiled (%s).', $this->id_base, $check ) );
+				}
+
 				if ( method_exists( $compiler, 'compile' ) ) {
 					$css = @ $compiler->compile( $less );
 				}
-			} catch ( Exception $e ) {
+			} catch ( Throwable $e ) {
 				if ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
 					throw $e;
 				}
