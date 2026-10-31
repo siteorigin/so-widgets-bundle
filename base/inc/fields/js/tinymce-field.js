@@ -752,6 +752,16 @@
 					$field.removeData( 'sowb-tinymce-initializing' );
 					$field.removeData( 'sowb-tinymce-initializing-id' );
 				} );
+				// The Customizer refocuses the active element when it reflows its
+				// panes. Focusing the iframe from outside stops typing in the editor.
+				if ( window.pagenow === 'customize' ) {
+					editor.on( 'init', function() {
+						editor.iframeElement.focus = function() {
+							editor.getBody().focus();
+						};
+					} );
+				}
+
 				editor.on( 'change', function() {
 					const ed = window.tinymce.get( id );
 					if ( ed ) {

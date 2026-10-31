@@ -195,10 +195,14 @@
 					previewInitialized: false,
 				} );
 
-				props.setAttributes( {
-					widgetMarkup: widgetPreview.html,
-					widgetIcons: widgetPreview.widgetIcons,
-				} );
+				// A saved widget area keeps its stored block, so a preview can
+				// neither mark it as changed nor put old markup back.
+				if ( ! sowbIsWidgetScreen() ) {
+					props.setAttributes( {
+						widgetMarkup: widgetPreview.html,
+						widgetIcons: widgetPreview.widgetIcons,
+					} );
+				}
 			} )
 			.fail( ( response ) => {
 				if ( response && response.statusText === 'abort' ) {
@@ -416,7 +420,7 @@
 				}
 
 				$mainForm.data( 'sowb-block-last-widget-data-json', widgetDataJson );
-				props.setAttributes( { widgetData: widgetData } );
+				props.setAttributes( sowbGetChangedWidgetAttributes( widgetData ) );
 
 				// Set up a preview debounce timer to prevent multiple requests.
 				var oldTimer = $mainForm.data( 'sowb-preview-timer' );
@@ -659,10 +663,12 @@
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				props.setAttributes( {
-					widgetMarkup: null,
-					widgetIcons: null
-				} );
+				if ( ! sowbIsWidgetScreen() ) {
+					props.setAttributes( {
+						widgetMarkup: null,
+						widgetIcons: null
+					} );
+				}
 
 				sowbGenerateWidgetPreview(
 					props,
@@ -1374,6 +1380,30 @@ const sowbResolveSiteEditorFrame = ( frame = null ) => {
 };
 
 /**
+ * Checks if the blocks are being edited in a theme widget area.
+ *
+ * @returns {boolean} True on the Widgets screen and in the Customizer.
+ */
+const sowbIsWidgetScreen = () => [ 'customize', 'widgets' ].includes( window.pagenow );
+
+/**
+ * Gets the attributes to save for changed widget data.
+ *
+ * Nothing rebuilds the markup when a widget area saves, so it's cleared for the
+ * front end to render the current data. The flag keeps the plain title that
+ * cached markup prints.
+ *
+ * @param {Object} widgetData The changed widget data.
+ *
+ * @returns {Object} The block attributes to set.
+ */
+const sowbGetChangedWidgetAttributes = ( widgetData ) => sowbIsWidgetScreen() ? {
+	widgetData: { ...widgetData, _sow_plain_title: true },
+	widgetMarkup: null,
+	widgetIcons: null,
+} : { widgetData };
+
+/**
  * Gets the widget form inside a specific block in either the main editor, or iframe.
  *
  * Locates the widget form element by client ID, handling both standard Block Editor
@@ -1491,7 +1521,11 @@ const sowbSnapshotBlockFormToAttributes = async ( props, $form = null ) => {
 		return null;
 	}
 
-	props.setAttributes( { widgetData } );
+	const { _sow_plain_title, ...storedData } = props.attributes.widgetData || {};
+
+	if ( ! sowbIsWidgetScreen() || JSON.stringify( widgetData ) !== JSON.stringify( storedData ) ) {
+		props.setAttributes( sowbGetChangedWidgetAttributes( widgetData ) );
+	}
 
 	return widgetData;
 };

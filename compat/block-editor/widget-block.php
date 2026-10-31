@@ -382,7 +382,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if (
 			empty( $current_screen ) ||
-			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ) )
+			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets', 'customize' ) )
 		) {
 			return;
 		}
@@ -713,16 +713,18 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			* - Widget excluded via siteorigin_widgets_block_exclude_widget filter.
 			* - Active WPML translation exists.
 			*/
+			$must_render = ! empty( $_POST ) ||
+				in_array( $block_content['widgetClass'], $always_render_widget_list ) ||
+				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
+				$this->wpml_render_check();
+
 			if (
 				(
 					empty( $block_content['widgetMarkup'] ) ||
 					// Does widgetMarkup contain the string No widget preview available?
 					strpos( $block_content['widgetMarkup'], __( 'No widget preview available.', 'so-widgets-bundle' ) ) !== false
 				) ||
-				! empty( $_POST ) ||
-				in_array( $block_content['widgetClass'], $always_render_widget_list ) ||
-				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
-				$this->wpml_render_check()
+				$must_render
 			) {
 				// Add anchor to widget wrapper.
 				if ( ! empty( $block_content['anchor'] ) ) {
@@ -731,13 +733,21 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$anchor_filter_added = true;
 				}
 
+				// A block edited in a widget area renders here, as nothing rebuilds
+				// its markup. Keep the plain title its cached markup printed.
+				$plain_title = ! $must_render &&
+					! empty( $instance['_sow_plain_title'] ) &&
+					doing_filter( 'widget_block_content' );
+				unset( $instance['_sow_plain_title'] );
+
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
+
 				$widget->widget( array(
 					'before_widget' => '',
 					'after_widget' => '',
-					'before_title' => '<h3 class="widget-title">',
-					'after_title' => '</h3>',
+					'before_title' => $plain_title ? '' : '<h3 class="widget-title">',
+					'after_title' => $plain_title ? '' : '</h3>',
 				), $instance );
 			} else {
 				$widget->generate_and_enqueue_instance_styles( $instance );
