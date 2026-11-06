@@ -799,7 +799,9 @@
             "colors": {
                 "testimonial_background": "",
                 "text_background": "#f0f0f0",
-                "text_color": "#444444"
+                "text_color": "#444444",
+                "name_color": "",
+                "location_color": ""
             },
             "padding": 10,
             "border_radius": 4,

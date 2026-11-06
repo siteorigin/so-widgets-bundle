@@ -203,4 +203,71 @@ class TestimonialColorsTest extends SiteOriginTests {
 		$this->assertSame( $fixture['instances'][ $key ]['less_variables'], $actual['less_variables'] );
 		$this->assertSame( $fixture['instances'][ $key ]['css'], $actual['css'] );
 	}
+
+	public function test_colors_section_names_each_part() {
+		$design = $this->widget()->get_widget_form()['design']['fields'];
+		$colors = $design['colors']['fields'];
+
+		$this->assertSame(
+			array(
+				'testimonial_background' => 'Testimonial background',
+				'text_background' => 'Text background',
+				'text_color' => 'Text',
+				'name_color' => 'Name',
+				'location_color' => 'Location',
+			),
+			array_map(
+				function ( $field ) {
+					return $field['label'];
+				},
+				$colors
+			)
+		);
+
+		foreach ( array( 'name_color', 'location_color' ) as $key ) {
+			$this->assertSame( 'color', $colors[ $key ]['type'], $key );
+			$this->assertArrayNotHasKey( 'default', $colors[ $key ], $key );
+		}
+
+		$this->assertSame( 'Text background radius', $design['border_radius']['label'] );
+	}
+
+	public function test_schema_offers_name_and_location_colors() {
+		$schema = SiteOrigin_Widgets_Widget_Describer::single()->get_schema( $this->widget() );
+		$colors = $schema['properties']['design']['properties']['colors']['properties'];
+
+		foreach ( array( 'name_color' => 'Name', 'location_color' => 'Location' ) as $key => $title ) {
+			$this->assertSame( 'string', $colors[ $key ]['type'], $key );
+			$this->assertSame( 'color', $colors[ $key ]['format'], $key );
+			$this->assertSame( $title, $colors[ $key ]['title'], $key );
+		}
+	}
+
+	public static function part_colors() {
+		return array(
+			'name' => array( 'name_color' ),
+			'location' => array( 'location_color' ),
+		);
+	}
+
+	#[DataProvider( 'part_colors' )]
+	public function test_a_set_part_color_is_passed_to_less( $key ) {
+		$design = self::default_design();
+		$design['colors'][ $key ] = '#a1b2c3';
+
+		$vars = $this->widget()->get_less_variables( self::instance( $design ) );
+
+		$this->assertSame( '#a1b2c3', $vars[ $key ] );
+	}
+
+	public function test_an_empty_part_color_is_not_passed_to_less() {
+		$design = self::default_design();
+		$design['colors']['name_color'] = '';
+		$design['colors']['location_color'] = false;
+
+		$vars = $this->widget()->get_less_variables( self::instance( $design ) );
+
+		$this->assertArrayNotHasKey( 'name_color', $vars );
+		$this->assertArrayNotHasKey( 'location_color', $vars );
+	}
 }
