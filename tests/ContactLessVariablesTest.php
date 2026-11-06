@@ -801,6 +801,50 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$this->assertSame( array(), $this->php_errors );
 	}
 
+	/**
+	 * A form re-saved after this change stores Text color as an empty string.
+	 * It must keep the variables, style hash and CSS it had before.
+	 */
+	public function test_a_resaved_form_keeps_its_variables_hash_and_css() {
+		$this->stub_css_compile();
+
+		$instance = self::stored_instance();
+		$instance['design']['container']['text_color'] = '';
+
+		$this->assertSame( $this->stored_instance_less_variables(), $this->get_less_variables_capturing_errors( $instance ) );
+		$this->assertSame( '2cebac97cd02', $this->widget()->get_style_hash( $instance ) );
+
+		$fixture = json_decode( file_get_contents( self::CSS_FIXTURE_FILE ), true );
+		$this->assertSame( $fixture['instances']['stored'], $this->widget()->get_instance_css( $instance ) );
+		$this->assertSame( array(), $this->php_errors );
+	}
+
+	/**
+	 * Label and field colors keep their own rules when the container Text color
+	 * is set too; the container color sits on the form only.
+	 */
+	public function test_part_colors_keep_their_rules_beside_the_container_text_color() {
+		$this->stub_css_compile();
+
+		$instance = self::stored_instance();
+		$instance['design']['container']['text_color'] = '#f6f6f6';
+		$instance['design']['labels']['color'] = '#7bdff2';
+		$instance['design']['fields']['color'] = '#202020';
+
+		$css = $this->widget()->get_instance_css( $instance );
+
+		$rule = function ( $selector ) use ( $css ) {
+			preg_match_all( '/ ' . preg_quote( $selector, '/' ) . ' \{([^{}]*)\}/', $css, $matches );
+
+			return implode( ' ', $matches[1] );
+		};
+
+		$this->assertMatchesRegularExpression( '/(^|[\s;])color: #f6f6f6;/', $rule( '.sow-contact-form' ) );
+		$this->assertMatchesRegularExpression( '/(^|[\s;])color: #7bdff2;/', $rule( '.sow-form-field label' ) );
+		$this->assertMatchesRegularExpression( '/(^|[\s;])color: #202020;/', $rule( '.sow-form-field .sow-text-field' ) );
+		$this->assertSame( 1, substr_count( $css, '#f6f6f6' ) );
+	}
+
 	public function test_container_text_color_colors_the_form() {
 		$this->stub_css_compile();
 
