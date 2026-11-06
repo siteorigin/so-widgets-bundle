@@ -461,6 +461,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'alpha'   => true,
 								'default' => '#f2f2f2',
 							),
+							'text_color'   => array(
+								'type'  => 'color',
+								'label' => __( 'Text color', 'so-widgets-bundle' ),
+							),
 							'padding'      => array(
 								'type'    => 'measurement',
 								'label'   => __( 'Padding', 'so-widgets-bundle' ),
@@ -1384,6 +1388,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'success_border_color'       => $this->style_value( $instance['design']['success']['border_color'] ?? '' ) ?: '',
 			'success_border_style'       => $this->style_value( $instance['design']['success']['border_style'] ?? '' ) ?: '',
 		);
+
+		// The container Text color is passed only when set, so a form that
+		// does not set it keeps its variables and style hash.
+		$container_text_color = $this->style_value( $instance['design']['container']['text_color'] ?? '' );
+
+		if ( ! empty( $container_text_color ) ) {
+			$vars['container_text_color'] = $container_text_color;
+		}
 
 		// Ensure all border values exist before setting border
 		// to prevent potential CSS error.

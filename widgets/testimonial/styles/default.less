@@ -5,6 +5,8 @@
 @testimonial_background: transparent;
 @text_background: #f0f0f0;
 @text_color: #666;
+@name_color: default;
+@location_color: default;
 @text_border_radius: 4px;
 @equalize_testimonial_height: default;
 
@@ -69,6 +71,27 @@
 		font-family: @location_font_family;
 		font-weight: @location_font_weight;
 		font-size: @location_font_size;
+	}
+
+	// The link rules are separate, so a browser without :has() still colors the text.
+	& when not ( @name_color = default ) {
+		.sow-testimonial-name {
+			color: @name_color;
+		}
+
+		.sow-text a:has(> .sow-testimonial-name) {
+			color: @name_color;
+		}
+	}
+
+	& when not ( @location_color = default ) {
+		.sow-testimonial-location {
+			color: @location_color;
+		}
+
+		.sow-text a:has(> .sow-testimonial-location) {
+			color: @location_color;
+		}
 	}
 
 	.sow-testimonial-text {

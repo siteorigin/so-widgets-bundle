@@ -173,7 +173,8 @@
                 "border_color": "#ffffff",
                 "border_width": "0px",
                 "border_style": "none",
-                "so_field_container_state": "closed"
+                "so_field_container_state": "closed",
+                "text_color": ""
             },
             "labels": {
                 "font": "default",
@@ -356,7 +357,8 @@
                 "border_color": "#ffffff",
                 "border_width": "0px",
                 "border_style": "none",
-                "so_field_container_state": "closed"
+                "so_field_container_state": "closed",
+                "text_color": ""
             },
             "labels": {
                 "font": "default",
@@ -799,7 +801,9 @@
             "colors": {
                 "testimonial_background": "",
                 "text_background": "#f0f0f0",
-                "text_color": "#444444"
+                "text_color": "#444444",
+                "name_color": "",
+                "location_color": ""
             },
             "padding": 10,
             "border_radius": 4,

@@ -211,7 +211,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'testimonial_background' => array(
 								'type' => 'color',
-								'label' => __( 'Widget background', 'so-widgets-bundle' ),
+								'label' => __( 'Testimonial background', 'so-widgets-bundle' ),
 							),
 							'text_background' => array(
 								'type' => 'color',
@@ -220,8 +220,16 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 							),
 							'text_color' => array(
 								'type' => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
+								'label' => __( 'Text', 'so-widgets-bundle' ),
 								'default' => '#444444',
+							),
+							'name_color' => array(
+								'type' => 'color',
+								'label' => __( 'Name', 'so-widgets-bundle' ),
+							),
+							'location_color' => array(
+								'type' => 'color',
+								'label' => __( 'Location', 'so-widgets-bundle' ),
 							),
 						),
 					),
@@ -286,7 +294,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		$tablet_per_line = max( 1, (int) ( $instance['settings']['responsive']['tablet']['per_line'] ?? 1 ) );
 		$mobile_per_line = max( 1, (int) ( $instance['settings']['responsive']['mobile']['per_line'] ?? 1 ) );
 
-		return array(
+		$vars = array(
 			'image_size' => (int) ( $instance['design']['image']['image_size'] ?? 0 ) . 'px',
 			'testimonial_size' => round( 100 / $per_line, 4 ) . '%',
 			'testimonial_padding' => (int) ( $instance['design']['padding'] ?? 0 ) . 'px',
@@ -306,6 +314,16 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			'mobile_image_size' => (int) ( $instance['settings']['responsive']['mobile']['image_size'] ?? 0 ) . 'px',
 			'mobile_width' => (int) ( $instance['settings']['responsive']['mobile']['width'] ?? 0 ) . 'px',
 		);
+
+		// Name and Location colors are passed only when set, so a widget that
+		// sets neither keeps its variables and style hash.
+		foreach ( array( 'name_color', 'location_color' ) as $color ) {
+			if ( ! empty( $instance['design']['colors'][ $color ] ) ) {
+				$vars[ $color ] = $instance['design']['colors'][ $color ];
+			}
+		}
+
+		return $vars;
 	}
 
 	public function get_template_variables( $instance, $args ) {
