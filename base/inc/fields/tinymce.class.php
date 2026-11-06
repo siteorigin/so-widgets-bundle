@@ -288,6 +288,31 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 
 	/**
+	 * Prepare the filtered TinyMCE settings for the editor.
+	 *
+	 * @param array $tmce_settings The settings after the `tiny_mce_before_init` filter.
+	 * @param array $field_settings Settings the field sets itself. These keep their value.
+	 *
+	 * @return array The settings passed to the editor.
+	 */
+	public static function prepare_tinymce_settings( $tmce_settings, $field_settings = array() ) {
+		$prepared = array();
+
+		foreach ( (array) $tmce_settings as $name => $setting ) {
+			// Skip unset values so TinyMCE keeps its default. False and zero are real settings.
+			if ( $setting === null || $setting === '' || $setting === array() ) {
+				continue;
+			}
+
+			// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
+			$jdec = is_string( $setting ) ? json_decode( $setting, true ) : null;
+			$prepared[ $name ] = empty( $jdec ) ? $setting : $jdec;
+		}
+
+		return array_merge( $field_settings, array_diff_key( $prepared, $field_settings ) );
+	}
+
+	/**
 	 * @return array|mixed
 	 */
 	public function __call( $name, $arguments ) {
@@ -408,17 +433,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 			$tmce_settings = apply_filters( 'tiny_mce_before_init', $tmce_settings, $this->element_id );
 
-			foreach ( $tmce_settings as $name => $setting ) {
-				unset( $jdec );
-
-				if ( ! empty( $tmce_settings[ $name ] ) ) {
-					// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
-					if ( is_string( $setting ) ) {
-						$jdec = json_decode( $setting, true );
-					}
-					$settings['tinymce'][ $name ] = empty( $jdec ) ? $setting : $jdec;
-				}
-			}
+			$settings['tinymce'] = self::prepare_tinymce_settings( $tmce_settings, $settings['tinymce'] );
 
 			if ( $this->media_buttons ) {
 				$media_buttons_html = $this->render_media_buttons( $this->element_id );
