@@ -260,6 +260,79 @@ class TestimonialColorsTest extends SiteOriginTests {
 		$this->assertSame( '#a1b2c3', $vars[ $key ] );
 	}
 
+	/**
+	 * Selector => declarations of a widget's compiled CSS, without the widget class.
+	 */
+	private function rules( $instance ) {
+		$css = $this->widget()->get_instance_css( $instance );
+		$css = preg_replace( '/\.so-widget-sow-testimonials-default-[0-9a-f]{12} ?/', '', $css );
+
+		preg_match_all( '/([^{}]+)\{([^{}]*)\}/', $css, $matches, PREG_SET_ORDER );
+
+		$rules = array();
+
+		foreach ( $matches as $match ) {
+			$selector = trim( preg_replace( '/\s+/', ' ', $match[1] ) );
+			$rules[ $selector ][] = trim( preg_replace( '/\s+/', ' ', $match[2] ) );
+		}
+
+		return $rules;
+	}
+
+	public static function part_rules() {
+		return array(
+			'name' => array(
+				'name_color',
+				array(
+					'.sow-testimonials .sow-testimonial-name',
+					'.sow-testimonials .sow-text a:has(> .sow-testimonial-name)',
+				),
+			),
+			'location' => array(
+				'location_color',
+				array(
+					'.sow-testimonials .sow-testimonial-location',
+					'.sow-testimonials .sow-text a:has(> .sow-testimonial-location)',
+				),
+			),
+		);
+	}
+
+	#[DataProvider( 'part_rules' )]
+	public function test_a_part_color_colors_its_text_and_its_link_only( $key, $selectors ) {
+		$before = $this->rules( self::instance( self::default_design() ) );
+
+		$design = self::default_design();
+		$design['colors'][ $key ] = '#a1b2c3';
+		$after = $this->rules( self::instance( $design ) );
+
+		$added = array();
+
+		foreach ( $after as $selector => $declarations ) {
+			$existing = $before[ $selector ] ?? array();
+			$new = array_values( array_diff( $declarations, $existing ) );
+
+			if ( ! empty( $new ) ) {
+				$added[ $selector ] = $new;
+			}
+		}
+
+		$this->assertSame( array_fill_keys( $selectors, array( 'color: #a1b2c3;' ) ), $added );
+
+		foreach ( $before as $selector => $declarations ) {
+			$this->assertSame( $declarations, array_slice( $after[ $selector ], 0, count( $declarations ) ), $selector );
+		}
+	}
+
+	public function test_link_and_text_rules_are_separate() {
+		$design = self::default_design();
+		$design['colors']['name_color'] = '#a1b2c3';
+
+		$css = $this->widget()->get_instance_css( self::instance( $design ) );
+
+		$this->assertDoesNotMatchRegularExpression( '/,[^{}]*:has\(|:has\([^{}]*,/', $css );
+	}
+
 	public function test_an_empty_part_color_is_not_passed_to_less() {
 		$design = self::default_design();
 		$design['colors']['name_color'] = '';
