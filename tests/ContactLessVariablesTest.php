@@ -705,4 +705,91 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 		return $instance;
 	}
+
+	/**
+	 * tests/fixtures/contact-css.json holds the CSS of saved widgets that set no
+	 * container Text color, exactly as get_instance_css() returns it, widget class
+	 * and whitespace included.
+	 *
+	 * Re-capture (only when the output is meant to change):
+	 *   SOW_CAPTURE_FIXTURES=1 vendor/bin/phpunit --filter test_saved_widget_keeps_its_css
+	 */
+	private const CSS_FIXTURE_FILE = __DIR__ . '/fixtures/contact-css.json';
+
+	private static $captured_css = array();
+
+	public static function tearDownAfterClass(): void {
+		if ( getenv( 'SOW_CAPTURE_FIXTURES' ) && ! empty( self::$captured_css ) ) {
+			ksort( self::$captured_css );
+			file_put_contents(
+				self::CSS_FIXTURE_FILE,
+				json_encode( array( 'instances' => self::$captured_css ), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n"
+			);
+		}
+
+		parent::tearDownAfterClass();
+	}
+
+	private function saved_css_instance( $key ) {
+		switch ( $key ) {
+			case 'stored':
+				return self::stored_instance();
+
+			case 'healthy':
+				return $this->healthy_instance();
+
+			case 'colored parts':
+				$instance = self::stored_instance();
+				$instance['design']['container']['background'] = '#101820';
+				$instance['design']['labels']['color'] = '#f6f6f6';
+				$instance['design']['fields']['color'] = '#202020';
+
+				return $instance;
+		}
+	}
+
+	public static function saved_css_keys() {
+		return array(
+			'stored' => array( 'stored' ),
+			'healthy' => array( 'healthy' ),
+			'colored parts' => array( 'colored parts' ),
+		);
+	}
+
+	private function stub_css_compile() {
+		Functions\when( 'siteorigin_widget_get_plugin_dir_path' )->justReturn( __DIR__ . '/../widgets/contact/' );
+		Functions\when( 'get_option' )->alias(
+			function ( $option, $default = false ) {
+				return $default;
+			}
+		);
+		Functions\when( 'wp_parse_args' )->alias(
+			function ( $args, $defaults ) {
+				return array_merge( $defaults, (array) $args );
+			}
+		);
+	}
+
+	#[DataProvider( 'saved_css_keys' )]
+	public function test_saved_widget_keeps_its_css( $key ) {
+		$this->stub_css_compile();
+
+		$css = $this->capturing_errors(
+			function () use ( $key ) {
+				return $this->widget()->get_instance_css( $this->saved_css_instance( $key ) );
+			}
+		);
+
+		if ( getenv( 'SOW_CAPTURE_FIXTURES' ) ) {
+			self::$captured_css[ $key ] = $css;
+			$this->assertNotEmpty( $css );
+
+			return;
+		}
+
+		$fixture = json_decode( file_get_contents( self::CSS_FIXTURE_FILE ), true );
+
+		$this->assertArrayHasKey( $key, $fixture['instances'] );
+		$this->assertSame( $fixture['instances'][ $key ], $css );
+	}
 }
