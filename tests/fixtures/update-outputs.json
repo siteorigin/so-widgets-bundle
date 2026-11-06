@@ -173,7 +173,8 @@
                 "border_color": "#ffffff",
                 "border_width": "0px",
                 "border_style": "none",
-                "so_field_container_state": "closed"
+                "so_field_container_state": "closed",
+                "text_color": ""
             },
             "labels": {
                 "font": "default",
@@ -356,7 +357,8 @@
                 "border_color": "#ffffff",
                 "border_width": "0px",
                 "border_style": "none",
-                "so_field_container_state": "closed"
+                "so_field_container_state": "closed",
+                "text_color": ""
             },
             "labels": {
                 "font": "default",

@@ -770,6 +770,49 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		);
 	}
 
+	public function test_container_text_color_sits_after_background() {
+		$container = $this->widget()->get_widget_form()['design']['fields']['container']['fields'];
+
+		$this->assertSame( array( 'background', 'text_color', 'padding' ), array_slice( array_keys( $container ), 0, 3 ) );
+		$this->assertSame( 'color', $container['text_color']['type'] );
+		$this->assertSame( 'Text color', $container['text_color']['label'] );
+		$this->assertArrayNotHasKey( 'default', $container['text_color'] );
+	}
+
+	public function test_schema_offers_the_container_text_color() {
+		require_once __DIR__ . '/../base/inc/widget-describer.php';
+
+		$schema = SiteOrigin_Widgets_Widget_Describer::single()->get_schema( $this->widget() );
+		$field = $schema['properties']['design']['properties']['container']['properties']['text_color'];
+
+		$this->assertSame( 'string', $field['type'] );
+		$this->assertSame( 'color', $field['format'] );
+		$this->assertSame( 'Text color', $field['title'] );
+	}
+
+	public function test_container_text_color_is_passed_only_when_set() {
+		$instance = self::stored_instance();
+
+		$instance['design']['container']['text_color'] = false;
+		$this->assertArrayNotHasKey( 'container_text_color', $this->get_less_variables_capturing_errors( $instance ) );
+
+		$instance['design']['container']['text_color'] = '#f6f6f6';
+		$this->assertSame( '#f6f6f6', $this->get_less_variables_capturing_errors( $instance )['container_text_color'] );
+		$this->assertSame( array(), $this->php_errors );
+	}
+
+	public function test_container_text_color_colors_the_form() {
+		$this->stub_css_compile();
+
+		$instance = self::stored_instance();
+		$instance['design']['container']['text_color'] = '#f6f6f6';
+
+		$css = $this->widget()->get_instance_css( $instance );
+
+		$this->assertMatchesRegularExpression( '/ \.sow-contact-form \{[^{}]*[\s;{]color: #f6f6f6;[^{}]*\}/', $css );
+		$this->assertSame( 1, substr_count( $css, '#f6f6f6' ) );
+	}
+
 	#[DataProvider( 'saved_css_keys' )]
 	public function test_saved_widget_keeps_its_css( $key ) {
 		$this->stub_css_compile();
