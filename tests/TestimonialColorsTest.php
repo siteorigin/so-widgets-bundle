@@ -334,8 +334,8 @@ class TestimonialColorsTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A widget re-saved after this change stores Name and Location as empty
-	 * strings. It must keep the variables and CSS it had before.
+	 * A re-saved widget stores an unset Name and Location as empty strings,
+	 * and keeps the variables and CSS of the same widget without those keys.
 	 */
 	public function test_a_resaved_widget_keeps_its_variables_and_css() {
 		$fixture = json_decode( file_get_contents( self::FIXTURE_FILE ), true );
@@ -360,17 +360,11 @@ class TestimonialColorsTest extends SiteOriginTests {
 	 * which is what the a:has(> ...) rules select.
 	 */
 	public function test_linked_name_and_location_match_the_link_rules() {
-		foreach ( array( 'esc_url', 'wp_kses_post' ) as $passthrough ) {
+		foreach ( array( 'esc_url', 'wp_kses_post', 'sow_esc_url' ) as $passthrough ) {
 			Functions\when( $passthrough )->returnArg();
 		}
 
-		if ( ! function_exists( 'sow_esc_url' ) ) {
-			Functions\when( 'sow_esc_url' )->returnArg();
-		}
-
-		if ( ! function_exists( 'siteorigin_widgets_get_attachment_image_src' ) ) {
-			Functions\when( 'siteorigin_widgets_get_attachment_image_src' )->justReturn( array( 'https://example.com/face.png', 50, 50 ) );
-		}
+		Functions\when( 'siteorigin_widgets_get_attachment_image_src' )->justReturn( array( 'https://example.com/face.png', 50, 50 ) );
 
 		$linked = self::testimonial( 'https://example.com' );
 		$linked['image'] = 12;
@@ -382,22 +376,39 @@ class TestimonialColorsTest extends SiteOriginTests {
 			$args = array( 'before_title' => '<h3>', 'after_title' => '</h3>' );
 			extract( $this->get_template_variables( $instance, $args ) );
 			ob_start();
-			include __DIR__ . '/../widgets/testimonial/tpl/default.php';
 
-			return ob_get_clean();
+			try {
+				include __DIR__ . '/../widgets/testimonial/tpl/default.php';
+			} finally {
+				$html = ob_get_clean();
+			}
+
+			return $html;
 		};
 		$html = Closure::bind( $render, $widget, get_class( $widget ) )( $instance );
 
 		$dom = new DOMDocument();
-		libxml_use_internal_errors( true );
-		$dom->loadHTML( '<?xml encoding="utf-8"?><div>' . $html . '</div>' );
-		libxml_clear_errors();
+		$previous = libxml_use_internal_errors( true );
+
+		try {
+			$dom->loadHTML( '<?xml encoding="utf-8"?><div>' . $html . '</div>' );
+		} finally {
+			libxml_clear_errors();
+			libxml_use_internal_errors( $previous );
+		}
+
 		$xpath = new DOMXPath( $dom );
 
-		foreach ( array( 'sow-testimonial-name', 'sow-testimonial-location' ) as $part ) {
+		foreach ( array( 'sow-testimonial-name' => 'Sarah Mitchell', 'sow-testimonial-location' => 'Northfield Studio' ) as $part => $text ) {
 			$links = $xpath->query( "//*[contains(concat(' ', @class, ' '), ' sow-text ')]//a[*[1][contains(concat(' ', @class, ' '), ' {$part} ')]]" );
 			$this->assertSame( 1, $links->length, $part );
-			$this->assertSame( 'https://example.com', $links->item( 0 )->getAttribute( 'href' ), $part );
+			$link = $links->item( 0 );
+			$this->assertSame( 'https://example.com', $link->getAttribute( 'href' ), $part );
+
+			// All of the link's visible text sits inside the colored span.
+			$span = $xpath->query( '*[1]', $link )->item( 0 );
+			$this->assertSame( $text, trim( $span->textContent ), $part );
+			$this->assertSame( trim( $link->textContent ), trim( $span->textContent ), $part );
 		}
 	}
 

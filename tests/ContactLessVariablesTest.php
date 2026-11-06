@@ -802,8 +802,8 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A form re-saved after this change stores Text color as an empty string.
-	 * It must keep the variables, style hash and CSS it had before.
+	 * A re-saved form stores an unset Text color as an empty string, and keeps
+	 * the variables, style hash and CSS of the same form without that key.
 	 */
 	public function test_a_resaved_form_keeps_its_variables_hash_and_css() {
 		$this->stub_css_compile();
