@@ -21,8 +21,9 @@ if ( ! class_exists( 'SiteOrigin_Widget_Editor_Widget' ) ) {
  *
  * Empty values a filter returns are skipped so TinyMCE keeps its defaults. The
  * one exception is a boolean false wordpress_adv_hidden: Advanced Editor Tools
- * sets it to keep the second and later toolbar rows visible, and WordPress
- * hides those rows when the key is absent.
+ * sets it to keep the second and later toolbar rows visible. When the key is
+ * absent, WordPress hides those rows unless the user has opened them with the
+ * Toolbar Toggle.
  */
 class TinyMCEFieldSettingsTest extends SiteOriginTests {
 	/**
@@ -218,9 +219,9 @@ class TinyMCEFieldSettingsTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A filter that breaks the array contract gets the same outcome as before:
-	 * a warning for scalars, an object's truthy offsets copied, nothing for an
-	 * empty object, and an Error for an object used as an array.
+	 * A filter result that breaks the array contract: scalars warn and copy
+	 * nothing, an object's truthy offsets are copied, an empty object copies
+	 * nothing, and an object with properties throws when used as an array.
 	 */
 	#[RunInSeparateProcess]
 	public function test_a_string_filter_result_warns_and_copies_nothing() {

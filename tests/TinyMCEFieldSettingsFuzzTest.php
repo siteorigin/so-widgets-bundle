@@ -18,9 +18,10 @@ if ( ! class_exists( 'SiteOrigin_Widget_Editor_Widget' ) ) {
  * results go through the real render, and the emitted settings must match the
  * reference below exactly, key order included.
  *
- * The reference copies the field's settings loop as it stood before a false
- * wordpress_adv_hidden was kept, then applies that one exception. Any other
- * difference between the field and the reference is a regression.
+ * The reference is the field's settings loop, which skips empty values, plus
+ * its one exception: a boolean false wordpress_adv_hidden in an array result
+ * is kept. Any other difference between the field and the reference is a
+ * regression.
  *
  * SOWB_FUZZ_CASES sets the number of cases (default 10000) and
  * SOWB_FUZZ_SEED the first seed (default 1). A failure names its seed.
@@ -60,8 +61,8 @@ class TinyMCEFieldSettingsFuzzTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The settings loop as it stood before the wordpress_adv_hidden exception,
-	 * copied verbatim, followed by the exception.
+	 * The settings loop that skips empty values, followed by the
+	 * wordpress_adv_hidden exception with the same array guard as the field.
 	 */
 	private static function reference( $settings, $tmce_settings ) {
 		foreach ( $tmce_settings as $name => $setting ) {
@@ -76,7 +77,7 @@ class TinyMCEFieldSettingsFuzzTest extends SiteOriginTests {
 			}
 		}
 
-		if ( array_key_exists( 'wordpress_adv_hidden', $tmce_settings ) && false === $tmce_settings['wordpress_adv_hidden'] ) {
+		if ( is_array( $tmce_settings ) && array_key_exists( 'wordpress_adv_hidden', $tmce_settings ) && false === $tmce_settings['wordpress_adv_hidden'] ) {
 			$settings['tinymce']['wordpress_adv_hidden'] = false;
 		}
 
