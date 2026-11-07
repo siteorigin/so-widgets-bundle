@@ -299,6 +299,65 @@ add_action(
 			return current_user_can( 'manage_options' );
 		};
 
+		// The current user's saved user settings, as WordPress stores them.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/user-settings',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'settings' => (string) get_user_option( 'user-settings' ) );
+				},
+			)
+		);
+
+		// A draft Page Builder page holding a SiteOrigin Editor widget, directly or
+		// inside a Layout Builder widget.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/panels-page',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					$marker = sanitize_text_field( (string) $request->get_param( 'marker' ) );
+					$editor = array(
+						'title' => $marker,
+						'text' => '<p>' . $marker . '</p>',
+						'text_selected_editor' => 'tinymce',
+						'autop' => true,
+					);
+					$layout = function ( $widget ) {
+						return array(
+							'widgets' => array( $widget ),
+							'grids' => array( array( 'cells' => 1 ) ),
+							'grid_cells' => array( array( 'grid' => 0, 'weight' => 1, 'index' => 0 ) ),
+						);
+					};
+					$editor_widget = $editor + array( 'panels_info' => array( 'class' => 'SiteOrigin_Widget_Editor_Widget', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ) );
+					$widget = $editor_widget;
+
+					if ( $request->get_param( 'nested' ) ) {
+						$widget = array(
+							'panels_data' => $layout( $editor_widget ),
+							'builder_id' => 'sowbe2e' . wp_rand( 1000, 9999 ),
+							'panels_info' => array( 'class' => 'SiteOrigin_Panels_Widgets_Layout', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ),
+						);
+					}
+
+					$post_id = wp_insert_post( array(
+						'post_type' => 'page',
+						'post_status' => 'draft',
+						'post_title' => 'SOWB e2e ' . $marker,
+					) );
+					update_post_meta( $post_id, 'panels_data', wp_slash( $layout( $widget ) ) );
+
+					return array( 'id' => $post_id );
+				},
+			)
+		);
+
 		register_rest_route(
 			'sowb-e2e/v1',
 			'/tinymce-rows',

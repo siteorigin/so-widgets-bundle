@@ -9,9 +9,14 @@
  * - toggle-kept: three rows, the Toolbar Toggle kept, wordpress_adv_hidden false.
  *
  * The mode is a site-wide option and so is the user's hidetb setting, so this
- * file runs in the serialized abilities project. Each test sets hidetb to '0'
- * first and checks the effective editor settings before the rows, so a site
- * with another TinyMCE plugin active fails clearly instead of passing wrongly.
+ * file runs in the abilities project, one test at a time. Each test sets its
+ * mode and hidetb to '0' first and checks the effective editor settings before
+ * the rows, so a site with another TinyMCE plugin active fails clearly instead
+ * of passing wrongly.
+ *
+ * Contexts: the post editor, the site editor, Page Builder (a widget, and a
+ * widget inside a Layout Builder widget), a Layout Block, the block Widgets
+ * screen and the Customizer.
  */
 const fs = require( 'fs' );
 const os = require( 'os' );
@@ -45,8 +50,6 @@ const {
 	removeFixture,
 	setWidgetActive,
 } = require( './helpers/widget-block-abilities' );
-
-test.describe.configure( { mode: 'serial' } );
 
 const EDITOR_BLOCK = 'sowb/siteorigin-widget-editor-widget';
 const CLASSIC_THEME = 'sowb-e2e-classic-theme';
@@ -390,6 +393,80 @@ const closePageBuilderDialog = async ( page ) => {
 	await expect( done ).toBeHidden();
 };
 
+const seedPanelsPage = async ( nested ) => {
+	const marker = `Rows ${ nested ? 'nested' : 'pb' } ${ uniqueSuffix() }`;
+	const seeded = await call( admin, 'POST', 'wp-json/sowb-e2e/v1/panels-page', { marker, nested: nested ? 1 : 0 } );
+	expect( seeded.status ).toBe( 200 );
+
+	return seeded.body.id;
+};
+
+/**
+ * Open the Editor widget inside the page's Layout Builder widget: the Layout
+ * Builder dialog shows its own builder, and the Editor opens a dialog of its own.
+ */
+const openNestedEditorWidget = async ( page, postId ) => {
+	await soGoTo( page, `wp-admin/post.php?post=${ postId }&action=edit` );
+	const builder = page.locator( '#siteorigin-panels-metabox' );
+	await expect( builder ).toBeVisible( { timeout: 20000 } );
+	await builder.locator( '.so-widget .title h4' ).first().click();
+	const inner = page.locator( '.so-panels-dialog-edit-widget .siteorigin-panels-builder .so-widget .title h4' ).filter( { visible: true } ).first();
+	await expect( inner ).toBeVisible( { timeout: 20000 } );
+	await inner.click();
+	const form = page.locator( '.so-panels-dialog-edit-widget .siteorigin-widget-form-main' ).filter( { visible: true } ).filter( { has: page.locator( '.siteorigin-widget-field-type-tinymce' ) } ).last();
+	await expect( form ).toBeVisible( { timeout: 20000 } );
+
+	return form;
+};
+
+const layoutBlockMarkup = ( marker ) => {
+	const panelsData = {
+		widgets: [ {
+			title: marker,
+			text: `<p>${ marker }</p>`,
+			text_selected_editor: 'tinymce',
+			autop: true,
+			panels_info: { class: 'SiteOrigin_Widget_Editor_Widget', grid: 0, cell: 0, id: 0, widget_index: 0 },
+		} ],
+		grids: [ { cells: 1 } ],
+		grid_cells: [ { grid: 0, weight: 1, index: 0 } ],
+	};
+	const attributes = JSON.stringify( { panelsData } )
+		.replace( /--/g, '\\u002d\\u002d' )
+		.replace( /</g, '\\u003c' )
+		.replace( />/g, '\\u003e' )
+		.replace( /&/g, '\\u0026' );
+
+	return `<!-- wp:siteorigin-panels/layout-block ${ attributes } /-->`;
+};
+
+/**
+ * Open the Editor widget in a Layout Block: select the block, switch it to
+ * editing, and open the widget's dialog.
+ */
+const openLayoutBlockEditorWidget = async ( page, postId ) => {
+	const e2e = await setupAdminE2E( page );
+	await e2e.editPost( postId );
+	await page.evaluate( () => {
+		const select = window.wp.data.select( 'core/block-editor' );
+		const id = select.getClientIdsWithDescendants().find( ( cid ) => select.getBlockName( cid ) === 'siteorigin-panels/layout-block' );
+		window.wp.data.dispatch( 'core/block-editor' ).selectBlock( id );
+	} );
+	const editLayout = page.getByRole( 'button', { name: 'Edit layout.', exact: true } );
+
+	if ( await editLayout.isVisible().catch( () => false ) ) {
+		await editLayout.click();
+	}
+
+	const widget = e2e.editor.canvas.locator( '.so-widget .title h4' ).first();
+	await expect( widget ).toBeVisible( { timeout: 20000 } );
+	await widget.click();
+	const form = page.locator( '.so-panels-dialog-edit-widget .siteorigin-widget-form-main' ).filter( { visible: true } ).first();
+	await expect( form ).toBeVisible( { timeout: 20000 } );
+
+	return form;
+};
+
 test.beforeAll( async ( { browser } ) => {
 	test.setTimeout( 240_000 );
 	requestUtils = await setupRequestUtils();
@@ -401,7 +478,9 @@ test.beforeAll( async ( { browser } ) => {
 
 	try {
 		await loginPage( page );
-		startingHidetb = await readHidetb( page );
+		await readHidetb( page );
+		const saved = await call( admin, 'GET', 'wp-json/sowb-e2e/v1/user-settings' );
+		startingHidetb = new URLSearchParams( saved.body.settings || '' ).get( 'hidetb' );
 		await soGoTo( page, WIDGETS_ADMIN );
 
 		if ( ! await isCardActive( page, 'editor' ) ) {
@@ -414,35 +493,74 @@ test.beforeAll( async ( { browser } ) => {
 } );
 
 test.afterAll( async ( { browser } ) => {
-	await setMode( 'off' ).catch( () => {} );
-	await requestUtils.activateTheme( startingTheme );
+	// Each step runs even when an earlier one fails, and only undoes what setup
+	// did. Failures are reported together at the end.
+	const failures = [];
+	const step = async ( work ) => {
+		try {
+			await work();
+		} catch ( e ) {
+			failures.push( e.message );
+		}
+	};
+
+	if ( admin ) {
+		await step( () => setMode( 'off' ) );
+	}
+
+	if ( startingTheme ) {
+		await step( () => requestUtils.activateTheme( startingTheme ) );
+	}
 
 	if ( installedClassicTheme ) {
-		await removeClassicTheme( browser );
+		await step( () => removeClassicTheme( browser ) );
 	}
 
-	const page = await browser.newPage();
+	if ( startingHidetb !== undefined ) {
+		await step( async () => {
+			const page = await browser.newPage();
 
-	try {
-		await loginPage( page );
-		await soGoTo( page, 'wp-admin/index.php' );
-		await page.waitForFunction( () => typeof window.setUserSetting === 'function' );
+			try {
+				await loginPage( page );
+				await soGoTo( page, 'wp-admin/index.php' );
+				await page.waitForFunction( () => typeof window.setUserSetting === 'function' );
 
-		if ( startingHidetb === null ) {
-			await page.evaluate( () => window.deleteUserSetting( 'hidetb' ) );
-		} else {
-			await page.evaluate( ( value ) => window.setUserSetting( 'hidetb', value ), startingHidetb );
-		}
+				if ( startingHidetb === null ) {
+					await page.evaluate( () => window.deleteUserSetting( 'hidetb' ) );
+				} else {
+					await page.evaluate( ( value ) => window.setUserSetting( 'hidetb', value ), startingHidetb );
+				}
 
-		if ( editorWasInactive ) {
-			await soGoTo( page, WIDGETS_ADMIN );
-			await setWidgetActive( page, 'editor', false );
-		}
-	} finally {
-		await page.close();
+				// WordPress saves the user settings cookie on the next admin request.
+				await soGoTo( page, 'wp-admin/index.php' );
+				const saved = await call( admin, 'GET', 'wp-json/sowb-e2e/v1/user-settings' );
+				const hidetb = new URLSearchParams( saved.body.settings || '' ).get( 'hidetb' );
+				expect( hidetb ).toBe( startingHidetb );
+			} finally {
+				await page.close();
+			}
+		} );
 	}
 
-	await removeFixture( requestUtils );
+	if ( editorWasInactive ) {
+		await step( async () => {
+			const page = await browser.newPage();
+
+			try {
+				await loginPage( page );
+				await soGoTo( page, WIDGETS_ADMIN );
+				await setWidgetActive( page, 'editor', false );
+			} finally {
+				await page.close();
+			}
+		} );
+	}
+
+	if ( requestUtils ) {
+		await step( () => removeFixture( requestUtils ) );
+	}
+
+	expect( failures, 'every cleanup step must succeed' ).toEqual( [] );
 } );
 
 test.describe( 'Block theme contexts', () => {
@@ -540,6 +658,42 @@ test.describe( 'Classic theme contexts', () => {
 				await closePageBuilderDialog( page );
 			} finally {
 				await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/pages/${ postId }`, params: { force: true } } );
+			}
+		} );
+
+		test( `Layout Builder widget in Page Builder, ${ mode }`, async ( { page } ) => {
+			await setMode( mode );
+			await loginPage( page );
+			await resetHidetb( page );
+			page.on( 'dialog', ( dialog ) => dialog.accept() );
+
+			const postId = await seedPanelsPage( true );
+
+			try {
+				const form = await openNestedEditorWidget( page, postId );
+				await assertRows( tinymceField( form ), mode );
+			} finally {
+				await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/pages/${ postId }`, params: { force: true } } );
+			}
+		} );
+
+		test( `Layout Block, ${ mode }`, async ( { page } ) => {
+			await setMode( mode );
+			await loginPage( page );
+			await resetHidetb( page );
+			page.on( 'dialog', ( dialog ) => dialog.accept() );
+
+			const post = await requestUtils.createPost( {
+				status: 'draft',
+				title: `Toolbar rows layout block ${ mode }`,
+				content: layoutBlockMarkup( `Rows layout ${ uniqueSuffix() }` ),
+			} );
+
+			try {
+				const form = await openLayoutBlockEditorWidget( page, post.id );
+				await assertRows( tinymceField( form ), mode );
+			} finally {
+				await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ post.id }`, params: { force: true } } );
 			}
 		} );
 
