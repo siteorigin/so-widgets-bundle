@@ -420,6 +420,17 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				}
 			}
 
+			// A false wordpress_adv_hidden keeps the second and later toolbar rows
+			// visible, as Advanced Editor Tools sets it. Without the key, WordPress
+			// hides those rows.
+			if (
+				is_array( $tmce_settings ) &&
+				array_key_exists( 'wordpress_adv_hidden', $tmce_settings ) &&
+				false === $tmce_settings['wordpress_adv_hidden']
+			) {
+				$settings['tinymce']['wordpress_adv_hidden'] = false;
+			}
+
 			if ( $this->media_buttons ) {
 				$media_buttons_html = $this->render_media_buttons( $this->element_id );
 			}
