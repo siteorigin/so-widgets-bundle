@@ -463,7 +463,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'text_color'   => array(
 								'type'  => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
+								'label' => __( 'Text Color', 'so-widgets-bundle' ),
 							),
 							'padding'      => array(
 								'type'    => 'measurement',
@@ -1389,7 +1389,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'success_border_style'       => $this->style_value( $instance['design']['success']['border_style'] ?? '' ) ?: '',
 		);
 
-		// The container Text color is passed only when set, so a form that
+		// The container Text Color is passed only when set, so a form that
 		// does not set it keeps its variables and style hash.
 		$container_text_color = $this->style_value( $instance['design']['container']['text_color'] ?? '' );
 
