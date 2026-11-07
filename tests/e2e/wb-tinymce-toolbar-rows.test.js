@@ -49,6 +49,7 @@ const {
 	makeZip,
 	removeFixture,
 	setWidgetActive,
+	widgetBlock,
 } = require( './helpers/widget-block-abilities' );
 
 const EDITOR_BLOCK = 'sowb/siteorigin-widget-editor-widget';
@@ -178,7 +179,7 @@ const installClassicTheme = async ( browser ) => {
 	const themes = await requestUtils.rest( { method: 'GET', path: '/wp/v2/themes' } );
 
 	if ( themes.some( ( theme ) => theme.stylesheet === CLASSIC_THEME ) ) {
-		return false;
+		return;
 	}
 
 	const entries = fs.readdirSync( CLASSIC_THEME_DIR ).map( ( file ) => ( {
@@ -200,13 +201,13 @@ const installClassicTheme = async ( browser ) => {
 			page.waitForNavigation(),
 			page.click( '#install-theme-submit' ),
 		] );
+		// Record the upload before checking it, so cleanup removes a partial install too.
+		installedClassicTheme = true;
 		await expect( page.locator( '#wpbody-content' ) ).toContainText( 'Theme installed successfully' );
 	} finally {
 		await page.close();
 		fs.rmSync( tempDir, { recursive: true, force: true } );
 	}
-
-	return true;
 };
 
 const removeClassicTheme = async ( browser ) => {
@@ -224,25 +225,20 @@ const removeClassicTheme = async ( browser ) => {
 	} finally {
 		await page.close();
 	}
+
+	const themes = await requestUtils.rest( { method: 'GET', path: '/wp/v2/themes' } );
+	expect( themes.some( ( theme ) => theme.stylesheet === CLASSIC_THEME ), 'the classic theme fixture must be removed' ).toBe( false );
 };
 
-const editorBlockMarkup = ( marker ) => {
-	const attributes = JSON.stringify( {
-		widgetClass: 'SiteOrigin_Widget_Editor_Widget',
-		widgetData: {
-			title: marker,
-			text: `<p>${ marker }</p>`,
-			autop: true,
-			text_selected_editor: 'tinymce',
-		},
-	} )
-		.replace( /--/g, '\\u002d\\u002d' )
-		.replace( /</g, '\\u003c' )
-		.replace( />/g, '\\u003e' )
-		.replace( /&/g, '\\u0026' );
-
-	return `<!-- wp:${ EDITOR_BLOCK } ${ attributes } /-->`;
-};
+const editorBlockMarkup = ( marker ) => widgetBlock( EDITOR_BLOCK, {
+	widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+	widgetData: {
+		title: marker,
+		text: `<p>${ marker }</p>`,
+		autop: true,
+		text_selected_editor: 'tinymce',
+	},
+} );
 
 /**
  * Put an Editor block widget in the first active widget area.
@@ -419,8 +415,8 @@ const openNestedEditorWidget = async ( page, postId ) => {
 	return form;
 };
 
-const layoutBlockMarkup = ( marker ) => {
-	const panelsData = {
+const layoutBlockMarkup = ( marker ) => widgetBlock( 'siteorigin-panels/layout-block', {
+	panelsData: {
 		widgets: [ {
 			title: marker,
 			text: `<p>${ marker }</p>`,
@@ -430,15 +426,8 @@ const layoutBlockMarkup = ( marker ) => {
 		} ],
 		grids: [ { cells: 1 } ],
 		grid_cells: [ { grid: 0, weight: 1, index: 0 } ],
-	};
-	const attributes = JSON.stringify( { panelsData } )
-		.replace( /--/g, '\\u002d\\u002d' )
-		.replace( /</g, '\\u003c' )
-		.replace( />/g, '\\u003e' )
-		.replace( /&/g, '\\u0026' );
-
-	return `<!-- wp:siteorigin-panels/layout-block ${ attributes } /-->`;
-};
+	},
+} );
 
 /**
  * Open the Editor widget in a Layout Block: select the block, switch it to
@@ -557,7 +546,11 @@ test.afterAll( async ( { browser } ) => {
 	}
 
 	if ( requestUtils ) {
-		await step( () => removeFixture( requestUtils ) );
+		await step( async () => {
+			await removeFixture( requestUtils );
+			const plugins = await requestUtils.rest( { method: 'GET', path: '/wp/v2/plugins' } );
+			expect( plugins.some( ( plugin ) => plugin.plugin.startsWith( 'sowb-e2e-probe/' ) ), 'the probe fixture must be removed' ).toBe( false );
+		} );
 	}
 
 	expect( failures, 'every cleanup step must succeed' ).toEqual( [] );
@@ -639,7 +632,7 @@ test.describe( 'Block theme contexts', () => {
 
 test.describe( 'Classic theme contexts', () => {
 	test.beforeAll( async ( { browser } ) => {
-		installedClassicTheme = await installClassicTheme( browser );
+		await installClassicTheme( browser );
 		await requestUtils.activateTheme( CLASSIC_THEME );
 	} );
 
