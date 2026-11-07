@@ -199,6 +199,7 @@ class TinyMCEFieldSettingsFuzzTest extends SiteOriginTests {
 
 	public function test_emitted_settings_match_the_reference() {
 		$cases = (int) ( getenv( 'SOWB_FUZZ_CASES' ) ?: 10000 );
+		$this->assertGreaterThanOrEqual( 100, $cases, 'SOWB_FUZZ_CASES must be at least 100' );
 		$first_seed = (int) ( getenv( 'SOWB_FUZZ_SEED' ) ?: 1 );
 		$field_settings = array(
 			'tinymce' => array(
@@ -228,6 +229,7 @@ class TinyMCEFieldSettingsFuzzTest extends SiteOriginTests {
 		}
 
 		// The generator must exercise the exception, or the run proves nothing about it.
-		$this->assertGreaterThan( $cases / 20, $adv_hidden_false );
+		// About one case in eight holds a boolean false; require at least one in twenty.
+		$this->assertGreaterThanOrEqual( (int) ceil( $cases / 20 ), $adv_hidden_false );
 	}
 }

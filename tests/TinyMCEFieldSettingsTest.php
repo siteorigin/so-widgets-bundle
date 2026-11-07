@@ -244,15 +244,9 @@ class TinyMCEFieldSettingsTest extends SiteOriginTests {
 	}
 
 	private function assert_scalar_result_warns( $filtered ) {
-		$warnings = array();
-		set_error_handler( function ( $errno, $message ) use ( &$warnings ) {
-			$warnings[] = $message;
-
-			return true;
-		}, E_WARNING );
-
-		$settings = $this->render_settings( $filtered );
-		restore_error_handler();
+		list( $settings, $warnings ) = $this->run_capturing_errors( function () use ( $filtered ) {
+			return $this->render_settings( $filtered );
+		} );
 
 		$this->assertCount( 1, $warnings );
 		$this->assertStringContainsString( 'foreach() argument must be of type array|object', $warnings[0] );
