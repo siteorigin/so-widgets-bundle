@@ -281,7 +281,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			$attr = array();
 			$attr['title'] = $this->get_image_title( $image );
-			$attr['alt'] = ! empty( $image['alt'] ) ? $image['alt'] . '"' : '';
+			$attr['alt'] = ! empty( $image['alt'] ) ? $image['alt'] : '';
 			$attr['class'] = 'sow-image-grid-image_html';
 
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
