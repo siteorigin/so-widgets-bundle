@@ -422,7 +422,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 			// A false wordpress_adv_hidden keeps the second and later toolbar rows
 			// visible, as Advanced Editor Tools sets it. Without the key, WordPress
-			// hides those rows.
+			// hides those rows unless the user has opened them with the Toolbar Toggle.
 			if (
 				is_array( $tmce_settings ) &&
 				array_key_exists( 'wordpress_adv_hidden', $tmce_settings ) &&
