@@ -197,12 +197,13 @@ const installClassicTheme = async ( browser ) => {
 		await page.locator( '.upload-view-toggle' ).click();
 		await page.locator( '#themezip' ).waitFor( { state: 'attached' } );
 		await page.setInputFiles( '#themezip', zipPath );
+		// Cleanup runs from the moment of upload, so a theme installed before a failed
+		// navigation or check is removed too; removal also verifies an absent theme.
+		installedClassicTheme = true;
 		await Promise.all( [
 			page.waitForNavigation(),
 			page.click( '#install-theme-submit' ),
 		] );
-		// Record the upload before checking it, so cleanup removes a partial install too.
-		installedClassicTheme = true;
 		await expect( page.locator( '#wpbody-content' ) ).toContainText( 'Theme installed successfully' );
 	} finally {
 		await page.close();
