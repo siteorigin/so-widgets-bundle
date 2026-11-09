@@ -229,12 +229,167 @@ add_filter(
 	99
 );
 
+/**
+ * Toolbar rows mode for the TinyMCE field tests, in the option
+ * sowb_e2e_tinymce_rows:
+ * - off: no change, the field's own toolbars.
+ * - no-toggle: three rows without the Toolbar Toggle, and
+ *   wordpress_adv_hidden false, as Advanced Editor Tools sets them.
+ * - toggle-kept: three rows with the Toolbar Toggle kept in row 1, and
+ *   wordpress_adv_hidden false.
+ */
+function sowb_e2e_probe_tinymce_rows_mode() {
+	$mode = get_option( 'sowb_e2e_tinymce_rows', 'off' );
+
+	return in_array( $mode, array( 'off', 'no-toggle', 'toggle-kept' ), true ) ? $mode : 'off';
+}
+
+add_filter(
+	'mce_buttons',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() === 'no-toggle' ) {
+			$buttons = array_values( array_diff( (array) $buttons, array( 'wp_adv' ) ) );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'mce_buttons_2',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' && empty( $buttons ) ) {
+			$buttons = array( 'strikethrough', 'hr', 'forecolor', 'removeformat', 'charmap' );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'mce_buttons_3',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' ) {
+			$buttons = array( 'outdent', 'indent', 'undo', 'redo' );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'tiny_mce_before_init',
+	function ( $init ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' && is_array( $init ) ) {
+			$init['wordpress_adv_hidden'] = false;
+		}
+
+		return $init;
+	},
+	999
+);
+
 add_action(
 	'rest_api_init',
 	function () {
 		$admin_only = function () {
 			return current_user_can( 'manage_options' );
 		};
+
+		// The current user's saved user settings, as WordPress stores them.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/user-settings',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'settings' => (string) get_user_option( 'user-settings' ) );
+				},
+			)
+		);
+
+		// A draft Page Builder page holding a SiteOrigin Editor widget, directly or
+		// inside a Layout Builder widget.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/panels-page',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					$marker = sanitize_text_field( (string) $request->get_param( 'marker' ) );
+					$editor = array(
+						'title' => $marker,
+						'text' => '<p>' . $marker . '</p>',
+						'text_selected_editor' => 'tinymce',
+						'autop' => true,
+					);
+					$layout = function ( $widget ) {
+						return array(
+							'widgets' => array( $widget ),
+							'grids' => array( array( 'cells' => 1 ) ),
+							'grid_cells' => array( array( 'grid' => 0, 'weight' => 1, 'index' => 0 ) ),
+						);
+					};
+					$editor_widget = $editor + array( 'panels_info' => array( 'class' => 'SiteOrigin_Widget_Editor_Widget', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ) );
+					$widget = $editor_widget;
+
+					if ( $request->get_param( 'nested' ) ) {
+						$widget = array(
+							'panels_data' => $layout( $editor_widget ),
+							'builder_id' => 'sowbe2e' . wp_rand( 1000, 9999 ),
+							'panels_info' => array( 'class' => 'SiteOrigin_Panels_Widgets_Layout', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ),
+						);
+					}
+
+					$post_id = wp_insert_post( array(
+						'post_type' => 'page',
+						'post_status' => 'draft',
+						'post_title' => 'SOWB e2e ' . $marker,
+					) );
+					update_post_meta( $post_id, 'panels_data', wp_slash( $layout( $widget ) ) );
+
+					return array( 'id' => $post_id );
+				},
+			)
+		);
+
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/tinymce-rows',
+			array(
+				array(
+					'methods' => 'GET',
+					'permission_callback' => $admin_only,
+					'callback' => function () {
+						return array( 'mode' => sowb_e2e_probe_tinymce_rows_mode() );
+					},
+				),
+				array(
+					'methods' => 'POST',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$mode = (string) $request->get_param( 'mode' );
+
+						if ( ! in_array( $mode, array( 'off', 'no-toggle', 'toggle-kept' ), true ) ) {
+							return new WP_Error( 'sowb_e2e_bad_mode', 'Unknown mode.', array( 'status' => 400 ) );
+						}
+
+						if ( $mode === 'off' ) {
+							delete_option( 'sowb_e2e_tinymce_rows' );
+						} else {
+							update_option( 'sowb_e2e_tinymce_rows', $mode, false );
+						}
+
+						return array( 'mode' => sowb_e2e_probe_tinymce_rows_mode() );
+					},
+				),
+			)
+		);
 
 		register_rest_route(
 			'sowb-e2e/v1',
