@@ -21,5 +21,10 @@
 <div class="sow-google-map-canvas"
 	style="<?php echo ( $map_consent ) ? 'display: none;' : ''; ?>"
 	id="map-canvas-<?php echo esc_attr( $map_id ); ?>"
-	data-options="<?php echo esc_attr( wp_json_encode( $map_data ) ); ?>"
+	<?php
+	// JSON_HEX_AMP writes each `&` as &. esc_attr() leaves an existing
+	// entity such as &quot; as it is, and the browser would decode it to a bare
+	// quote inside a JSON string, which makes the JSON invalid.
+	?>
+	data-options="<?php echo esc_attr( wp_json_encode( $map_data, JSON_HEX_AMP ) ); ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"></div>
