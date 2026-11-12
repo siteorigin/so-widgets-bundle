@@ -22,7 +22,8 @@
 	style="<?php echo ( $map_consent ) ? 'display: none;' : ''; ?>"
 	id="map-canvas-<?php echo esc_attr( $map_id ); ?>"
 	<?php
-	// JSON_HEX_AMP writes each `&` as &. esc_attr() leaves an existing
+	// JSON_HEX_AMP writes each ampersand as a JSON unicode escape, so the JSON
+	// holds no HTML entity. Without it, esc_attr() leaves an existing
 	// entity such as &quot; as it is, and the browser would decode it to a bare
 	// quote inside a JSON string, which makes the JSON invalid.
 	?>
