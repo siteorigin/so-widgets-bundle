@@ -742,12 +742,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Return a stored text value as the plain text a browser reads from an
-	 * attribute that esc_attr() wrote.
+	 * Return a stored text value as the text the map script read in 1.76.0.
 	 *
-	 * esc_attr() leaves existing entities as they are, and the HTML decoder
-	 * then decodes them as a browser does. Before WordPress 6.6 there is no
-	 * HTML decoder, and PHP's own is used.
+	 * Then, the value was written as JSON with esc_attr(), the browser decoded
+	 * the attribute, and the script parsed the JSON. The same three steps run
+	 * here, so the script receives what it did before. Where that JSON wasn't
+	 * valid, as with an entity for a quote, the decoded text is returned.
 	 *
 	 * @param mixed $value The stored value.
 	 *
@@ -758,8 +758,25 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			return $value;
 		}
 
-		$value = esc_attr( $value );
+		$as_read = json_decode( self::decode_attribute( esc_attr( wp_json_encode( $value ) ) ) );
 
+		if ( is_string( $as_read ) ) {
+			return $as_read;
+		}
+
+		return self::decode_attribute( esc_attr( $value ) );
+	}
+
+	/**
+	 * Decode an attribute value as a browser does.
+	 *
+	 * Before WordPress 6.6 there is no HTML decoder, and PHP's own is used.
+	 *
+	 * @param string $value The attribute value, as esc_attr() wrote it.
+	 *
+	 * @return string The decoded text.
+	 */
+	private static function decode_attribute( $value ) {
 		if ( class_exists( 'WP_HTML_Decoder' ) ) {
 			return WP_HTML_Decoder::decode_attribute( $value );
 		}

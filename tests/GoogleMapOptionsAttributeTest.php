@@ -150,6 +150,11 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 			'a quote entity' => array( 'say &quot;hi&quot;', 'say "hi"' ),
 			'a real tag' => array( 'A <b>bold</b> one', 'A <b>bold</b> one' ),
 			'no entity' => array( 'plain text', 'plain text' ),
+			// 1.76.0 read an encoded backslash as the start of a JSON escape.
+			'an encoded backslash before n' => array( 'place &#092;n', "place \n" ),
+			'two encoded backslashes' => array( 'two &#092;&#092; x', 'two \\ x' ),
+			// Alone, it made 1.76.0's JSON invalid.
+			'an encoded backslash alone' => array( 'back &#092; slash', 'back \\ slash' ),
 		);
 	}
 
