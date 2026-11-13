@@ -742,12 +742,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Return a stored text value as the text the map script read in 1.76.0.
+	 * Return a stored text value as the text a script reads from it when it
+	 * is written into an attribute as JSON without JSON_HEX_AMP.
 	 *
-	 * Then, the value was written as JSON with esc_attr(), the browser decoded
-	 * the attribute, and the script parsed the JSON. The same three steps run
-	 * here, so the script receives what it did before. Where that JSON wasn't
-	 * valid, as with an entity for a quote, the decoded text is returned.
+	 * Written that way, esc_attr() leaves the value's entities as they are,
+	 * the browser decodes them, and the script parses the result as JSON.
+	 * Those three steps run here. Where the result isn't valid JSON, as with
+	 * an entity for a quote, the decoded text is returned.
 	 *
 	 * @param mixed $value The stored value.
 	 *

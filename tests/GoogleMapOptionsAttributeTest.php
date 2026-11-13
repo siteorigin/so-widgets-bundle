@@ -86,10 +86,11 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 	}
 
 	/**
-	 * What the script received in 1.76.0: esc_attr() wrote the JSON and the
-	 * browser decoded the attribute once. Null where that wasn't valid JSON.
+	 * What the script reads when the settings are written without
+	 * JSON_HEX_AMP: esc_attr() leaves the entities in the JSON and the browser
+	 * decodes them. Null where the result isn't valid JSON.
 	 */
-	private function read_options_as_1_76_0( $map_data ) {
+	private function read_options_written_without_hex_amp( $map_data ) {
 		return json_decode( html_entity_decode( esc_attr( wp_json_encode( $map_data ) ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ), true );
 	}
 
@@ -150,10 +151,10 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 			'a quote entity' => array( 'say &quot;hi&quot;', 'say "hi"' ),
 			'a real tag' => array( 'A <b>bold</b> one', 'A <b>bold</b> one' ),
 			'no entity' => array( 'plain text', 'plain text' ),
-			// 1.76.0 read an encoded backslash as the start of a JSON escape.
+			// Without JSON_HEX_AMP an encoded backslash starts a JSON escape.
 			'an encoded backslash before n' => array( 'place &#092;n', "place \n" ),
 			'two encoded backslashes' => array( 'two &#092;&#092; x', 'two \\ x' ),
-			// Alone, it made 1.76.0's JSON invalid.
+			// Alone, it makes that JSON invalid.
 			'an encoded backslash alone' => array( 'back &#092; slash', 'back \\ slash' ),
 		);
 	}
@@ -169,10 +170,11 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 			$this->assertSame( $plain, $value, self::TEXT_SETTINGS[ $index ] . ' is not plain text.' );
 		}
 
-		// Where 1.76.0's attribute was valid JSON, the script gets what it got then.
-		$before = $this->read_options_as_1_76_0( $map_data );
-		if ( is_array( $before ) ) {
-			$this->assertSame( $this->text_settings_of( $before ), $this->text_settings_of( $options ) );
+		// The script gets what it would read without JSON_HEX_AMP, wherever
+		// that is valid JSON.
+		$plainly_written = $this->read_options_written_without_hex_amp( $map_data );
+		if ( is_array( $plainly_written ) ) {
+			$this->assertSame( $this->text_settings_of( $plainly_written ), $this->text_settings_of( $options ) );
 		}
 	}
 
@@ -186,7 +188,7 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 	public function test_a_quote_entity_in_a_text_setting_no_longer_breaks_the_json() {
 		$map_data = $this->map_data_holding( 'say &quot;hi&quot;' );
 
-		$this->assertNull( $this->read_options_as_1_76_0( $map_data ), '1.76.0 is expected to write invalid JSON here.' );
+		$this->assertNull( $this->read_options_written_without_hex_amp( $map_data ), 'Without JSON_HEX_AMP this is expected to be invalid JSON.' );
 		$this->assertIsArray( $this->read_options( $map_data ) );
 	}
 

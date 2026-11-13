@@ -48,7 +48,6 @@ const stubGoogleMapsApi = async ( page, { geocode = 'ZERO_RESULTS' } = {} ) => {
 
 					window.__geocodeRequests = [];
 					window.__directionsRequests = [];
-					window.__mapTypeNames = [];
 
 					// Text is never a coordinate: only numbers are accepted.
 					var LatLng = function ( lat, lng ) {
@@ -105,9 +104,7 @@ const stubGoogleMapsApi = async ( page, { geocode = 'ZERO_RESULTS' } = {} ) => {
 							this.fitBounds = noop;
 							this.addListener = noop;
 						},
-						StyledMapType: function ( styles, options ) {
-							window.__mapTypeNames.push( options.name );
-						},
+						StyledMapType: function () {},
 						Marker: Marker,
 						marker: { AdvancedMarkerElement: Marker },
 						InfoWindow: function ( options ) {
