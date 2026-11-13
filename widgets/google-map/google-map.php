@@ -692,6 +692,82 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Prepare the map settings for the map script.
+	 *
+	 * Text settings are stored with entities, as kses saves them. The script
+	 * passes them to the geocoder, the directions service and the map type
+	 * control as plain text, so they are returned as plain text here. Marker
+	 * info is HTML and is returned as stored.
+	 *
+	 * @param array $map_data The map settings, as passed to the template.
+	 *
+	 * @return array The map settings with their text values as plain text.
+	 */
+	public static function script_map_data( $map_data ) {
+		if ( ! is_array( $map_data ) ) {
+			return $map_data;
+		}
+
+		foreach ( array( 'address', 'mapName' ) as $key ) {
+			if ( isset( $map_data[ $key ] ) ) {
+				$map_data[ $key ] = self::plain_text( $map_data[ $key ] );
+			}
+		}
+
+		if ( ! empty( $map_data['markerPositions'] ) && is_array( $map_data['markerPositions'] ) ) {
+			foreach ( $map_data['markerPositions'] as $index => $marker ) {
+				if ( is_array( $marker ) && isset( $marker['place'] ) ) {
+					$map_data['markerPositions'][ $index ]['place'] = self::plain_text( $marker['place'] );
+				}
+			}
+		}
+
+		if ( ! empty( $map_data['directions'] ) && is_array( $map_data['directions'] ) ) {
+			foreach ( array( 'origin', 'destination' ) as $key ) {
+				if ( isset( $map_data['directions'][ $key ] ) ) {
+					$map_data['directions'][ $key ] = self::plain_text( $map_data['directions'][ $key ] );
+				}
+			}
+
+			if ( ! empty( $map_data['directions']['waypoints'] ) && is_array( $map_data['directions']['waypoints'] ) ) {
+				foreach ( $map_data['directions']['waypoints'] as $index => $waypoint ) {
+					if ( is_array( $waypoint ) && isset( $waypoint['location'] ) ) {
+						$map_data['directions']['waypoints'][ $index ]['location'] = self::plain_text( $waypoint['location'] );
+					}
+				}
+			}
+		}
+
+		return $map_data;
+	}
+
+	/**
+	 * Return a stored text value as the plain text a browser reads from an
+	 * attribute that esc_attr() wrote.
+	 *
+	 * esc_attr() leaves existing entities as they are, and the HTML decoder
+	 * then decodes them as a browser does. Before WordPress 6.6 there is no
+	 * HTML decoder, and PHP's own is used.
+	 *
+	 * @param mixed $value The stored value.
+	 *
+	 * @return mixed The plain text, or the value unchanged if it isn't a string.
+	 */
+	private static function plain_text( $value ) {
+		if ( ! is_string( $value ) ) {
+			return $value;
+		}
+
+		$value = esc_attr( $value );
+
+		if ( class_exists( 'WP_HTML_Decoder' ) ) {
+			return WP_HTML_Decoder::decode_attribute( $value );
+		}
+
+		return html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	}
+
+	/**
 	 * Get the map type for the current instance.
 	 *
 	 * @param array $instance The widget instance.
