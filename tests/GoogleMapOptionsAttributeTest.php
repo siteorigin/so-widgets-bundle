@@ -9,6 +9,26 @@ if ( ! class_exists( 'SiteOrigin_Widget_GoogleMap_Widget' ) ) {
 	require __DIR__ . '/../widgets/google-map/google-map.php';
 }
 
+if ( ! function_exists( 'siteorigin_widgets_underscores_to_camel_case' ) ) {
+	require __DIR__ . '/../base/inc/string-utils.php';
+}
+
+if ( ! class_exists( 'SiteOrigin_GoogleMap_Options_Test_Widget' ) ) {
+	/**
+	 * The Google Maps widget, with its global settings fixed so no option is read.
+	 */
+	class SiteOrigin_GoogleMap_Options_Test_Widget extends SiteOrigin_Widget_GoogleMap_Widget {
+		public function get_global_settings( $key = null ) {
+			$values = array(
+				'map_consent'           => false,
+				'responsive_breakpoint' => '780',
+			);
+
+			return ! empty( $key ) ? $values[ $key ] : $values;
+		}
+	}
+}
+
 /**
  * Checks that the Google Maps Widget writes its settings into data-options
  * as JSON the browser can read back, whatever markup a marker's info holds,
@@ -216,5 +236,66 @@ class GoogleMapOptionsAttributeTest extends SiteOriginTests {
 		$this->assertSame( $original, $map_data );
 		$this->assertSame( 'Tom & Jerry', $for_script['address'] );
 		$this->assertSame( 'Tom &amp; Jerry', $for_script['markerPositions'][0]['info'] );
+	}
+
+	/**
+	 * The siteorigin_widgets_template_variables_sow-google-map filter receives
+	 * what get_template_variables() returns, so text must leave it as stored.
+	 */
+	public function test_the_template_variables_filter_still_receives_text_as_stored() {
+		Functions\when( 'wp_get_attachment_image_src' )->justReturn( false );
+		Functions\when( 'plugin_dir_url' )->justReturn( '' );
+
+		$stored = 'Tom &amp; Jerry, 1 High St, Town';
+		$instance = array(
+			'map_center' => array( 'address' => $stored ),
+			'settings' => array(
+				'map_type' => 'interactive',
+				'zoom' => 12,
+				'mobile_zoom' => 12,
+				'disable_default_ui' => false,
+			),
+			'markers' => array(
+				'marker_icon' => 0,
+				'info_display' => 'click',
+				'info_multiple' => false,
+				'marker_positions' => array(
+					array(
+						'place' => array( 'address' => $stored ),
+						'info' => $stored,
+					),
+				),
+			),
+			'styles' => array(
+				'style_method' => 'custom',
+				'styled_map_name' => 'Night &amp; Day',
+				'custom_map_styles' => array(
+					array(
+						'map_feature' => 'water',
+						'element_type' => 'geometry',
+						'color' => '#000000',
+					),
+				),
+			),
+			'directions' => array(
+				'origin' => $stored,
+				'destination' => $stored,
+				'waypoints' => array(
+					array( 'location' => $stored ),
+				),
+			),
+		);
+
+		$widget = new SiteOrigin_GoogleMap_Options_Test_Widget();
+		$variables = $widget->get_template_variables( $instance, array() );
+		$map_data = $variables['map_data'];
+
+		$this->assertSame( $stored, $map_data['address'] );
+		$this->assertSame( $stored, $map_data['markerPositions'][0]['place'] );
+		$this->assertSame( $stored, $map_data['markerPositions'][0]['info'] );
+		$this->assertSame( 'Night &amp; Day', $map_data['mapName'] );
+		$this->assertSame( $stored, $map_data['directions']['origin'] );
+		$this->assertSame( $stored, $map_data['directions']['destination'] );
+		$this->assertSame( $stored, $map_data['directions']['waypoints'][0]['location'] );
 	}
 }

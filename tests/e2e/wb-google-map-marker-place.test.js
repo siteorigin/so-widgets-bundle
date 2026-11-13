@@ -321,7 +321,10 @@ test( 'Google Maps: text typed with an ampersand reaches the map as typed', asyn
 	const center = 'Marks & Spencer, 458 Oxford Street, London W1C 1AP';
 	const markerPlace = 'Fortnum & Mason, 181 Piccadilly, London';
 	const origin = 'King\'s Cross & St Pancras, London';
-	const waypoint = 'Fortnum & Mason, 181 Piccadilly, London';
+	// A browser reads the numeric reference 128 as a euro sign and PHP's own
+	// decoder leaves it as typed, so this value shows which one the map got.
+	const waypoint = 'Harrods &#128;5 Tea, 87 Brompton Road, London';
+	const waypointAsRead = 'Harrods \u20ac5 Tea, 87 Brompton Road, London';
 	const info = '<span data-font-info="{&quot;font&quot;:&quot;DynaPuff&quot;}">Tea &amp; cake</span>';
 
 	await stubGoogleMapsApi( page );
@@ -403,7 +406,7 @@ test( 'Google Maps: text typed with an ampersand reaches the map as typed', asyn
 		expect( seen.geocodeRequests ).toEqual( [ markerPlace, center ].sort() );
 		expect( seen.directions.origin ).toBe( origin );
 		expect( seen.directions.destination ).toBe( center );
-		expect( seen.directions.waypoints.map( ( item ) => item.location ) ).toEqual( [ waypoint ] );
+		expect( seen.directions.waypoints.map( ( item ) => item.location ) ).toEqual( [ waypointAsRead ] );
 		expect( seen.info ).toContain( 'Tea &amp; cake' );
 		expect( seen.fontInfo ).toBe( '{"font":"DynaPuff"}' );
 	} finally {
