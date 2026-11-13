@@ -25,7 +25,9 @@
 	// JSON_HEX_AMP writes each ampersand as a JSON unicode escape, so the JSON
 	// holds no HTML entity. Without it, esc_attr() leaves an existing
 	// entity such as &quot; as it is, and the browser would decode it to a bare
-	// quote inside a JSON string, which makes the JSON invalid.
+	// quote inside a JSON string, which makes the JSON invalid. The script
+	// then receives every value as written, so script_map_data() first turns
+	// the text settings, which are stored with entities, into plain text.
 	?>
-	data-options="<?php echo esc_attr( wp_json_encode( $map_data, JSON_HEX_AMP ) ); ?>"
+	data-options="<?php echo esc_attr( wp_json_encode( SiteOrigin_Widget_GoogleMap_Widget::script_map_data( $map_data ), JSON_HEX_AMP ) ); ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"></div>
