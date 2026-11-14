@@ -15,7 +15,8 @@ on:
 jobs:
   test:
     timeout-minutes: 40
-    runs-on: ubuntu-latest
+    # Playwright 1.58 has no browsers for Ubuntu 26.04, which ubuntu-latest now is.
+    runs-on: ubuntu-24.04
     env:
       SO_TESTS_WP_VERSION: ${{ github.event.inputs.wp_version }}
 
