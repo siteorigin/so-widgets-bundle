@@ -30,6 +30,8 @@ jobs:
       run: npm ci
     - name: Check the WordPress Version
       run: node -e "require( 'siteorigin-tests-common/playground/wordPressVersion' )()"
+    - name: Test the Runner's Pass Selection
+      run: npm run test:scripts
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Install Build Dependencies & Make Build
