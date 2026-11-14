@@ -3,19 +3,21 @@ const { expect } = require( '@playwright/test' );
 const { setupRequestUtils } = require( 'siteorigin-tests-common/playwright/common' );
 
 const { widgetBlock } = require( './widget-block-abilities' );
+const previewTheme = require( './preview-theme' );
 
 /**
  * The themes the Features specs render each page in. The first is the
  * active theme. The others render per request through core's block theme
  * preview (`?wp_theme_preview=`), which needs a user who can switch themes,
  * so no site-wide state changes. A preview theme must be installed on the
- * test site; Twenty Twenty-Five ships with WordPress, so Playground has it.
- * A missing preview theme silently renders the active theme, so each visit
- * checks the theme's body class.
+ * test site; previewTheme() names one that ships with the WordPress version
+ * under test, so Playground has it. A missing preview theme silently renders
+ * the active theme, so each visit checks the theme reached the page.
  */
+const blockTheme = previewTheme();
 const THEMES = [
 	{ name: 'active theme' },
-	{ name: 'Twenty Twenty-Five', preview: 'twentytwentyfive' },
+	{ name: blockTheme.name, preview: blockTheme.preview },
 ];
 
 const featuresBlock = ( widgetData ) => widgetBlock( 'sowb/siteorigin-widget-features-widget', {
@@ -81,6 +83,22 @@ const withPreview = ( link, theme ) => {
 };
 
 /**
+ * Whether WordPress rendered the page with the theme `slug`. From 6.8 the
+ * body has a wp-theme- class. Before that, the fonts WordPress prints for the
+ * rendered theme, in the wp-fonts-local style element (named by id or by
+ * class, depending on the version), are in its folder.
+ * Text or markup in the page that merely names the folder doesn't count.
+ */
+const isThemeRendered = ( page, slug ) => page.evaluate( ( theme ) => {
+	if ( document.body.classList.contains( `wp-theme-${ theme }` ) ) {
+		return true;
+	}
+
+	return Array.from( document.querySelectorAll( 'style#wp-fonts-local, style.wp-fonts-local' ) )
+		.some( ( fonts ) => fonts.textContent.includes( `/themes/${ theme }/` ) );
+}, slug );
+
+/**
  * Opens `link` in a fresh context at the given width and theme. A preview
  * theme needs the login of the request utils; the active theme is viewed
  * logged out, with no admin bar. `beforeLoad` receives the page before it
@@ -102,7 +120,13 @@ const openFeaturesPage = async ( browser, fixture, { width, theme = THEMES[ 0 ],
 	await page.goto( withPreview( fixture.link, theme ) );
 
 	if ( theme.preview ) {
-		await expect( page.locator( 'body' ), `${ theme.name } renders; it must be installed on the test site` ).toHaveClass( new RegExp( `\\bwp-theme-${ theme.preview }\\b` ) );
+		const rendered = await isThemeRendered( page, theme.preview );
+
+		if ( ! rendered ) {
+			await context.close();
+		}
+
+		expect( rendered, `${ theme.name } renders; it must be installed on the test site` ).toBe( true );
 	}
 
 	return page;
@@ -110,6 +134,7 @@ const openFeaturesPage = async ( browser, fixture, { width, theme = THEMES[ 0 ],
 
 module.exports = {
 	THEMES,
+	isThemeRendered,
 	expectNear,
 	featuresBlock,
 	openFeaturesPage,

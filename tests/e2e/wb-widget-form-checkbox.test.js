@@ -7,6 +7,9 @@ const { doLogin } = require( 'siteorigin-tests-common/playwright/common' );
 
 const { useFeaturesPage } = require( './helpers/features' );
 const { widgetBlock } = require( './helpers/widget-block-abilities' );
+const previewTheme = require( './helpers/preview-theme' );
+
+const blockTheme = previewTheme();
 
 /**
  * Measures a ticked widget form checkbox in the block editor. The form sits in
@@ -24,9 +27,9 @@ const THEMES = [
 	},
 	{
 		// Leaves the checkbox to core.
-		name: 'Twenty Twenty-Five',
-		preview: 'twentytwentyfive',
-		rendered: ( { snapshotStyles, twentyTwentyFiveAssets } ) => ! snapshotStyles && twentyTwentyFiveAssets,
+		name: blockTheme.name,
+		preview: blockTheme.preview,
+		rendered: ( { snapshotStyles, blockThemeAssets } ) => ! snapshotStyles && blockThemeAssets,
 	},
 ];
 
@@ -45,7 +48,7 @@ const WHITE_BOX = {
  * Runs in the editor canvas: the theme that reached it, and the computed
  * styles of a ticked box, its tick, and an unticked box.
  */
-const measure = ( { ticked, unticked } ) => {
+const measure = ( { ticked, unticked, blockThemeSlug } ) => {
 	const box = ( selector ) => {
 		const style = getComputedStyle( document.querySelector( selector ) );
 
@@ -62,7 +65,7 @@ const measure = ( { ticked, unticked } ) => {
 	return {
 		theme: {
 			snapshotStyles: !! document.querySelector( 'link[href*="/themes/siteorigin-snapshot/"]' ),
-			twentyTwentyFiveAssets: document.documentElement.outerHTML.includes( '/themes/twentytwentyfive/' ),
+			blockThemeAssets: document.documentElement.outerHTML.includes( `/themes/${ blockThemeSlug }/` ),
 		},
 		ticked: box( ticked ),
 		unticked: box( unticked ),
@@ -117,7 +120,7 @@ test.describe( 'Widget form checkbox in the block editor', () => {
 			await expect( block.locator( UNTICKED ) ).not.toBeChecked();
 
 			const frame = page.frames().find( ( f ) => f.name() === 'editor-canvas' );
-			const m = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED } );
+			const m = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED, blockThemeSlug: blockTheme.preview } );
 
 			expect( theme.rendered( m.theme ), `${ theme.name } reached the canvas: ${ JSON.stringify( m.theme ) }` ).toBeTruthy();
 
@@ -138,7 +141,7 @@ test.describe( 'Widget form checkbox in the block editor', () => {
 
 			await page.emulateMedia( { forcedColors: 'active' } );
 
-			const forced = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED } );
+			const forced = await frame.evaluate( measure, { ticked: TICKED, unticked: UNTICKED, blockThemeSlug: blockTheme.preview } );
 
 			expect.soft( forced.ticked.appearance, 'a forced colors palette draws the native checkbox' ).toBe( 'auto' );
 			expect.soft( forced.tickContent, 'the fixed color tick is hidden in forced colors' ).toBe( 'none' );
