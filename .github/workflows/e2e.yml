@@ -7,11 +7,17 @@ on:
         description: "The release version to use"
         required: true
         default: "2.0.0"
+      wp_version:
+        description: "WordPress version, such as 6.6. Empty for the latest. Below 6.9 only the Chrome passes run."
+        required: false
+        default: ""
 
 jobs:
   test:
     timeout-minutes: 40
     runs-on: ubuntu-latest
+    env:
+      SO_TESTS_WP_VERSION: ${{ github.event.inputs.wp_version }}
 
     steps:
     - uses: actions/checkout@v4
@@ -22,6 +28,8 @@ jobs:
         node-version: lts/*
     - name: Install Dependencies
       run: npm ci
+    - name: Check the WordPress Version
+      run: node -e "require( 'siteorigin-tests-common/playground/wordPressVersion' )()"
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Install Build Dependencies & Make Build
