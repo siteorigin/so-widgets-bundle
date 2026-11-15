@@ -1692,7 +1692,7 @@ const sowbIsEditorAsWritten = ( bridge, before ) => {
 				);
 		} );
 
-	// Any other change to a block's place or parent gives different content.
+	// The content is compared too: it is what the post's content edit is set to.
 	return areAttributesAsWritten &&
 		wp.blocks.serialize( blockEditorSelect.getBlocks() ) === bridge.content &&
 		sowbAreFormsAsRead( bridge );
