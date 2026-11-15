@@ -1632,51 +1632,36 @@ const sowbIsEditorUndisturbed = ( bridge ) => {
 
 /**
  * Whether the only thing that changed in the editor during the save bridge's
- * block update is that update: every other block and post edit is as it was
- * just before, each updated block holds the values written, and every form
- * still holds the values that were read.
+ * block update is that update: the blocks now serialise to exactly the
+ * content being saved, every other post edit is as it was just before, and
+ * every form still holds the values that were read.
  *
  * @param {Object} bridge The bridge's state for this save.
- * @param {Object} before The post's edits, and every block's attributes by client ID, just before the update.
+ * @param {Object} postEditsBefore The post's edits just before the update.
  *
  * @returns {boolean}
  */
-const sowbIsEditorAsWritten = ( bridge, before ) => {
-	const blockEditorSelect = wp.data.select( 'core/block-editor' );
-	const clientIds = blockEditorSelect.getClientIdsWithDescendants();
+const sowbIsEditorAsWritten = ( bridge, postEditsBefore ) => {
 	const postEdits = bridge.getPostEdits() || {};
 
 	// The update itself is reported to the post as its blocks and selection.
 	const isOwnEdit = ( key ) => key === 'blocks' || key === 'selection';
 	const editKeys = Object.keys( postEdits ).filter( ( key ) => ! isOwnEdit( key ) );
-	const editKeysBefore = Object.keys( before.postEdits ).filter( ( key ) => ! isOwnEdit( key ) );
+	const editKeysBefore = Object.keys( postEditsBefore ).filter( ( key ) => ! isOwnEdit( key ) );
 
 	if (
 		editKeys.length !== editKeysBefore.length ||
-		! editKeys.every( ( key ) => postEdits[ key ] === before.postEdits[ key ] )
+		! editKeys.every( ( key ) => postEdits[ key ] === postEditsBefore[ key ] )
 	) {
 		return false;
 	}
 
-	if (
-		clientIds.length !== before.clientIds.length ||
-		! clientIds.every( ( clientId, index ) => clientId === before.clientIds[ index ] )
-	) {
-		return false;
-	}
+	// Any other change to a block, its attributes, its place or its parent
+	// gives different content.
+	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 
-	const areBlocksAsWritten = clientIds.every( ( clientId ) => {
-		const attributes = blockEditorSelect.getBlockAttributes( clientId );
-
-		if ( ! Object.prototype.hasOwnProperty.call( bridge.widgetDataByClientId, clientId ) ) {
-			return attributes === before.attributesByClientId[ clientId ];
-		}
-
-		return attributes &&
-			attributes.widgetData === bridge.widgetDataByClientId[ clientId ];
-	} );
-
-	return areBlocksAsWritten && sowbAreFormsAsRead( bridge );
+	return wp.blocks.serialize( blocks ) === bridge.content &&
+		sowbAreFormsAsRead( bridge );
 };
 
 /**
@@ -1709,17 +1694,7 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 			return;
 		}
 
-		const blockEditorSelect = wp.data.select( 'core/block-editor' );
-		const before = {
-			postEdits: bridge.getPostEdits() || {},
-			clientIds: blockEditorSelect.getClientIdsWithDescendants(),
-			attributesByClientId: {},
-		};
-
-		before.clientIds.forEach( ( clientId ) => {
-			before.attributesByClientId[ clientId ] = blockEditorSelect.getBlockAttributes( clientId );
-		} );
-
+		const postEditsBefore = bridge.getPostEdits() || {};
 		const attrsByClientId = bridge.clientIds.reduce( ( attributes, clientId ) => {
 			attributes[ clientId ] = {
 				widgetData: bridge.widgetDataByClientId[ clientId ],
@@ -1737,7 +1712,7 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 
 		// A store subscriber can edit the editor during that dispatch. If one
 		// did, the blocks keep what is being saved and the rest is not written.
-		if ( ! sowbIsEditorAsWritten( bridge, before ) ) {
+		if ( ! sowbIsEditorAsWritten( bridge, postEditsBefore ) ) {
 			sowbForgetFormRecords( bridge.formsByClientId );
 			return;
 		}

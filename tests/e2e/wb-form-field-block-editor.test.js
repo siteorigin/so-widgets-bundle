@@ -1603,6 +1603,16 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			edit: 'title',
 			kept: ( saved ) => expect( saved.title ).toBe( 'Retitled by a subscriber' ),
 		},
+		{
+			name: 'another attribute of the widget block',
+			edit: 'anchor',
+			kept: ( saved ) => expect( saved.content ).toContain( '"anchor":"set-by-a-subscriber"' ),
+		},
+		{
+			name: 'where the paragraph sits, moved into a Group',
+			edit: 'move',
+			kept: ( saved ) => expect( saved.content ).toMatch( /wp:group[\s\S]*Paragraph[\s\S]*\/wp:group/ ),
+		},
 	];
 
 	for ( const subscriber of SUBSCRIBER_EDITS ) {
@@ -1616,13 +1626,23 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 
 				return block.clientId;
 			} );
+			// A Group that holds a block of its own, for a block to be moved into.
+			const groupId = await page.evaluate( () => {
+				const group = window.wp.blocks.createBlock( 'core/group', { layout: { type: 'constrained' } }, [
+					window.wp.blocks.createBlock( 'core/paragraph', { content: 'In the Group' } ),
+				] );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( group );
+
+				return group.clientId;
+			} );
 			const clientId = await insertWidget( admin, IMAGE_BLOCK );
 
 			// Let the forms finish loading before their fields are set.
 			await waitForWidgetPreviews( page, fixture.previews );
 			await setIframeFieldValue( page, clientId, 'image', imageId );
 
-			await page.evaluate( ( { widgetId, paragraph, image, edit } ) => {
+			await page.evaluate( ( { widgetId, paragraph, group, image, edit } ) => {
 				const select = window.wp.data.select( 'core/block-editor' );
 				let done = false;
 
@@ -1640,10 +1660,22 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 						return;
 					}
 
+					if ( edit === 'anchor' ) {
+						window.wp.data.dispatch( 'core/block-editor' )
+							.updateBlockAttributes( widgetId, { anchor: 'set-by-a-subscriber' } );
+						return;
+					}
+
+					if ( edit === 'move' ) {
+						window.wp.data.dispatch( 'core/block-editor' )
+							.moveBlockToPosition( paragraph, '', group, 0 );
+						return;
+					}
+
 					window.wp.data.dispatch( 'core/block-editor' )
 						.updateBlockAttributes( paragraph, { content: 'Edited by a subscriber' } );
 				} );
-			}, { widgetId: clientId, paragraph: paragraphId, image: imageId, edit: subscriber.edit } );
+			}, { widgetId: clientId, paragraph: paragraphId, group: groupId, image: imageId, edit: subscriber.edit } );
 
 			await saveAndCapture( page, fixture );
 
