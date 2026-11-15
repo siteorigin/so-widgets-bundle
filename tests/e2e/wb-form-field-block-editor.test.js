@@ -1705,12 +1705,7 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 				expect( ( await readPost( page ) ).dirty ).toBe( true );
 			}
 
-			// With no record, a change back to the value last reported still reaches the block.
-			await setIframeFieldValue( page, clientId, 'title', 'Reported', true );
-			expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Reported' );
-			await waitForWidgetPreviews( page, fixture.previews );
-
-			// The next ordinary edit is still an ordinary one: recorded, and undone by one Undo.
+			// The first edit after the failure is still an ordinary one: recorded, and undone by one Undo.
 			const paragraphContent = () => page.evaluate(
 				( id ) => String( window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).content ),
 				paragraphId
@@ -1724,6 +1719,10 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 
 			await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
 			expect( await paragraphContent() ).toBe( 'Paragraph' );
+
+			// With no record, a change back to the value last reported still reaches the block.
+			await setIframeFieldValue( page, clientId, 'title', 'Reported', true );
+			expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Reported' );
 		} );
 	}
 } );
