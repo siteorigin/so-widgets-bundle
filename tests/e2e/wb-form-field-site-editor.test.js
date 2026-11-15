@@ -14,7 +14,6 @@ const {
 	neutralizeSiteEditorStickyHeader,
 	openSiteEditorCanvas,
 	setupAdminE2E,
-	waitForRequestToFinish,
 } = common;
 
 const {
@@ -58,6 +57,23 @@ const wp7TextInputRuleSelector = [
  * @returns {Promise<{admin: Admin, widget: Locator}>} The initialized admin and widget locator.
  */
 test.describe.configure( { mode: 'serial' } );
+
+/**
+ * Reads an admin-ajax reply for a failure message: its status, its text cut
+ * short, and its JSON when the text is JSON.
+ */
+const readAjaxReply = async ( response ) => {
+	const text = await response.text();
+	let json = null;
+
+	try {
+		json = JSON.parse( text );
+	} catch ( error ) {
+		// Not JSON; the text is what the message shows.
+	}
+
+	return { status: response.status(), text: text.slice( 0, 500 ), json };
+};
 
 const waitForBlockRegistration = async( page, blockName ) => {
 	await expect
@@ -312,34 +328,41 @@ test(
 		// Switch to Material Icons to validate icons are loading correctly.
 		const fontFamilySelector = iconFieldContainer.locator( '.siteorigin-widget-icon-family' );
 		await ensureElementVisible( fontFamilySelector, offset );
-		await fontFamilySelector.selectOption( 'materialicons' );
-
-		// Wait for icons to download.
-		await waitForRequestToFinish(
-			page,
-			'siteorigin_widgets_get_icons',
-			45000
+		// Listen for the icon list before asking for it, so a fast reply isn't missed.
+		const iconsLoaded = page.waitForResponse(
+			( response ) => response.url().includes( 'siteorigin_widgets_get_icons' ),
+			{ timeout: 0 }
 		);
+		await fontFamilySelector.selectOption( 'materialicons' );
+		expect( ( await iconsLoaded ).status() ).toBe( 200 );
 
-		// Search for the Home icon.
+		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
+		await expect( iconOption ).toBeVisible( { timeout: 20000 } );
+
+		const shownIcons = iconFieldIcons.locator( '.siteorigin-widget-icon-icons-icon:visible' );
+		const iconsBeforeSearch = await shownIcons.count();
+
+		// Search for the Home icon. The search runs on key events, so type the term.
 		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
 		await ensureElementVisible( iconSearch, offset, 10000 );
-			await iconSearch.fill( 'home' );
+		await iconSearch.pressSequentially( 'home' );
 
-			await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
+		await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
 
-			// Click the `Add Home` icon.
-			const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
-			await ensureElementVisible( iconOption, offset, 10000 );
-			await expect( iconOption ).toBeVisible( { timeout: 20000 } );
-			await expect( iconOption ).toBeEnabled( { timeout: 20000 } );
+		// The search narrowed the list to icons that match.
+		await expect.poll( () => shownIcons.count() ).toBeLessThan( iconsBeforeSearch );
+		expect( await shownIcons.count() ).toBeGreaterThan( 0 );
+		expect( await shownIcons.evaluateAll(
+			( icons ) => icons.every( ( icon ) => icon.getAttribute( 'data-value' ).includes( 'home' ) )
+		) ).toBe( true );
 
-				await iconOption.click();
-				await iconOption.dispatchEvent( 'click' );
+		// Click the `Add Home` icon once: a second click on a selected icon clears it.
+		await ensureElementVisible( iconOption, offset, 10000 );
+		await iconOption.click();
 
-				// Confirm icon has been set by checking the stored value.
-				const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
-				await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/, { timeout: 20000 } );
+		// Confirm icon has been set by checking the stored value.
+		const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
+		await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/ );
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
@@ -368,14 +391,15 @@ test(
 		await ensureElementVisible( linkField, offset );
 		const linkButton = linkField.locator( '.select-content-button' );
 		await ensureElementVisible( linkButton, offset );
-		await linkButton.click( { force: true } );
+		await linkButton.click();
 
-		// Select the first post from the list.
+		// Select the first post from the list, once the list has loaded.
 		const postsList = linkField.locator( '.posts' );
 		await ensureElementVisible( postsList, offset );
+		await expect( postsList ).not.toHaveClass( /loading/ );
 		const firstPost = postsList.locator( '.post' ).first();
 		await ensureElementVisible( firstPost, offset );
-		await firstPost.click( { force: true } );
+		await firstPost.click();
 
 		// Validate link text has been set.
 		const linkInput = linkField.locator( '.siteorigin-widget-input' );
@@ -525,40 +549,52 @@ test(
 		await mediaSearchButton.click();
 
 		const mediaSearchModal = page.locator( '#so-widgets-image-search-frame' );
-		const loadingIndicator = mediaSearchModal.locator( '.so-widgets-results-loading' );
 		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
 
 		await ensureElementVisible( mediaSearchModalInput );
 
-		// Search for an image.
+		// Search for an image. Listen for the reply before asking, so a fast
+		// reply isn't missed; the test's own timeout is the only limit.
+		const searchReply = page.waitForResponse(
+			( response ) => response.url().includes( 'so_widgets_image_search' ),
+			{ timeout: 0 }
+		);
 		await mediaSearchModalInput.fill( 'test' );
 		await mediaSearchModalInput.press( 'Enter' );
 
-		await waitForRequestToFinish(
-			page,
-			'so_widgets_image_search'
-		);
+		const search = await readAjaxReply( await searchReply );
+		const importable = Array.isArray( search.json?.items ) ?
+			search.json.items.find( ( item ) => item.full_url ) :
+			undefined;
+
+		if ( search.status !== 200 || ! importable ) {
+			throw new Error( `The image search returned no result that can be imported. Status ${ search.status }: ${ search.text }` );
+		}
 
 		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
 		await ensureElementVisible( mediaSearchModalResults, offset, 10000 );
 
-		// Select the first search result once it's visible.
-		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
-		await ensureElementVisible( firstResult, offset, 10000 );
-		firstResult.click();
+		// Select a result that can be imported; the dialog ignores a click on
+		// one with no full size image.
+		const importableResult = mediaSearchModalResults.locator( `.so-widgets-result-image[href="${ importable.full_url }"]` ).first();
+		await ensureElementVisible( importableResult, offset, 10000 );
 
-		// After clicking the image, a browser prompt will appear.
-		// Accept it, and then wait for the loader to be visible.
-		await handleDialog( page, 'accept', async ( dialog ) => {
-			await ensureElementVisible( loadingIndicator );
-		} );
+		// Clicking the image opens a browser prompt. Accept it, and listen for
+		// the import's reply, before the click.
+		const importConfirmed = handleDialog( page, 'accept' );
+		const importReply = page.waitForResponse(
+			( response ) => response.url().includes( 'so_widgets_image_import' ),
+			{ timeout: 0 }
+		);
+		await importableResult.click();
+		await importConfirmed;
 
 		// The importer is now running. Wait for the transfer to finish.
-		await waitForRequestToFinish(
-			page,
-			'so_widgets_image_import',
-			45000
-		);
+		const imported = await readAjaxReply( await importReply );
+
+		if ( imported.status !== 200 || imported.json?.error !== false || ! imported.json?.attachment_id ) {
+			throw new Error( `The image import failed. Status ${ imported.status }: ${ imported.text }` );
+		}
 
 		// Ensure modal has closed.
 		await expect( imageField ).not.toHaveClass( /so-importing-image/ );
