@@ -19,6 +19,8 @@ const {
 	switchWidgetMode,
 } = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
+const wordPressVersion = require( 'siteorigin-tests-common/playground/wordPressVersion' );
+
 const path = require( 'path' );
 
 test.describe.configure( { mode: 'serial' } );
@@ -1293,8 +1295,23 @@ const holdSnapshot = ( page, nth ) => page.evaluate( ( holdAt ) => {
 	};
 }, nth );
 
+// The bridge is a filter on editor.preSavePost, which WordPress has from 6.7.
+const hasSaveFilter = () => {
+	const version = wordPressVersion();
+
+	if ( version === '' ) {
+		return true;
+	}
+
+	const [ major, minor ] = version.split( '.' ).map( Number );
+
+	return major > 6 || ( major === 6 && minor >= 7 );
+};
+
 const useBridgePost = ( title ) => {
 	const fixture = {};
+
+	test.skip( ! hasSaveFilter(), 'WordPress below 6.7 has no editor.preSavePost, so the save bridge does not run (#2523).' );
 
 	test.beforeEach( async ( { page } ) => {
 		fixture.previews = trackWidgetPreviews( page );
