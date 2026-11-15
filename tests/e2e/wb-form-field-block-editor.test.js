@@ -1183,6 +1183,22 @@ const readPost = ( page ) => page.evaluate( () => {
 	};
 } );
 
+// The content edit the editor has recorded for the post: what kind it is,
+// and its text when it is a string.
+const readContentEdit = ( page ) => page.evaluate( () => {
+	const editor = window.wp.data.select( 'core/editor' );
+	const edits = window.wp.data.select( 'core' ).getEntityRecordEdits(
+		'postType',
+		editor.getCurrentPostType(),
+		editor.getCurrentPostId()
+	) || {};
+
+	return {
+		type: typeof edits.content,
+		text: typeof edits.content === 'string' ? edits.content : null,
+	};
+} );
+
 // Set a form field's value, with or without the change event the form listens for.
 const setIframeFieldValue = ( page, clientId, fieldName, value, withChange = false ) => page.evaluate(
 	( { id, name, fieldValue, change } ) => {
@@ -1490,6 +1506,7 @@ test.describe( 'Save bridge and the editor, when nothing else changes during the
 		await waitForWidgetPreviews( page, fixture.previews );
 
 		const before = await readWidgetBlock( page, clientId );
+		const contentBefore = ( await readPost( page ) ).content;
 		const autosaveRequest = page.waitForRequest(
 			( request ) => request.method() === 'POST' &&
 				new URL( request.url() ).pathname.includes( `/wp/v2/posts/${ post.id }` ),
@@ -1507,6 +1524,60 @@ test.describe( 'Save bridge and the editor, when nothing else changes during the
 		expect( after.widgetData ).toEqual( before.widgetData );
 		expect( after.record ).toEqual( before.record );
 		expectNoClientIdAttributes( after );
+
+		// The post's content in the editor is as it was too. WordPress records
+		// it as text before an autosave; the bridge must not replace that with
+		// what it sent.
+		expect( ( await readContentEdit( page ) ).text ).not.toBe( sent );
+		expect( ( await readPost( page ) ).content ).toBe( contentBefore );
+	} );
+
+	test( 'a TinyMCE field keeps its content and its caret through a save', async ( { page } ) => {
+		const { admin } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		// Where the caret is in the visual editor, and what the editor holds.
+		const readCaret = () => visualBody.evaluate( ( body ) => {
+			const selection = body.ownerDocument.getSelection();
+
+			return {
+				text: body.textContent,
+				hasFocus: body.ownerDocument.hasFocus(),
+				offset: selection.rangeCount ? selection.getRangeAt( 0 ).startOffset : null,
+				nodeText: selection.rangeCount ? selection.getRangeAt( 0 ).startContainer.textContent : null,
+			};
+		} );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Caret stays here' );
+
+		// Put the caret inside the text, so "the end" can't pass by default.
+		for ( let i = 0; i < 5; i++ ) {
+			await page.keyboard.press( 'ArrowLeft' );
+		}
+
+		const before = await readCaret();
+		expect( before.text ).toContain( 'Caret stays here' );
+		expect( before.offset ).toBe( 'Caret stays here'.length - 5 );
+
+		const sent = await saveAndCapture( page, fixture );
+		expect( sent ).toContain( 'Caret stays here' );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.text ).toContain( 'Caret stays here' );
+
+		const after = await readCaret();
+		expect( after.text ).toBe( before.text );
+		expect( after.offset ).toBe( before.offset );
+		expect( after.nodeText ).toBe( before.nodeText );
+
+		// Typing goes on from where the caret was.
+		await visualBody.pressSequentially( 'X' );
+		expect( ( await readCaret() ).text ).toContain( 'Caret staysX here' );
 	} );
 } );
 
@@ -1574,6 +1645,16 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			const save = clickSaveAndCaptureContent( page, post.id );
 			await page.waitForFunction( () => window.sowbTestHold.held );
 			await disturbance.run( page, ids );
+
+
+			// What the first widget holds once the change has been made, before
+			// the bridge goes on. It is gone when its block was removed.
+			const firstWidgetExists = () => page.evaluate(
+				( id ) => !! window.wp.data.select( 'core/block-editor' ).getBlock( id ),
+				ids.editor
+			);
+			const firstBefore = await firstWidgetExists() ? await readWidgetBlock( page, ids.editor ) : null;
+
 			await page.evaluate( () => window.sowbTestHold.release() );
 
 			const sent = await save;
@@ -1582,11 +1663,22 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			// The save still carries the form's values.
 			expect( sent ).toMatch( new RegExp( `"image":"?${ imageId }"?[,}]` ) );
 
-			// The editor is left to its own edits.
+			// The editor is left to its own edits: neither widget block, neither
+			// form record, and the recorded content is not what was sent.
 			const after = await readWidgetBlock( page, ids.image );
 			expect( after.widgetData ).toEqual( before.widgetData );
 			expect( after.record ).toEqual( before.record );
 			expectNoClientIdAttributes( after );
+
+			if ( firstBefore ) {
+				const firstAfter = await readWidgetBlock( page, ids.editor );
+
+				expect( firstAfter.widgetData ).toEqual( firstBefore.widgetData );
+				expect( firstAfter.record ).toEqual( firstBefore.record );
+				expectNoClientIdAttributes( firstAfter );
+			}
+
+			expect( ( await readContentEdit( page ) ).text ).not.toBe( sent );
 			expect( ( await readPost( page ) ).dirty ).toBe( true );
 		} );
 	}
