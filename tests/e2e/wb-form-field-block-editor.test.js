@@ -1609,6 +1609,13 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			kept: ( saved ) => expect( saved.content ).toContain( '"anchor":"set-by-a-subscriber"' ),
 		},
 		{
+			// Not persistent, and not an attribute the paragraph saves, so neither
+			// the post's content edit nor the serialised content shows it.
+			name: 'an attribute of the paragraph that is not saved in the content',
+			edit: 'local',
+			kept: ( saved, state ) => expect( state.paragraphLocal ).toBe( 'set-by-a-subscriber' ),
+		},
+		{
 			name: 'where the paragraph sits, moved into a Group',
 			edit: 'move',
 			kept: ( saved ) => expect( saved.content ).toMatch( /wp:group[\s\S]*Paragraph[\s\S]*\/wp:group/ ),
@@ -1666,6 +1673,14 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 						return;
 					}
 
+					if ( edit === 'local' ) {
+						const dispatch = window.wp.data.dispatch( 'core/block-editor' );
+
+						dispatch.__unstableMarkNextChangeAsNotPersistent();
+						dispatch.updateBlockAttributes( paragraph, { sowbTestLocal: 'set-by-a-subscriber' } );
+						return;
+					}
+
 					if ( edit === 'move' ) {
 						window.wp.data.dispatch( 'core/block-editor' )
 							.moveBlockToPosition( paragraph, '', group, 0 );
@@ -1685,7 +1700,12 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			expect( block.record ).toBeNull();
 
 			const saved = await readPost( page );
-			subscriber.kept( saved );
+			subscriber.kept( saved, {
+				paragraphLocal: await page.evaluate(
+					( id ) => window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).sowbTestLocal,
+					paragraphId
+				),
+			} );
 			expect( saved.dirty ).toBe( true );
 		} );
 	}
