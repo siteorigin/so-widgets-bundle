@@ -1584,6 +1584,30 @@ const sowbForgetFormRecords = ( formsByClientId ) => {
 };
 
 /**
+ * Whether every form the save bridge read is still in place, in a block that
+ * is still a widget block, and still holds the values that were read.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ *
+ * @returns {boolean}
+ */
+const sowbAreFormsAsRead = ( bridge ) => {
+	const blockEditorSelect = wp.data.select( 'core/block-editor' );
+
+	return bridge.clientIds.every( ( clientId ) => {
+		const $readForm = bridge.formsByClientId[ clientId ];
+		const $form = sowbGetBlockForm( clientId );
+		const snapshotJson = bridge.snapshotJsonByClientId[ clientId ];
+
+		return sowbIsDirectWidgetBlock( blockEditorSelect.getBlock( clientId ) ) &&
+			$form.length > 0 &&
+			$form[0] === $readForm[0] &&
+			snapshotJson !== null &&
+			sowbSerializeBlockFormNow( $form ) === snapshotJson;
+	} );
+};
+
+/**
  * Whether the editor is as it was when the save bridge started reading the
  * forms: no block or post edit since, and every form it read still in place
  * and holding the values that were read.
@@ -1603,17 +1627,56 @@ const sowbIsEditorUndisturbed = ( bridge ) => {
 		return false;
 	}
 
-	return bridge.clientIds.every( ( clientId ) => {
-		const $readForm = bridge.formsByClientId[ clientId ];
-		const $form = sowbGetBlockForm( clientId );
-		const snapshotJson = bridge.snapshotJsonByClientId[ clientId ];
+	return sowbAreFormsAsRead( bridge );
+};
 
-		return sowbIsDirectWidgetBlock( blockEditorSelect.getBlock( clientId ) ) &&
-			$form.length > 0 &&
-			$form[0] === $readForm[0] &&
-			snapshotJson !== null &&
-			sowbSerializeBlockFormNow( $form ) === snapshotJson;
+/**
+ * Whether the only thing that changed in the editor during the save bridge's
+ * block update is that update: every other block and post edit is as it was
+ * just before, each updated block holds the values written, and every form
+ * still holds the values that were read.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ * @param {Object} before The post's edits, and every block's attributes by client ID, just before the update.
+ *
+ * @returns {boolean}
+ */
+const sowbIsEditorAsWritten = ( bridge, before ) => {
+	const blockEditorSelect = wp.data.select( 'core/block-editor' );
+	const clientIds = blockEditorSelect.getClientIdsWithDescendants();
+	const postEdits = bridge.getPostEdits() || {};
+
+	// The update itself is reported to the post as its blocks and selection.
+	const isOwnEdit = ( key ) => key === 'blocks' || key === 'selection';
+	const editKeys = Object.keys( postEdits ).filter( ( key ) => ! isOwnEdit( key ) );
+	const editKeysBefore = Object.keys( before.postEdits ).filter( ( key ) => ! isOwnEdit( key ) );
+
+	if (
+		editKeys.length !== editKeysBefore.length ||
+		! editKeys.every( ( key ) => postEdits[ key ] === before.postEdits[ key ] )
+	) {
+		return false;
+	}
+
+	if (
+		clientIds.length !== before.clientIds.length ||
+		! clientIds.every( ( clientId, index ) => clientId === before.clientIds[ index ] )
+	) {
+		return false;
+	}
+
+	const areBlocksAsWritten = clientIds.every( ( clientId ) => {
+		const attributes = blockEditorSelect.getBlockAttributes( clientId );
+
+		if ( ! Object.prototype.hasOwnProperty.call( bridge.widgetDataByClientId, clientId ) ) {
+			return attributes === before.attributesByClientId[ clientId ];
+		}
+
+		return attributes &&
+			attributes.widgetData === bridge.widgetDataByClientId[ clientId ];
 	} );
+
+	return areBlocksAsWritten && sowbAreFormsAsRead( bridge );
 };
 
 /**
@@ -1628,9 +1691,11 @@ const sowbIsEditorUndisturbed = ( bridge ) => {
  * @param {Object} bridge The bridge's state for this save.
  */
 const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
+	const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
+	const editorDispatch = wp.data.dispatch( 'core/editor' );
+	let isNextChangeMarked = false;
+
 	try {
-		const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
-		const editorDispatch = wp.data.dispatch( 'core/editor' );
 
 		if (
 			bridge.isAutosave ||
@@ -1645,7 +1710,16 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 		}
 
 		const blockEditorSelect = wp.data.select( 'core/block-editor' );
-		const contentEdit = bridge.getPostEdits().content;
+		const before = {
+			postEdits: bridge.getPostEdits() || {},
+			clientIds: blockEditorSelect.getClientIdsWithDescendants(),
+			attributesByClientId: {},
+		};
+
+		before.clientIds.forEach( ( clientId ) => {
+			before.attributesByClientId[ clientId ] = blockEditorSelect.getBlockAttributes( clientId );
+		} );
+
 		const attrsByClientId = bridge.clientIds.reduce( ( attributes, clientId ) => {
 			attributes[ clientId ] = {
 				widgetData: bridge.widgetDataByClientId[ clientId ],
@@ -1657,19 +1731,13 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 		// Not persistent: the blocks change without a new content edit or undo
 		// step. The map is keyed by client ID, which the third argument says.
 		blockEditorDispatch.__unstableMarkNextChangeAsNotPersistent();
+		isNextChangeMarked = true;
 		blockEditorDispatch.updateBlockAttributes( bridge.clientIds, attrsByClientId, true );
+		isNextChangeMarked = false;
 
 		// A store subscriber can edit the editor during that dispatch. If one
-		// did, the rest is not written.
-		const isAsWritten = bridge.getPostEdits().content === contentEdit &&
-			bridge.clientIds.every( ( clientId ) => {
-				const block = blockEditorSelect.getBlock( clientId );
-
-				return block &&
-					block.attributes.widgetData === bridge.widgetDataByClientId[ clientId ];
-			} );
-
-		if ( ! isAsWritten ) {
+		// did, the blocks keep what is being saved and the rest is not written.
+		if ( ! sowbIsEditorAsWritten( bridge, before ) ) {
 			sowbForgetFormRecords( bridge.formsByClientId );
 			return;
 		}
@@ -1688,6 +1756,16 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 	} catch ( err ) {
 		console.error( 'SiteOrigin Widgets: could not update the editor with the saved widget values', err );
 		sowbForgetFormRecords( bridge.formsByClientId );
+
+		// The mark applies to the next block change. If the update never
+		// happened, use the mark up, so it can't fall on an edit of the user's.
+		if ( isNextChangeMarked ) {
+			try {
+				blockEditorDispatch.__unstableMarkLastChangeAsPersistent();
+			} catch ( markErr ) {
+				console.error( 'SiteOrigin Widgets: could not clear the editor change mark', markErr );
+			}
+		}
 	}
 };
 

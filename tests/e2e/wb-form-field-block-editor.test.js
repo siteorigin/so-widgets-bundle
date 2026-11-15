@@ -1591,55 +1591,83 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 		} );
 	}
 
-	test( 'an edit made by other code while the blocks are updated is kept, and the post stays dirty', async ( { page } ) => {
-		const { admin, post, attachment } = fixture;
-		const imageId = String( attachment.id );
-		const paragraphId = await page.evaluate( () => {
-			const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
+	// Each is made by a store subscriber, as soon as the widget block holds the image.
+	const SUBSCRIBER_EDITS = [
+		{
+			name: 'a paragraph',
+			edit: 'paragraph',
+			kept: ( saved ) => expect( saved.content ).toContain( 'Edited by a subscriber' ),
+		},
+		{
+			name: 'the post title',
+			edit: 'title',
+			kept: ( saved ) => expect( saved.title ).toBe( 'Retitled by a subscriber' ),
+		},
+	];
 
-			window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
+	for ( const subscriber of SUBSCRIBER_EDITS ) {
+		test( `an edit to ${ subscriber.name } by other code while the blocks are updated is kept, and the post stays dirty`, async ( { page } ) => {
+			const { admin, attachment } = fixture;
+			const imageId = String( attachment.id );
+			const paragraphId = await page.evaluate( () => {
+				const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
 
-			return block.clientId;
-		} );
-		const clientId = await insertWidget( admin, IMAGE_BLOCK );
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
 
-		// Let the forms finish loading before their fields are set.
-		await waitForWidgetPreviews( page, fixture.previews );
-		await setIframeFieldValue( page, clientId, 'image', imageId );
-
-		// Edits the paragraph once, as soon as the widget block holds the image.
-		await page.evaluate( ( { widgetId, paragraph, image } ) => {
-			const select = window.wp.data.select( 'core/block-editor' );
-			let done = false;
-
-			window.wp.data.subscribe( () => {
-				const block = select.getBlock( widgetId );
-
-				if ( done || ! block || String( ( block.attributes.widgetData || {} ).image ) !== image ) {
-					return;
-				}
-
-				done = true;
-				window.wp.data.dispatch( 'core/block-editor' )
-					.updateBlockAttributes( paragraph, { content: 'Edited by a subscriber' } );
+				return block.clientId;
 			} );
-		}, { widgetId: clientId, paragraph: paragraphId, image: imageId } );
+			const clientId = await insertWidget( admin, IMAGE_BLOCK );
 
-		await saveAndCapture( page, fixture );
+			// Let the forms finish loading before their fields are set.
+			await waitForWidgetPreviews( page, fixture.previews );
+			await setIframeFieldValue( page, clientId, 'image', imageId );
 
-		const block = await readWidgetBlock( page, clientId );
-		expect( String( block.widgetData.image ) ).toBe( imageId );
-		expect( block.record ).toBeNull();
+			await page.evaluate( ( { widgetId, paragraph, image, edit } ) => {
+				const select = window.wp.data.select( 'core/block-editor' );
+				let done = false;
 
-		const saved = await readPost( page );
-		expect( saved.content ).toContain( 'Edited by a subscriber' );
-		expect( saved.dirty ).toBe( true );
-	} );
+				window.wp.data.subscribe( () => {
+					const block = select.getBlock( widgetId );
+
+					if ( done || ! block || String( ( block.attributes.widgetData || {} ).image ) !== image ) {
+						return;
+					}
+
+					done = true;
+
+					if ( edit === 'title' ) {
+						window.wp.data.dispatch( 'core/editor' ).editPost( { title: 'Retitled by a subscriber' } );
+						return;
+					}
+
+					window.wp.data.dispatch( 'core/block-editor' )
+						.updateBlockAttributes( paragraph, { content: 'Edited by a subscriber' } );
+				} );
+			}, { widgetId: clientId, paragraph: paragraphId, image: imageId, edit: subscriber.edit } );
+
+			await saveAndCapture( page, fixture );
+
+			// The block holds what was saved; nothing more was written.
+			const block = await readWidgetBlock( page, clientId );
+			expect( String( block.widgetData.image ) ).toBe( imageId );
+			expect( block.record ).toBeNull();
+
+			const saved = await readPost( page );
+			subscriber.kept( saved );
+			expect( saved.dirty ).toBe( true );
+		} );
+	}
 
 	for ( const failing of [ 'updateBlockAttributes', 'editPost' ] ) {
 		test( `the save still carries the form values when ${ failing } throws`, async ( { page } ) => {
-			const { admin, post, attachment } = fixture;
-			const imageId = String( attachment.id );
+			const { admin } = fixture;
+			const paragraphId = await page.evaluate( () => {
+				const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
+
+				return block.clientId;
+			} );
 			const clientId = await insertWidget( admin, EDITOR_BLOCK );
 
 			// Let the forms finish loading before their fields are set.
@@ -1680,7 +1708,22 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			// With no record, a change back to the value last reported still reaches the block.
 			await setIframeFieldValue( page, clientId, 'title', 'Reported', true );
 			expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Reported' );
-			expect( imageId ).toBeTruthy();
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			// The next ordinary edit is still an ordinary one: recorded, and undone by one Undo.
+			const paragraphContent = () => page.evaluate(
+				( id ) => String( window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).content ),
+				paragraphId
+			);
+
+			await page.evaluate( ( id ) => {
+				window.wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( id, { content: 'Edited after the failure' } );
+			}, paragraphId );
+			expect( await paragraphContent() ).toBe( 'Edited after the failure' );
+			expect( ( await readPost( page ) ).dirty ).toBe( true );
+
+			await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
+			expect( await paragraphContent() ).toBe( 'Paragraph' );
 		} );
 	}
 } );
