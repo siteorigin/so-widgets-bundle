@@ -1589,6 +1589,8 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 		{
 			name: 'the first widget changes with a change event',
 			run: ( page, ids ) => setIframeFieldValue( page, ids.editor, 'title', 'Changed during save', true ),
+			// Its own change handler gives the block the new value.
+			firstWidgetTitle: 'Changed during save',
 		},
 		{
 			name: 'the first widget changes with no change event',
@@ -1635,50 +1637,80 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 
 			// Let the forms finish loading before their fields are set.
 			await waitForWidgetPreviews( page, fixture.previews );
+
+			// Both forms hold a value their block doesn't have yet.
+			await setIframeFieldValue( page, ids.editor, 'title', 'Unsynced before save' );
 			await setIframeFieldValue( page, ids.image, 'image', imageId );
 
 			await waitForWidgetPreviews( page, fixture.previews );
 
+			const firstBefore = await readWidgetBlock( page, ids.editor );
 			const before = await readWidgetBlock( page, ids.image );
+			expect( firstBefore.widgetData.title ).not.toBe( 'Unsynced before save' );
+			expect( String( before.widgetData.image ) ).not.toBe( imageId );
+
 			await holdSnapshot( page, 2 );
 
 			const save = clickSaveAndCaptureContent( page, post.id );
 			await page.waitForFunction( () => window.sowbTestHold.held );
+
+			// From here on, note any content the editor is told to record. The
+			// editor's own, made before the bridge runs, is already behind us.
+			await page.evaluate( () => {
+				const dispatch = window.wp.data.dispatch( 'core/editor' );
+				const original = dispatch.editPost;
+
+				window.sowbTestContentEdits = [];
+				dispatch.editPost = function( edits, ...rest ) {
+					if ( edits && Object.prototype.hasOwnProperty.call( edits, 'content' ) ) {
+						window.sowbTestContentEdits.push( typeof edits.content );
+					}
+
+					return original.call( this, edits, ...rest );
+				};
+			} );
+
 			await disturbance.run( page, ids );
-
-
-			// What the first widget holds once the change has been made, before
-			// the bridge goes on. It is gone when its block was removed.
-			const firstWidgetExists = () => page.evaluate(
-				( id ) => !! window.wp.data.select( 'core/block-editor' ).getBlock( id ),
-				ids.editor
-			);
-			const firstBefore = await firstWidgetExists() ? await readWidgetBlock( page, ids.editor ) : null;
-
 			await page.evaluate( () => window.sowbTestHold.release() );
 
 			const sent = await save;
 			await waitForSaveToEnd( page );
 
-			// The save still carries the form's values.
+			// The save still carries both forms' values as they were read.
+			expect( sent ).toContain( '"title":"Unsynced before save"' );
 			expect( sent ).toMatch( new RegExp( `"image":"?${ imageId }"?[,}]` ) );
 
-			// The editor is left to its own edits: neither widget block, neither
-			// form record, and the recorded content is not what was sent.
+			// The bridge wrote nothing to the editor. The second widget and its
+			// form record are as they were before the save.
 			const after = await readWidgetBlock( page, ids.image );
 			expect( after.widgetData ).toEqual( before.widgetData );
 			expect( after.record ).toEqual( before.record );
 			expectNoClientIdAttributes( after );
 
-			if ( firstBefore ) {
+			// So is the first, unless it changed itself or was removed. It never
+			// holds the value that only the bridge had read.
+			const firstExists = await page.evaluate(
+				( id ) => !! window.wp.data.select( 'core/block-editor' ).getBlock( id ),
+				ids.editor
+			);
+
+			if ( firstExists ) {
 				const firstAfter = await readWidgetBlock( page, ids.editor );
 
-				expect( firstAfter.widgetData ).toEqual( firstBefore.widgetData );
-				expect( firstAfter.record ).toEqual( firstBefore.record );
+				expect( firstAfter.widgetData.title ).not.toBe( 'Unsynced before save' );
 				expectNoClientIdAttributes( firstAfter );
+
+				if ( disturbance.firstWidgetTitle ) {
+					expect( firstAfter.widgetData.title ).toBe( disturbance.firstWidgetTitle );
+					expect( firstAfter.record.title ).toBe( disturbance.firstWidgetTitle );
+				} else {
+					expect( firstAfter.widgetData ).toEqual( firstBefore.widgetData );
+					expect( firstAfter.record ).toEqual( firstBefore.record );
+				}
 			}
 
-			expect( ( await readContentEdit( page ) ).text ).not.toBe( sent );
+			// No content was recorded for the post, and it is still unsaved.
+			expect( await page.evaluate( () => window.sowbTestContentEdits ) ).toEqual( [] );
 			expect( ( await readPost( page ) ).dirty ).toBe( true );
 		} );
 	}
