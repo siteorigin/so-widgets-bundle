@@ -9,16 +9,12 @@ const {
 	setupRequestUtils,
 } = common;
 
-// Join a REST path to WP_BASE_URL for the raw fetch() calls that carry their
-// own auth. Normalizing the base to end in a slash keeps this correct for both
-// a root install (CI default, no trailing slash) and a subdirectory install.
-const restUrl = ( relativePath ) => {
-	const base = process.env.WP_BASE_URL.endsWith( '/' )
-		? process.env.WP_BASE_URL
-		: `${ process.env.WP_BASE_URL }/`;
-
-	return new URL( relativePath, base ).toString();
-};
+const {
+	call,
+	createUserSession,
+	deleteUsers,
+	expectSessionRole,
+} = require( './helpers/widget-block-abilities' );
 
 // Mirror serialize_block_attributes() so seeded content matches what the
 // block editor stores. Quotes stay as JSON escapes; none of these can
@@ -77,47 +73,6 @@ const deletePost = ( requestUtils, postId ) => requestUtils.rest( {
 	params: { force: true },
 } ).catch( () => {} );
 
-// Create an author (no unfiltered_html) with an application password, and
-// return a POST helper that saves a post as that author.
-const createAuthor = async ( requestUtils, slug ) => {
-	const suffix = `${ Date.now() }-${ Math.floor( Math.random() * 1e6 ) }`;
-	const author = await requestUtils.rest( {
-		method: 'POST',
-		path: '/wp/v2/users',
-		params: {
-			username: `wbanchor-${ slug }-${ suffix }`,
-			email: `wbanchor-${ slug }-${ suffix }@example.com`,
-			password: `wbanchor-pass-${ suffix }!A1`,
-			roles: [ 'author' ],
-		},
-	} );
-
-	const appPassword = await requestUtils.rest( {
-		method: 'POST',
-		path: `/wp/v2/users/${ author.id }/application-passwords`,
-		params: { name: 'wbanchor-e2e' },
-	} );
-
-	const createPost = ( body ) => fetch( restUrl( 'wp-json/wp/v2/posts' ), {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: 'Basic ' + Buffer.from(
-				`${ author.username }:${ appPassword.password }`
-			).toString( 'base64' ),
-		},
-		body: JSON.stringify( body ),
-	} );
-
-	return { author, createPost };
-};
-
-const deleteUser = ( requestUtils, userId ) => requestUtils.rest( {
-	method: 'DELETE',
-	path: `/wp/v2/users/${ userId }`,
-	params: { force: true, reassign: 1 },
-} ).catch( () => {} );
-
 const expectValidSaved = async ( requestUtils, page, post ) => {
 	const raw = await getRaw( requestUtils, post.id );
 	expect( raw ).toContain( '"anchor":"pricing"' );
@@ -167,21 +122,25 @@ test(
 	'A user without unfiltered_html keeps a valid anchor and CSS class on save.',
 	async ( { page } ) => {
 		const requestUtils = await setupRequestUtils();
-		let author = null;
+		const created = [];
+		let session = null;
 		let postId = null;
 
 		try {
-			const session = await createAuthor( requestUtils, 'valid' );
-			author = session.author;
+			// An author has no unfiltered_html. Application passwords need HTTPS
+			// or a local environment, so the author acts through its login cookie
+			// and a REST nonce, which work on any test site.
+			session = await createUserSession( requestUtils, 'author', created );
+			await expectSessionRole( session, 'author' );
 
-			const response = await session.createPost( {
+			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
 				status: 'publish',
 				title: 'WB anchor class - author button',
 				content: buttonBlock( VALID ),
 			} );
 			expect( response.status ).toBe( 201 );
 
-			const saved = await response.json();
+			const saved = response.body;
 			postId = saved.id;
 
 			await expectValidSaved( requestUtils, page, saved );
@@ -190,9 +149,11 @@ test(
 				await deletePost( requestUtils, postId );
 			}
 
-			if ( author ) {
-				await deleteUser( requestUtils, author.id );
+			if ( session ) {
+				await session.context.dispose();
 			}
+
+			await deleteUsers( requestUtils, created );
 		}
 	}
 );
@@ -248,21 +209,25 @@ test(
 	async ( { page } ) => {
 		const requestUtils = await setupRequestUtils();
 		const content = buttonBlock( HOSTILE ) + '\n\n' + editorBlock( HOSTILE );
-		let author = null;
+		const created = [];
+		let session = null;
 		const postIds = [];
 
 		try {
-			const session = await createAuthor( requestUtils, 'hostile' );
-			author = session.author;
+			// An author has no unfiltered_html. Application passwords need HTTPS
+			// or a local environment, so the author acts through its login cookie
+			// and a REST nonce, which work on any test site.
+			session = await createUserSession( requestUtils, 'author', created );
+			await expectSessionRole( session, 'author' );
 
-			const response = await session.createPost( {
+			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
 				status: 'publish',
 				title: 'WB anchor class - author hostile',
 				content,
 			} );
 			expect( response.status ).toBe( 201 );
 
-			const authorPost = await response.json();
+			const authorPost = response.body;
 			postIds.push( authorPost.id );
 			await expectHostileDropped( page, authorPost );
 
@@ -282,9 +247,11 @@ test(
 				await deletePost( requestUtils, postId );
 			}
 
-			if ( author ) {
-				await deleteUser( requestUtils, author.id );
+			if ( session ) {
+				await session.context.dispose();
 			}
+
+			await deleteUsers( requestUtils, created );
 		}
 	}
 );

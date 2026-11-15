@@ -557,8 +557,15 @@ test(
 			const preSaveBlockState = await findDirectBlockState( page, blockName );
 			await attachBlockDiagnostics( testInfo, 'pre-save-image-widget-attrs.json', preSaveBlockState );
 
+			// The field's value is set without a change event, so the block's
+			// attributes are stale and only the save itself can carry the value.
+			const preSaveWidgetData = preSaveBlockState.attributes.widgetData || {};
+			expect( String( preSaveWidgetData.image || '' ) ).not.toBe( attachmentId );
+
+			// The form reads a hidden input's value as text, so the ID is saved
+			// quoted; an unquoted ID is the same image.
 			const savedContent = await clickSaveAndCaptureContent( page, post.id );
-			expect( savedContent ).toContain( `"image":${ attachmentId }` );
+			expect( savedContent ).toMatch( new RegExp( `"image":"?${ attachmentId }"?[,}]` ) );
 
 			const postSaveBlockState = await findDirectBlockState( page, blockName );
 			expect( String( postSaveBlockState.attributes.widgetData.image ) ).toBe( attachmentId );
