@@ -9,16 +9,11 @@ const {
 	setupRequestUtils,
 } = common;
 
-// Join a REST path to WP_BASE_URL for the raw fetch() calls that carry their
-// own auth. Normalizing the base to end in a slash keeps this correct for both
-// a root install (CI default, no trailing slash) and a subdirectory install.
-const restUrl = ( relativePath ) => {
-	const base = process.env.WP_BASE_URL.endsWith( '/' )
-		? process.env.WP_BASE_URL
-		: `${ process.env.WP_BASE_URL }/`;
-
-	return new URL( relativePath, base ).toString();
-};
+const {
+	call,
+	createUserSession,
+	deleteUsers,
+} = require( './helpers/widget-block-abilities' );
 
 // Mirror serialize_block_attributes() so seeded content matches what the
 // block editor stores. Quotes stay as JSON escapes; none of these can
@@ -38,6 +33,22 @@ const editorWidgetBlock = ( text ) => `<!-- wp:sowb/siteorigin-widget-editor-wid
 		text_selected_editor: 'tinymce',
 	},
 } ) } /-->`;
+
+// Create an author (no unfiltered_html) and log it in. Application passwords
+// need HTTPS or a local environment, so the author acts through its login
+// cookie and a REST nonce, which work on any test site. The created user is
+// pushed to `created` for the caller to delete.
+const createAuthorSession = async ( requestUtils, created ) => {
+	const session = await createUserSession( requestUtils, 'author', created );
+
+	// The requests that follow really are the author's.
+	const me = await call( session, 'GET', 'wp-json/wp/v2/users/me?context=edit' );
+	expect( me.status ).toBe( 200 );
+	expect( me.body.id ).toBe( session.id );
+	expect( me.body.roles ).toEqual( [ 'author' ] );
+
+	return session;
+};
 
 test(
 	'Editor widget block keeps an admin authored iframe for logged out visitors.',
@@ -99,47 +110,23 @@ test(
 	'Editor widget block content from a user without unfiltered_html is sanitized at save.',
 	async () => {
 		const requestUtils = await setupRequestUtils();
-		const suffix = Date.now();
-		let author = null;
+		const created = [];
+		let session = null;
 		let postId = null;
 
 		try {
-			author = await requestUtils.rest( {
-				method: 'POST',
-				path: '/wp/v2/users',
-				params: {
-					username: `wbcap-author-${ suffix }`,
-					email: `wbcap-author-${ suffix }@example.com`,
-					password: `wbcap-pass-${ suffix }!A1`,
-					roles: [ 'author' ],
-				},
-			} );
+			session = await createAuthorSession( requestUtils, created );
 
-			const appPassword = await requestUtils.rest( {
-				method: 'POST',
-				path: `/wp/v2/users/${ author.id }/application-passwords`,
-				params: { name: 'wbcap-e2e' },
-			} );
-
-			const response = await fetch( restUrl( 'wp-json/wp/v2/posts' ), {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Basic ' + Buffer.from(
-						`${ author.username }:${ appPassword.password }`
-					).toString( 'base64' ),
-				},
-				body: JSON.stringify( {
-					status: 'draft',
-					title: 'WB render capability - author save',
-					content: editorWidgetBlock(
-						'<p>keep</p><script>alert(1)</script><iframe src="https://example.com/frame"></iframe>'
-					),
-				} ),
+			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
+				status: 'draft',
+				title: 'WB render capability - author save',
+				content: editorWidgetBlock(
+					'<p>keep</p><script>alert(1)</script><iframe src="https://example.com/frame"></iframe>'
+				),
 			} );
 			expect( response.status ).toBe( 201 );
 
-			const saved = await response.json();
+			const saved = response.body;
 			postId = saved.id;
 
 			// Core kses runs at save under the saving user: tags are stripped
@@ -157,13 +144,11 @@ test(
 				} ).catch( () => {} );
 			}
 
-			if ( author ) {
-				await requestUtils.rest( {
-					method: 'DELETE',
-					path: `/wp/v2/users/${ author.id }`,
-					params: { force: true, reassign: 1 },
-				} ).catch( () => {} );
+			if ( session ) {
+				await session.context.dispose();
 			}
+
+			await deleteUsers( requestUtils, created );
 		}
 	}
 );
@@ -176,46 +161,25 @@ test(
 		// reach it. The block does not register widgetData/widgetClass server
 		// side, so the core block-renderer schema rejects them before render.
 		const requestUtils = await setupRequestUtils();
-		const suffix = Date.now();
-		let author = null;
+		const created = [];
+		let session = null;
 
 		try {
-			author = await requestUtils.rest( {
-				method: 'POST',
-				path: '/wp/v2/users',
-				params: {
-					username: `wbcap-prev-${ suffix }`,
-					email: `wbcap-prev-${ suffix }@example.com`,
-					password: `wbcap-prev-${ suffix }!A1`,
-					roles: [ 'author' ],
-				},
-			} );
+			session = await createAuthorSession( requestUtils, created );
 
-			const appPassword = await requestUtils.rest( {
-				method: 'POST',
-				path: `/wp/v2/users/${ author.id }/application-passwords`,
-				params: { name: 'wbcap-preview-e2e' },
-			} );
-
-			const auth = 'Basic ' + Buffer.from(
-				`${ author.username }:${ appPassword.password }`
-			).toString( 'base64' );
-
-			const response = await fetch(
-				restUrl( 'wp-json/wp/v2/block-renderer/sowb/siteorigin-widget-editor-widget?context=edit' ),
+			const response = await call(
+				session,
+				'POST',
+				'wp-json/wp/v2/block-renderer/sowb/siteorigin-widget-editor-widget?context=edit',
 				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json', Authorization: auth },
-					body: JSON.stringify( {
-						attributes: {
-							widgetClass: 'SiteOrigin_Widget_Editor_Widget',
-							widgetData: {
-								text: '<script>alert(1)</script>',
-								text_selected_editor: 'tinymce',
-								autop: false,
-							},
+					attributes: {
+						widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+						widgetData: {
+							text: '<script>alert(1)</script>',
+							text_selected_editor: 'tinymce',
+							autop: false,
 						},
-					} ),
+					},
 				}
 			);
 
@@ -223,7 +187,7 @@ test(
 			// Pin the actual boundary: the widgetData/widgetClass properties are
 			// refused because they are not registered server side.
 			expect( response.status ).toBe( 400 );
-			const body = await response.json();
+			const body = response.body;
 			expect( body.code ).toBe( 'rest_invalid_param' );
 			expect( body.data?.params?.attributes ).toMatch( /widgetClass/ );
 			expect( body.data?.details?.attributes?.code ).toBe(
@@ -231,13 +195,11 @@ test(
 			);
 			expect( JSON.stringify( body ) ).not.toContain( '<script>alert(1)' );
 		} finally {
-			if ( author ) {
-				await requestUtils.rest( {
-					method: 'DELETE',
-					path: `/wp/v2/users/${ author.id }`,
-					params: { force: true, reassign: 1 },
-				} ).catch( () => {} );
+			if ( session ) {
+				await session.context.dispose();
 			}
+
+			await deleteUsers( requestUtils, created );
 		}
 	}
 );
