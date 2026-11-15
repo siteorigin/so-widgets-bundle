@@ -13,6 +13,7 @@ const {
 	call,
 	createUserSession,
 	deleteUsers,
+	expectSessionRole,
 } = require( './helpers/widget-block-abilities' );
 
 // Mirror serialize_block_attributes() so seeded content matches what the
@@ -72,22 +73,6 @@ const deletePost = ( requestUtils, postId ) => requestUtils.rest( {
 	params: { force: true },
 } ).catch( () => {} );
 
-// Create an author (no unfiltered_html) and log it in. Application passwords
-// need HTTPS or a local environment, so the author acts through its login
-// cookie and a REST nonce, which work on any test site. The created user is
-// pushed to `created` for the caller to delete.
-const createAuthorSession = async ( requestUtils, created ) => {
-	const session = await createUserSession( requestUtils, 'author', created );
-
-	// The requests that follow really are the author's.
-	const me = await call( session, 'GET', 'wp-json/wp/v2/users/me?context=edit' );
-	expect( me.status ).toBe( 200 );
-	expect( me.body.id ).toBe( session.id );
-	expect( me.body.roles ).toEqual( [ 'author' ] );
-
-	return session;
-};
-
 const expectValidSaved = async ( requestUtils, page, post ) => {
 	const raw = await getRaw( requestUtils, post.id );
 	expect( raw ).toContain( '"anchor":"pricing"' );
@@ -142,7 +127,11 @@ test(
 		let postId = null;
 
 		try {
-			session = await createAuthorSession( requestUtils, created );
+			// An author has no unfiltered_html. Application passwords need HTTPS
+			// or a local environment, so the author acts through its login cookie
+			// and a REST nonce, which work on any test site.
+			session = await createUserSession( requestUtils, 'author', created );
+			await expectSessionRole( session, 'author' );
 
 			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
 				status: 'publish',
@@ -225,7 +214,11 @@ test(
 		const postIds = [];
 
 		try {
-			session = await createAuthorSession( requestUtils, created );
+			// An author has no unfiltered_html. Application passwords need HTTPS
+			// or a local environment, so the author acts through its login cookie
+			// and a REST nonce, which work on any test site.
+			session = await createUserSession( requestUtils, 'author', created );
+			await expectSessionRole( session, 'author' );
 
 			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
 				status: 'publish',

@@ -557,8 +557,8 @@ test(
 			const preSaveBlockState = await findDirectBlockState( page, blockName );
 			await attachBlockDiagnostics( testInfo, 'pre-save-image-widget-attrs.json', preSaveBlockState );
 
-			// The field changed without a change event, so the block's attributes
-			// are stale and only the save itself can carry the value.
+			// The field's value is set without a change event, so the block's
+			// attributes are stale and only the save itself can carry the value.
 			const preSaveWidgetData = preSaveBlockState.attributes.widgetData || {};
 			expect( String( preSaveWidgetData.image || '' ) ).not.toBe( attachmentId );
 
