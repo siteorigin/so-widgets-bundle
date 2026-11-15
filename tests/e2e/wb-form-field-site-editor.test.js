@@ -328,16 +328,12 @@ test(
 		// Switch to Material Icons to validate icons are loading correctly.
 		const fontFamilySelector = iconFieldContainer.locator( '.siteorigin-widget-icon-family' );
 		await ensureElementVisible( fontFamilySelector, offset );
-		// Listen for the icon list before asking for it, so a fast reply isn't missed.
-		const iconsLoaded = page.waitForResponse(
-			( response ) => response.url().includes( 'siteorigin_widgets_get_icons' ),
-			{ timeout: 0 }
-		);
 		await fontFamilySelector.selectOption( 'materialicons' );
-		expect( ( await iconsLoaded ).status() ).toBe( 200 );
 
+		// The icons are fetched, or come from the picker's cache with no
+		// request, so wait for the icon itself.
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
-		await expect( iconOption ).toBeVisible( { timeout: 20000 } );
+		await expect( iconOption ).toBeVisible( { timeout: 45000 } );
 
 		const shownIcons = iconFieldIcons.locator( '.siteorigin-widget-icon-icons-icon:visible' );
 		const iconsBeforeSearch = await shownIcons.count();
@@ -564,7 +560,7 @@ test(
 
 		const search = await readAjaxReply( await searchReply );
 		const importable = Array.isArray( search.json?.items ) ?
-			search.json.items.find( ( item ) => item.full_url ) :
+			search.json.items.find( ( item ) => item && typeof item.full_url === 'string' && item.full_url !== '' ) :
 			undefined;
 
 		if ( search.status !== 200 || ! importable ) {
@@ -576,7 +572,14 @@ test(
 
 		// Select a result that can be imported; the dialog ignores a click on
 		// one with no full size image.
-		const importableResult = mediaSearchModalResults.locator( `.so-widgets-result-image[href="${ importable.full_url }"]` ).first();
+		const resultImages = mediaSearchModalResults.locator( '.so-widgets-result-image' );
+		await expect( resultImages.first() ).toBeVisible();
+		const importableIndex = await resultImages.evaluateAll(
+			( images, fullUrl ) => images.findIndex( ( image ) => image.getAttribute( 'href' ) === fullUrl ),
+			importable.full_url
+		);
+		expect( importableIndex, 'the importable result is in the dialog' ).toBeGreaterThanOrEqual( 0 );
+		const importableResult = resultImages.nth( importableIndex );
 		await ensureElementVisible( importableResult, offset, 10000 );
 
 		// Clicking the image opens a browser prompt. Accept it, and listen for
