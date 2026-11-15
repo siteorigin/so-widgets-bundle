@@ -1616,6 +1616,12 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			kept: ( saved, state ) => expect( state.paragraphLocal ).toBe( 'set-by-a-subscriber' ),
 		},
 		{
+			// Two identical paragraphs swap places, so the content reads the same.
+			name: 'the order of two identical paragraphs',
+			edit: 'swap',
+			kept: ( saved, state ) => expect( state.firstTwo ).toEqual( state.twinsSwapped ),
+		},
+		{
 			name: 'where the paragraph sits, moved into a Group',
 			edit: 'move',
 			kept: ( saved ) => expect( saved.content ).toMatch( /wp:group[\s\S]*Paragraph[\s\S]*\/wp:group/ ),
@@ -1633,6 +1639,14 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 
 				return block.clientId;
 			} );
+			// Two identical paragraphs, first in the post.
+			const twinIds = await page.evaluate( () => {
+				const twins = [ 0, 1 ].map( () => window.wp.blocks.createBlock( 'core/paragraph', { content: 'Twin' } ) );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlocks( twins, 0 );
+
+				return twins.map( ( twin ) => twin.clientId );
+			} );
 			// A Group that holds a block of its own, for a block to be moved into.
 			const groupId = await page.evaluate( () => {
 				const group = window.wp.blocks.createBlock( 'core/group', { layout: { type: 'constrained' } }, [
@@ -1649,7 +1663,7 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			await waitForWidgetPreviews( page, fixture.previews );
 			await setIframeFieldValue( page, clientId, 'image', imageId );
 
-			await page.evaluate( ( { widgetId, paragraph, group, image, edit } ) => {
+			await page.evaluate( ( { widgetId, paragraph, group, twins, image, edit } ) => {
 				const select = window.wp.data.select( 'core/block-editor' );
 				let done = false;
 
@@ -1673,6 +1687,14 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 						return;
 					}
 
+					if ( edit === 'swap' ) {
+						const dispatch = window.wp.data.dispatch( 'core/block-editor' );
+
+						dispatch.__unstableMarkNextChangeAsNotPersistent();
+						dispatch.moveBlockToPosition( twins[ 0 ], '', '', 1 );
+						return;
+					}
+
 					if ( edit === 'local' ) {
 						const dispatch = window.wp.data.dispatch( 'core/block-editor' );
 
@@ -1690,7 +1712,7 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 					window.wp.data.dispatch( 'core/block-editor' )
 						.updateBlockAttributes( paragraph, { content: 'Edited by a subscriber' } );
 				} );
-			}, { widgetId: clientId, paragraph: paragraphId, group: groupId, image: imageId, edit: subscriber.edit } );
+			}, { widgetId: clientId, paragraph: paragraphId, group: groupId, twins: twinIds, image: imageId, edit: subscriber.edit } );
 
 			await saveAndCapture( page, fixture );
 
@@ -1705,6 +1727,10 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 					( id ) => window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).sowbTestLocal,
 					paragraphId
 				),
+				firstTwo: await page.evaluate(
+					() => window.wp.data.select( 'core/block-editor' ).getBlockOrder().slice( 0, 2 )
+				),
+				twinsSwapped: [ twinIds[ 1 ], twinIds[ 0 ] ],
 			} );
 			expect( saved.dirty ).toBe( true );
 		} );

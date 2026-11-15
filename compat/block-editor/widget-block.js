@@ -1637,7 +1637,7 @@ const sowbIsEditorUndisturbed = ( bridge ) => {
  * content being saved, and every form still holds the values that were read.
  *
  * @param {Object} bridge The bridge's state for this save.
- * @param {Object} before The post's edits and each block's attributes, by client ID, just before the update.
+ * @param {Object} before The post's edits, the blocks' order and parents, and each block's attributes, just before the update.
  *
  * @returns {boolean}
  */
@@ -1658,11 +1658,20 @@ const sowbIsEditorAsWritten = ( bridge, before ) => {
 		return false;
 	}
 
-	// An attribute that isn't saved in the content can change too, so each
-	// block's attributes are compared as well as the content below.
+	// An attribute that isn't saved in the content can change, and identical
+	// blocks can swap places, without the content changing. So the blocks are
+	// compared one by one as well as by the content below.
 	const clientIds = blockEditorSelect.getClientIdsWithDescendants();
-	const areAttributesAsWritten = clientIds.length === Object.keys( before.attributesByClientId ).length &&
-		clientIds.every( ( clientId ) => {
+	const areAttributesAsWritten = clientIds.length === before.clientIds.length &&
+		clientIds.every( ( clientId, index ) => {
+			// The same blocks, in the same order, under the same parents.
+			if (
+				clientId !== before.clientIds[ index ] ||
+				blockEditorSelect.getBlockRootClientId( clientId ) !== before.parentsByClientId[ clientId ]
+			) {
+				return false;
+			}
+
 			const attributes = blockEditorSelect.getBlockAttributes( clientId );
 			const attributesBefore = before.attributesByClientId[ clientId ];
 
@@ -1722,10 +1731,13 @@ const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
 		const blockEditorSelect = wp.data.select( 'core/block-editor' );
 		const before = {
 			postEdits: bridge.getPostEdits() || {},
+			clientIds: blockEditorSelect.getClientIdsWithDescendants(),
+			parentsByClientId: {},
 			attributesByClientId: {},
 		};
 
-		blockEditorSelect.getClientIdsWithDescendants().forEach( ( clientId ) => {
+		before.clientIds.forEach( ( clientId ) => {
+			before.parentsByClientId[ clientId ] = blockEditorSelect.getBlockRootClientId( clientId );
 			before.attributesByClientId[ clientId ] = blockEditorSelect.getBlockAttributes( clientId );
 		} );
 
