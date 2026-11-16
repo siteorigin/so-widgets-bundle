@@ -921,6 +921,31 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return is_string( $handle ) && strpos( $handle, 'siteorigin-widget-icon-font' ) !== false;
 	}
 
+	/**
+	 * The icon fonts in a style queue, each as it must be queued again to be
+	 * put back as it was: its handle, with the arguments it was queued with.
+	 *
+	 * @param array $queue The queued style handles.
+	 * @param array $args The arguments handles were queued with, by handle.
+	 *
+	 * @return array<string, string> Handle => handle to enqueue.
+	 */
+	public static function queued_icon_fonts( $queue, $args ) {
+		$fonts = array();
+
+		foreach ( $queue as $handle ) {
+			if ( ! self::is_icon_font_handle( $handle ) ) {
+				continue;
+			}
+
+			$fonts[ $handle ] = isset( $args[ $handle ] ) && $args[ $handle ] !== '' ?
+				$handle . '?' . $args[ $handle ] :
+				$handle;
+		}
+
+		return $fonts;
+	}
+
 	public function sanitize_blocks( $block, $lenient = false ) {
 		if ( is_wp_error( $block ) ) {
 			return $block;
@@ -1190,11 +1215,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// aside while this one renders, so the ones found afterwards are
 				// this widget's own. They go back in the finally block.
 				$styles = wp_styles();
-				$queued_icon_fonts = array_values( array_filter( (array) $styles->queue, array( __CLASS__, 'is_icon_font_handle' ) ) );
+				$queued_icon_fonts = self::queued_icon_fonts( (array) $styles->queue, (array) $styles->args );
 				if ( ! empty( $queued_icon_fonts ) ) {
 					// Through the queue's own method, so WordPress also forgets
 					// it had them queued and a widget can queue one again.
-					$styles->dequeue( $queued_icon_fonts );
+					$styles->dequeue( array_keys( $queued_icon_fonts ) );
 				}
 
 				$widget->widget( array(), $instance );
@@ -1202,7 +1227,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$rendered_widget['html'] = ob_get_clean();
 
 				// Store the icon fonts this widget loaded.
-				$widget_icon_fonts = array_values( array_filter( (array) $styles->queue, array( __CLASS__, 'is_icon_font_handle' ) ) );
+				$widget_icon_fonts = array_keys( self::queued_icon_fonts( (array) $styles->queue, array() ) );
 				if ( ! empty( $styles->queue ) || ! empty( $queued_icon_fonts ) ) {
 					$rendered_widget['widgetIcons'] = $widget_icon_fonts;
 				}
@@ -1256,7 +1281,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 		} finally {
 			if ( ! empty( $queued_icon_fonts ) ) {
-				wp_styles()->enqueue( $queued_icon_fonts );
+				wp_styles()->enqueue( array_values( $queued_icon_fonts ) );
 			}
 
 			// On the success path ob_get_clean() already popped the buffer. A
