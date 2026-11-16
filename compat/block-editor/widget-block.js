@@ -117,13 +117,6 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 			widgetPreviewHtml: null,
 		} );
 
-		const canLockPostSaving = typeof wp.data.select( 'core/editor' ) == 'object' &&
-			typeof wp.data.dispatch( 'core/editor' ) == 'object';
-
-		if ( canLockPostSaving ) {
-			wp.data.dispatch( 'core/editor' ).lockPostSaving();
-		}
-
 		/**
 		 * Check if the provided HTML contains any text or images.
 		 *
@@ -195,14 +188,10 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 					previewInitialized: false,
 				} );
 
-				// A saved widget area keeps its stored block, so a preview can
-				// neither mark it as changed nor put old markup back.
-				if ( ! sowbIsWidgetScreen() ) {
-					props.setAttributes( {
-						widgetMarkup: widgetPreview.html,
-						widgetIcons: widgetPreview.widgetIcons,
-					} );
-				}
+
+				// The preview is only shown. It is not written to the block: the
+				// server builds the stored markup when the content is saved, so
+				// a preview arriving is never an edit.
 			} )
 			.fail( ( response ) => {
 				if ( response && response.statusText === 'abort' ) {
@@ -213,10 +202,6 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 			} )
 			.always( () => {
 				activeRequestRef.current = null;
-
-				if ( canLockPostSaving ) {
-					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-				}
 
 				setState( { loadingWidgetPreview: false } );
 			} );
@@ -663,13 +648,6 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				if ( ! sowbIsWidgetScreen() ) {
-					props.setAttributes( {
-						widgetMarkup: null,
-						widgetIcons: null
-					} );
-				}
-
 				sowbGenerateWidgetPreview(
 					props,
 					state.loadingWidgetPreview,
