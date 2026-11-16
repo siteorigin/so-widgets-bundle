@@ -1191,7 +1191,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// this widget's own. They go back in the finally block.
 				$styles = wp_styles();
 				$queued_icon_fonts = array_values( array_filter( (array) $styles->queue, array( __CLASS__, 'is_icon_font_handle' ) ) );
-				$styles->queue = array_values( array_diff( (array) $styles->queue, $queued_icon_fonts ) );
+				if ( ! empty( $queued_icon_fonts ) ) {
+					// Through the queue's own method, so WordPress also forgets
+					// it had them queued and a widget can queue one again.
+					$styles->dequeue( $queued_icon_fonts );
+				}
 
 				$widget->widget( array(), $instance );
 				$rendered_widget = array();
@@ -1252,8 +1256,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 		} finally {
 			if ( ! empty( $queued_icon_fonts ) ) {
-				$styles = wp_styles();
-				$styles->queue = array_values( array_unique( array_merge( (array) $styles->queue, $queued_icon_fonts ) ) );
+				wp_styles()->enqueue( $queued_icon_fonts );
 			}
 
 			// On the success path ob_get_clean() already popped the buffer. A

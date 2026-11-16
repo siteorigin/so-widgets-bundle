@@ -169,15 +169,21 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 					widgetData: { icon: 'materialicons-sowm-regular-add_home', color: '#404040', size: '2em', align: 'center' },
 				} ),
 				editorWidget( 'No icon here' ),
+				// The same font again, after another block has rendered.
+				widgetBlock( 'sowb/siteorigin-widget-icon-widget', {
+					widgetClass: 'SiteOrigin_Widget_Icon_Widget',
+					widgetData: { icon: 'materialicons-sowm-regular-add_home', color: '#404040', size: '3em', align: 'left' },
+				} ),
 			].join( '\n\n' ),
 		} );
 		const blocks = pattern.content.raw
 			.match( /<!-- wp:sowb\/[a-z-]+ \{.*?\} \/-->/g )
 			.map( ( block ) => JSON.parse( block.match( /(\{.*\})/ )[ 1 ] ) );
 
-		expect( blocks ).toHaveLength( 2 );
+		expect( blocks ).toHaveLength( 3 );
 		expect( blocks[ 0 ].widgetIcons ).toEqual( [ 'siteorigin-widget-icon-font-materialicons' ] );
 		expect( blocks[ 1 ].widgetIcons ).toEqual( [] );
+		expect( blocks[ 2 ].widgetIcons ).toEqual( [ 'siteorigin-widget-icon-font-materialicons' ] );
 	} );
 
 	test( 'a widget with an icon in a synced pattern has its icon font on the front end', async () => {
