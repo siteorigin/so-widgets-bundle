@@ -289,6 +289,21 @@ class WidgetBlockSaveHooksTest extends SiteOriginTests {
 		$this->assertSame( '<!-- wp:paragraph --><p>sowb/ is only mentioned here</p><!-- /wp:paragraph -->', $result->post_content );
 	}
 
+	public function test_a_widget_block_comment_with_other_white_space_is_still_found() {
+		Functions\when( 'current_filter' )->justReturn( 'rest_pre_insert_wp_block' );
+		Functions\when( 'serialize_blocks' )->alias( 'json_encode' );
+		Functions\expect( 'parse_blocks' )->once()->andReturn( array( self::widget_block( array( 'widgetMarkup' => 'STALE' ) ) ) );
+
+		$this->subject->setup_rest_validation();
+
+		$result = $this->subject->server_side_validation(
+			(object) array( 'post_content' => "<!--\twp:sowb/siteorigin-widget-button-widget /-->" ),
+			null
+		);
+
+		$this->assertSame( 'BUILT', json_decode( $result->post_content, true )[0]['attrs']['widgetMarkup'] );
+	}
+
 	public function test_a_block_that_cannot_be_rendered_rejects_a_post_save() {
 		$this->subject->preview = 'fail';
 

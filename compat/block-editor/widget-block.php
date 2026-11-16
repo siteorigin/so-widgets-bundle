@@ -865,9 +865,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $prepared_post;
 		}
 
-		// Every widget block's comment starts this way. Content without one is
-		// left exactly as it was sent, and is not parsed.
-		if ( strpos( $prepared_post->post_content, '<!-- wp:sowb/' ) === false ) {
+		// Every widget block's comment starts this way, with any white space
+		// the block parser allows after the comment opens. Content without
+		// one is left exactly as it was sent, and is not parsed.
+		if ( ! preg_match( '#<!--\s+wp:sowb/#', $prepared_post->post_content ) ) {
 			return $prepared_post;
 		}
 
@@ -907,6 +908,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$post_type = substr( $filter, strlen( $prefix ) );
 
 		return isset( $this->rest_post_types[ $post_type ] ) && ! $this->rest_post_types[ $post_type ];
+	}
+
+	/**
+	 * Whether a style handle is one of the icon fonts widgets load.
+	 *
+	 * @param string $handle A style handle.
+	 *
+	 * @return bool
+	 */
+	private static function is_icon_font_handle( $handle ) {
+		return is_string( $handle ) && strpos( $handle, 'siteorigin-widget-icon-font' ) !== false;
 	}
 
 	public function sanitize_blocks( $block, $lenient = false ) {
@@ -1132,6 +1144,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$anchor_filter_added = false;
 		$prev_widget_anchor  = $this->widgetAnchor;
 		$class_filter        = null;
+		$queued_icon_fonts   = null;
 
 		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
 
@@ -1173,21 +1186,21 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$instance = $this->floor_untrusted_instance( $instance );
 				}
 
+				// Icon fonts another widget queued earlier in this request are set
+				// aside while this one renders, so the ones found afterwards are
+				// this widget's own. They go back in the finally block.
+				$styles = wp_styles();
+				$queued_icon_fonts = array_values( array_filter( (array) $styles->queue, array( __CLASS__, 'is_icon_font_handle' ) ) );
+				$styles->queue = array_values( array_diff( (array) $styles->queue, $queued_icon_fonts ) );
+
 				$widget->widget( array(), $instance );
 				$rendered_widget = array();
 				$rendered_widget['html'] = ob_get_clean();
 
-				// Check if this widget loaded any icons, and if it has, store them.
-				$styles = wp_styles();
-
-				if ( ! empty( $styles->queue ) ) {
-					$rendered_widget['widgetIcons'] = array();
-
-					foreach ( $styles->queue as $style ) {
-						if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
-							$rendered_widget['widgetIcons'][] = $style;
-						}
-					}
+				// Store the icon fonts this widget loaded.
+				$widget_icon_fonts = array_values( array_filter( (array) $styles->queue, array( __CLASS__, 'is_icon_font_handle' ) ) );
+				if ( ! empty( $styles->queue ) || ! empty( $queued_icon_fonts ) ) {
+					$rendered_widget['widgetIcons'] = $widget_icon_fonts;
 				}
 			} else {
 				if ( empty( $valid_widget_class ) ) {
@@ -1238,6 +1251,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
 			);
 		} finally {
+			if ( ! empty( $queued_icon_fonts ) ) {
+				$styles = wp_styles();
+				$styles->queue = array_values( array_unique( array_merge( (array) $styles->queue, $queued_icon_fonts ) ) );
+			}
+
 			// On the success path ob_get_clean() already popped the buffer. A
 			// non removable buffer opened by widget code cannot be discarded,
 			// so stop rather than loop on it.

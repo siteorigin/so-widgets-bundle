@@ -159,6 +159,27 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 		expect( html ).not.toContain( '<h3 class="widget-title">Classless widget title</h3>' );
 	} );
 
+	test( 'each widget block is saved with its own icon fonts, not another block\'s', async () => {
+		const pattern = await create( '/wp/v2/blocks', {
+			title: 'WB save markup two blocks',
+			status: 'publish',
+			content: [
+				widgetBlock( 'sowb/siteorigin-widget-icon-widget', {
+					widgetClass: 'SiteOrigin_Widget_Icon_Widget',
+					widgetData: { icon: 'materialicons-sowm-regular-add_home', color: '#404040', size: '2em', align: 'center' },
+				} ),
+				editorWidget( 'No icon here' ),
+			].join( '\n\n' ),
+		} );
+		const blocks = pattern.content.raw
+			.match( /<!-- wp:sowb\/[a-z-]+ \{.*?\} \/-->/g )
+			.map( ( block ) => JSON.parse( block.match( /(\{.*\})/ )[ 1 ] ) );
+
+		expect( blocks ).toHaveLength( 2 );
+		expect( blocks[ 0 ].widgetIcons ).toEqual( [ 'siteorigin-widget-icon-font-materialicons' ] );
+		expect( blocks[ 1 ].widgetIcons ).toEqual( [] );
+	} );
+
 	test( 'a widget with an icon in a synced pattern has its icon font on the front end', async () => {
 		const pattern = await create( '/wp/v2/blocks', {
 			title: 'WB save markup icon',
