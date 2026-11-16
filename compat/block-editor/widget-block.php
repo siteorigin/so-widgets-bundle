@@ -1017,26 +1017,27 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$kept
 		);
 
-		$widget_class = $this->resolve_widget_class( $attrs, empty( $block['blockName'] ) ? '' : $block['blockName'] );
-		if (
-			empty( $widget_class ) ||
-			empty( SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class ) )
-		) {
-			$block['attrs'] = $unrendered;
-
-			return $block;
-		}
-
+		// Everything that touches the widget is inside this boundary, so
+		// nothing a block holds, however malformed, can stop the save.
 		try {
-			$rendered_widget = $this->get_widget_preview(
-				array_merge( $own, array( 'widgetClass' => $widget_class ), $kept ),
-				false
-			);
+			$widget_class = $this->resolve_widget_class( $attrs, empty( $block['blockName'] ) ? '' : $block['blockName'] );
+
+			$rendered_widget = null;
+			if (
+				is_string( $widget_class ) &&
+				$widget_class !== '' &&
+				! empty( SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class ) )
+			) {
+				$rendered_widget = $this->get_widget_preview(
+					array_merge( $own, array( 'widgetClass' => $widget_class ), $kept ),
+					false
+				);
+			}
 		} catch ( Throwable $e ) {
 			$rendered_widget = null;
 		}
 
-		if ( empty( $rendered_widget ) || is_wp_error( $rendered_widget ) ) {
+		if ( empty( $rendered_widget ) || ! is_array( $rendered_widget ) ) {
 			$block['attrs'] = $unrendered;
 
 			return $block;

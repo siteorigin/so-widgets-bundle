@@ -338,6 +338,19 @@ class WidgetBlockSaveHooksTest extends SiteOriginTests {
 		$this->assertSame( array( 'text' => 'x' ), $attrs['widgetData'] );
 	}
 
+	public function test_a_block_with_a_malformed_class_or_data_does_not_reject_a_pattern_save() {
+		$attrs = $this->save( 'wp_block', self::widget_block( array(
+			'widgetClass' => array( 'not', 'a', 'class' ),
+			'widgetData' => 'not data',
+			'widgetMarkup' => array( 'not markup' ),
+		) ) );
+
+		$this->assertIsArray( $attrs );
+		$this->assertSame( array(), $this->subject->received );
+		$this->assertSame( '', $attrs['widgetMarkup'] );
+		$this->assertSame( array( 'not', 'a', 'class' ), $attrs['widgetClass'] );
+	}
+
 	public function test_a_block_with_no_class_attribute_is_rendered_from_its_name_on_a_pattern_save() {
 		$attrs = $this->save( 'wp_block', self::widget_block( array( 'widgetData' => array( 'text' => 'x' ) ), true ) );
 
