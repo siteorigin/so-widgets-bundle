@@ -1261,8 +1261,6 @@ const waitForWidgetPreviews = async ( page, previews ) => {
 		() => previews.pending === 0 && Date.now() - previews.lastChange >= PREVIEW_QUIET_MS,
 		{ timeout: 30000 }
 	).toBe( true );
-	// A preview holds the post's save lock until it has been applied.
-	await page.waitForFunction( () => ! window.wp.data.select( 'core/editor' ).isPostSavingLocked() );
 };
 
 const insertWidget = async ( admin, blockName ) => {
@@ -1324,10 +1322,10 @@ const hasSaveFilter = () => {
 	return major > 6 || ( major === 6 && minor >= 7 );
 };
 
-const useBridgePost = ( title ) => {
+const useBridgePost = ( title, needsSaveFilter = true ) => {
 	const fixture = {};
 
-	test.skip( ! hasSaveFilter(), 'WordPress below 6.7 has no editor.preSavePost, so the save bridge does not run (#2523).' );
+	test.skip( needsSaveFilter && ! hasSaveFilter(), 'WordPress below 6.7 has no editor.preSavePost, so the save bridge does not run (#2523).' );
 
 	test.beforeEach( async ( { page } ) => {
 		fixture.previews = trackWidgetPreviews( page );
@@ -1927,4 +1925,211 @@ test.describe( 'Save bridge and the editor, when something changes during the sa
 			expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Reported' );
 		} );
 	}
+} );
+
+/**
+ * A widget's preview is something to look at. It arriving, or a block showing
+ * one, is never an edit: it does not change the block, mark the post unsaved
+ * or add an undo step. The stored markup is built on the server at save.
+ */
+test.describe( 'A widget preview is not an edit', () => {
+	const fixture = useBridgePost( 'WB preview is not an edit', false );
+
+	const typeInVisualEditor = async ( admin, clientId, text ) => {
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await visualBody.click();
+		await visualBody.pressSequentially( text );
+	};
+
+	const saveButton = ( page ) => page
+		.getByRole( 'region', { name: 'Editor top bar' } )
+		.getByRole( 'button', { name: /^(Save|Update)$/ } )
+		.first();
+
+	test( 'typing in a widget and saving at once leaves the post clean, and the preview changes nothing', async ( { page } ) => {
+		const { admin, post, requestUtils } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await typeInVisualEditor( admin, clientId, 'Saved at once' );
+
+		// No pause: the save starts while the widget is still asking for its preview.
+		const sent = await clickSaveAndCaptureContent( page, post.id );
+		await waitForSaveToEnd( page );
+
+		expect( sent ).toContain( 'Saved at once' );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+
+		const afterSave = await readWidgetBlock( page, clientId );
+
+		// Once the preview is back, nothing has changed.
+		await waitForWidgetPreviews( page, fixture.previews );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+		expect( await readWidgetBlock( page, clientId ) ).toEqual( afterSave );
+		expect( afterSave.attributeKeys ).not.toContain( 'widgetMarkup' );
+
+		// The stored content has the markup the server built for the new text.
+		const stored = await requestUtils.rest( { path: `/wp/v2/posts/${ post.id }`, params: { context: 'edit' } } );
+		expect( stored.content.raw ).toMatch( /"widgetMarkup":"[^"]*Saved at once/ );
+	} );
+
+	test( 'a preview that returns after the save does not mark the post unsaved', async ( { page } ) => {
+		const { admin, post } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		// Hold every preview from here until the save has finished.
+		let release;
+		const held = new Promise( ( resolve ) => {
+			release = resolve;
+		} );
+		await page.route( '**/sowb/v1/widgets/previews*', async ( route ) => {
+			await held;
+			await route.continue().catch( () => {} );
+		} );
+
+		await setIframeFieldValue( page, clientId, 'title', 'Held preview', true );
+		const previewAsked = page.waitForRequest( ( request ) => request.url().includes( '/sowb/v1/widgets/previews' ) );
+		const sent = await clickSaveAndCaptureContent( page, post.id );
+		await waitForSaveToEnd( page );
+		await previewAsked;
+
+		expect( sent ).toContain( '"title":"Held preview"' );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+
+		const afterSave = await readWidgetBlock( page, clientId );
+
+		release();
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+		expect( await readWidgetBlock( page, clientId ) ).toEqual( afterSave );
+	} );
+
+	test( 'one Undo undoes an edit, with its preview back', async ( { page } ) => {
+		const { admin } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, clientId, 'title', 'Edited', true );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Edited' );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
+
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).not.toBe( 'Edited' );
+	} );
+
+	test( 'opening a post that holds a widget block does not mark it unsaved', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Opened', text: 'Stored text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const stored = await requestUtils.createPost( {
+			status: 'publish',
+			title: 'WB preview on open',
+			content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->`,
+		} );
+
+		try {
+			const preview = page.waitForResponse( ( response ) => response.url().includes( '/sowb/v1/widgets/previews' ), { timeout: 30000 } );
+
+			await admin.editPost( stored.id );
+			await waitForPostEditorCanvas( page, admin );
+			await preview;
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			await expect( getWidgetBlock( admin, EDITOR_BLOCK ) ).toContainText( 'Stored text', { timeout: 20000 } );
+			expect( ( await readPost( page ) ).dirty ).toBe( false );
+			expect( await page.evaluate( () => window.wp.data.select( 'core' ).hasUndo() ) ).toBe( false );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+
+	test( 'the first click on Save after an edit saves, ten times running', async ( { page } ) => {
+		test.setTimeout( 300000 );
+
+		const { admin, post } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		for ( let i = 1; i <= 10; i++ ) {
+			await typeInVisualEditor( admin, clientId, ` edit ${ i }` );
+
+			const request = page.waitForRequest(
+				( candidate ) => candidate.method() === 'POST' &&
+					new URL( candidate.url() ).pathname.endsWith( getPostUpdatePath( post.id ) ),
+				{ timeout: 10000 }
+			);
+
+			// One click, made the moment the typing stops. Forced, so it is
+			// not held back until the button is enabled: a click on a
+			// disabled button sends nothing and the wait above fails.
+			await saveButton( page ).click( { force: true } );
+
+			expect( getPayloadContent( parseRequestPayload( await request ) ), `save ${ i }` ).toContain( `edit ${ i }` );
+			await waitForSaveToEnd( page );
+		}
+	} );
+
+	test( 'a synced pattern keeps its title markup on the front end when its widget is edited', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Pattern title', text: 'Pattern text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const pattern = await requestUtils.rest( {
+			method: 'POST',
+			path: '/wp/v2/blocks',
+			data: { title: 'WB preview pattern', status: 'publish', content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->` },
+		} );
+		const usingPage = await requestUtils.rest( {
+			method: 'POST',
+			path: '/wp/v2/pages',
+			data: { title: 'WB preview pattern page', status: 'publish', content: `<!-- wp:block {"ref":${ pattern.id }} /-->` },
+		} );
+		const frontEnd = async () => ( await requestUtils.request.get( usingPage.link ) ).text();
+		const titleWrappers = ( html ) => ( html.match( /class="widget-title"/g ) || [] ).length;
+
+		try {
+			const before = await frontEnd();
+			expect( before ).toContain( 'Pattern title' );
+
+			await admin.editPost( pattern.id );
+			const widget = await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			const clientId = await widget.getAttribute( 'data-block' );
+
+			await waitForWidgetPreviews( page, fixture.previews );
+			await setIframeFieldValue( page, clientId, 'title', 'Edited pattern title', true );
+
+			const saved = page.waitForResponse(
+				( response ) => response.request().method() === 'POST' &&
+					new URL( response.url() ).pathname.endsWith( `/wp/v2/blocks/${ pattern.id }` ) &&
+					response.ok(),
+				{ timeout: 30000 }
+			);
+			await saveButton( page ).click();
+			await saved;
+			await waitForSaveToEnd( page );
+
+			const stored = await requestUtils.rest( { path: `/wp/v2/blocks/${ pattern.id }`, params: { context: 'edit' } } );
+			expect( stored.content.raw ).toMatch( /"widgetMarkup":"[^"]*Edited pattern title/ );
+
+			const after = await frontEnd();
+			expect( after ).toContain( 'Edited pattern title' );
+			expect( after ).not.toContain( 'Pattern title</' );
+			expect( titleWrappers( after ) ).toBe( titleWrappers( before ) );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/pages/${ usingPage.id }`, params: { force: true } } ).catch( () => {} );
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/blocks/${ pattern.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
 } );
