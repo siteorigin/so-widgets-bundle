@@ -821,19 +821,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
 
 					foreach ( $block_content['widgetIcons'] as $icon_font ) {
-						// Only a handle that names a registered icon family is loaded.
-						if ( ! is_string( $icon_font ) || strpos( $icon_font, 'siteorigin-widget-icon-font-' ) !== 0 ) {
-							continue;
-						}
+						$style_uri = self::icon_font_style_uri( $icon_font, $widget_icon_families );
 
-						$font_family = substr( $icon_font, strlen( 'siteorigin-widget-icon-font-' ) );
-
-						if ( empty( $widget_icon_families[ $font_family ]['style_uri'] ) ) {
-							continue;
-						}
-
-						if ( ! wp_style_is( $icon_font ) ) {
-							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
+						if ( $style_uri !== null && ! wp_style_is( $icon_font ) ) {
+							wp_enqueue_style( $icon_font, $style_uri );
 						}
 					}
 				}
@@ -919,6 +910,30 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$post_type = substr( $filter, strlen( $prefix ) );
 
 		return isset( $this->rest_post_types[ $post_type ] ) && ! $this->rest_post_types[ $post_type ];
+	}
+
+	/**
+	 * The stylesheet of the icon font a stored style handle names.
+	 *
+	 * @param mixed $handle A handle from a block's stored widgetIcons.
+	 * @param array $families The registered icon families.
+	 *
+	 * @return string|null Null when the handle does not name a registered family.
+	 */
+	public static function icon_font_style_uri( $handle, $families ) {
+		$prefix = 'siteorigin-widget-icon-font-';
+
+		if ( ! is_string( $handle ) || strpos( $handle, $prefix ) !== 0 ) {
+			return null;
+		}
+
+		$family = substr( $handle, strlen( $prefix ) );
+
+		if ( ! is_array( $families ) || empty( $families[ $family ]['style_uri'] ) || ! is_string( $families[ $family ]['style_uri'] ) ) {
+			return null;
+		}
+
+		return $families[ $family ]['style_uri'];
 	}
 
 	public function sanitize_blocks( $block, $lenient = false ) {

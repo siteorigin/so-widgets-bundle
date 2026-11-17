@@ -166,10 +166,37 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 				editorWidget( 'Sound text' ),
 			].join( '\n\n' ) ) );
 
+			const attrs = storedAttrs( record.content.raw );
+
+			// Kept as sent, with nothing stale left to print.
+			expect( attrs.widgetData ).toBe( 'not data' );
+			expect( attrs.widgetClass ).toBe( EDITOR_CLASS );
+			expect( attrs.widgetMarkup ).toBe( '' );
+			expect( attrs.widgetIcons ).toEqual( [] );
 			expect( record.content.raw ).not.toContain( 'sowb-stale-markup' );
 			expect( record.content.raw ).toContain( 'Sound text' );
 		} );
 	}
+
+	test( 'a page using a synced pattern whose widget block has data that is not an object still loads', async () => {
+		const pattern = await create( '/wp/v2/blocks', {
+			title: 'WB save markup malformed',
+			status: 'publish',
+			content: [
+				widgetBlock( EDITOR_BLOCK, { widgetClass: EDITOR_CLASS, widgetData: 'not data' } ),
+				editorWidget( 'Text after the malformed block' ),
+			].join( '\n\n' ),
+		} );
+		const page = await create( '/wp/v2/pages', {
+			title: 'WB save markup malformed page',
+			status: 'publish',
+			content: `<!-- wp:block {"ref":${ pattern.id }} /-->`,
+		} );
+		const response = await requestUtils.request.get( page.link );
+
+		expect( response.status() ).toBe( 200 );
+		expect( await response.text() ).toContain( 'Text after the malformed block' );
+	} );
 
 	test( 'each widget block with an icon is saved with its icon font', async () => {
 		const pattern = await create( '/wp/v2/blocks', {

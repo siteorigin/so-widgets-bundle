@@ -304,6 +304,25 @@ class WidgetBlockSaveHooksTest extends SiteOriginTests {
 		$this->assertSame( 'BUILT', json_decode( $result->post_content, true )[0]['attrs']['widgetMarkup'] );
 	}
 
+	public function test_only_a_handle_naming_a_registered_icon_family_has_a_stylesheet() {
+		$families = array(
+			'fontawesome' => array( 'style_uri' => 'https://example.test/fa.css' ),
+			'broken' => array( 'name' => 'No stylesheet' ),
+		);
+		$uri = function ( $handle ) use ( $families ) {
+			return SiteOrigin_Widgets_Bundle_Widget_Block::icon_font_style_uri( $handle, $families );
+		};
+
+		$this->assertSame( 'https://example.test/fa.css', $uri( 'siteorigin-widget-icon-font-fontawesome' ) );
+		$this->assertNull( $uri( 'siteorigin-widget-icon-font-unknown' ) );
+		$this->assertNull( $uri( 'siteorigin-widget-icon-font-broken' ) );
+		$this->assertNull( $uri( 'my-siteorigin-widget-icon-font-fontawesome' ) );
+		$this->assertNull( $uri( 'siteorigin-widget-icon-font-' ) );
+		$this->assertNull( $uri( 'old' ) );
+		$this->assertNull( $uri( array( 'siteorigin-widget-icon-font-fontawesome' ) ) );
+		$this->assertNull( SiteOrigin_Widgets_Bundle_Widget_Block::icon_font_style_uri( 'siteorigin-widget-icon-font-fontawesome', 'not families' ) );
+	}
+
 	public function test_a_block_that_cannot_be_rendered_rejects_a_post_save() {
 		$this->subject->preview = 'fail';
 
