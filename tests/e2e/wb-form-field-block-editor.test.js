@@ -2070,8 +2070,10 @@ test.describe( 'A widget preview is not an edit', () => {
 				{ timeout: 10000 }
 			);
 
-			// One click, made the moment the typing stops.
-			await saveButton( page ).click();
+			// One click, made the moment the typing stops. Forced, so it is
+			// not held back until the button is enabled: a click on a
+			// disabled button sends nothing and the wait above fails.
+			await saveButton( page ).click( { force: true } );
 
 			expect( getPayloadContent( parseRequestPayload( await request ) ), `save ${ i }` ).toContain( `edit ${ i }` );
 			await waitForSaveToEnd( page );

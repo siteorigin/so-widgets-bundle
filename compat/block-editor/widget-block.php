@@ -746,7 +746,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$had_render_flag = ! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
-		$instance = $block_content['widgetData'];
+		// Stored data that is not a set of values is rendered as no values.
+		$instance = isset( $block_content['widgetData'] ) && is_array( $block_content['widgetData'] ) ? $block_content['widgetData'] : array();
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
 		// The render flag skips render time sanitization of stored values, so it
@@ -820,8 +821,18 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
 
 					foreach ( $block_content['widgetIcons'] as $icon_font ) {
+						// Only a handle that names a registered icon family is loaded.
+						if ( ! is_string( $icon_font ) || strpos( $icon_font, 'siteorigin-widget-icon-font-' ) !== 0 ) {
+							continue;
+						}
+
+						$font_family = substr( $icon_font, strlen( 'siteorigin-widget-icon-font-' ) );
+
+						if ( empty( $widget_icon_families[ $font_family ]['style_uri'] ) ) {
+							continue;
+						}
+
 						if ( ! wp_style_is( $icon_font ) ) {
-							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
 							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
 						}
 					}
@@ -1187,7 +1198,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$rendered_widget['widgetIcons'] = array();
 
 					foreach ( $styles->queue as $style ) {
-						if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
+						if ( is_string( $style ) && strpos( $style, 'siteorigin-widget-icon-font-' ) === 0 ) {
 							$rendered_widget['widgetIcons'][] = $style;
 						}
 					}

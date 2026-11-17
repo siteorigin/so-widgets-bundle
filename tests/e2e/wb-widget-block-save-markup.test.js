@@ -159,6 +159,18 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 		expect( html ).not.toContain( '<h3 class="widget-title">Classless widget title</h3>' );
 	} );
 
+	for ( const type of LENIENT_TYPES ) {
+		test( `${ type.name } holding an active widget's block with data that is not an object is still saved`, async () => {
+			const record = await create( type.path, type.data( [
+				widgetBlock( EDITOR_BLOCK, { widgetClass: EDITOR_CLASS, widgetData: 'not data', widgetMarkup: STALE } ),
+				editorWidget( 'Sound text' ),
+			].join( '\n\n' ) ) );
+
+			expect( record.content.raw ).not.toContain( 'sowb-stale-markup' );
+			expect( record.content.raw ).toContain( 'Sound text' );
+		} );
+	}
+
 	test( 'each widget block with an icon is saved with its icon font', async () => {
 		const pattern = await create( '/wp/v2/blocks', {
 			title: 'WB save markup two blocks',
