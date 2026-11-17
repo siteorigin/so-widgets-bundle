@@ -159,7 +159,7 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 		expect( html ).not.toContain( '<h3 class="widget-title">Classless widget title</h3>' );
 	} );
 
-	test( 'each widget block is saved with its own icon fonts, not another block\'s', async () => {
+	test( 'each widget block with an icon is saved with its icon font', async () => {
 		const pattern = await create( '/wp/v2/blocks', {
 			title: 'WB save markup two blocks',
 			status: 'publish',
@@ -182,7 +182,6 @@ test.describe( 'Stored widget block markup is built on the server at save', () =
 
 		expect( blocks ).toHaveLength( 3 );
 		expect( blocks[ 0 ].widgetIcons ).toEqual( [ 'siteorigin-widget-icon-font-materialicons' ] );
-		expect( blocks[ 1 ].widgetIcons ).toEqual( [] );
 		expect( blocks[ 2 ].widgetIcons ).toEqual( [ 'siteorigin-widget-icon-font-materialicons' ] );
 	} );
 

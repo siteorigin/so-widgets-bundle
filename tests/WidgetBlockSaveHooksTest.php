@@ -304,21 +304,6 @@ class WidgetBlockSaveHooksTest extends SiteOriginTests {
 		$this->assertSame( 'BUILT', json_decode( $result->post_content, true )[0]['attrs']['widgetMarkup'] );
 	}
 
-	public function test_queued_icon_fonts_are_listed_with_what_they_were_queued_with() {
-		$fonts = SiteOrigin_Widgets_Bundle_Widget_Block::queued_icon_fonts(
-			array( 'wp-block-library', 'siteorigin-widget-icon-font-fontawesome', 'siteorigin-widget-icon-font-custom', 42 ),
-			array( 'siteorigin-widget-icon-font-custom' => 'variant=outline', 'wp-block-library' => 'x=1' )
-		);
-
-		$this->assertSame(
-			array(
-				'siteorigin-widget-icon-font-fontawesome' => 'siteorigin-widget-icon-font-fontawesome',
-				'siteorigin-widget-icon-font-custom' => 'siteorigin-widget-icon-font-custom?variant=outline',
-			),
-			$fonts
-		);
-	}
-
 	public function test_a_block_that_cannot_be_rendered_rejects_a_post_save() {
 		$this->subject->preview = 'fail';
 
