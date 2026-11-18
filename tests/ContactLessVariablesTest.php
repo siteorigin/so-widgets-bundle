@@ -708,7 +708,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 	/**
 	 * tests/fixtures/contact-css.json holds the CSS of saved widgets that set no
-	 * container Text color, exactly as get_instance_css() returns it, widget class
+	 * container Text Color, exactly as get_instance_css() returns it, widget class
 	 * and whitespace included.
 	 *
 	 * Re-capture (only when the output is meant to change):
@@ -775,7 +775,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 		$this->assertSame( array( 'background', 'text_color', 'padding' ), array_slice( array_keys( $container ), 0, 3 ) );
 		$this->assertSame( 'color', $container['text_color']['type'] );
-		$this->assertSame( 'Text color', $container['text_color']['label'] );
+		$this->assertSame( 'Text Color', $container['text_color']['label'] );
 		$this->assertArrayNotHasKey( 'default', $container['text_color'] );
 	}
 
@@ -787,7 +787,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 		$this->assertSame( 'string', $field['type'] );
 		$this->assertSame( 'color', $field['format'] );
-		$this->assertSame( 'Text color', $field['title'] );
+		$this->assertSame( 'Text Color', $field['title'] );
 	}
 
 	public function test_container_text_color_is_passed_only_when_set() {
@@ -802,7 +802,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A re-saved form stores an unset Text color as an empty string, and keeps
+	 * A re-saved form stores an unset Text Color as an empty string, and keeps
 	 * the variables, style hash and CSS of the same form without that key.
 	 */
 	public function test_a_resaved_form_keeps_its_variables_hash_and_css() {
@@ -820,7 +820,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * Label and field colors keep their own rules when the container Text color
+	 * Label and field colors keep their own rules when the container Text Color
 	 * is set too; the container color sits on the form only.
 	 */
 	public function test_part_colors_keep_their_rules_beside_the_container_text_color() {

@@ -159,6 +159,18 @@ const createUserSession = async ( requestUtils, role, created ) => {
 	return session;
 };
 
+/**
+ * Check a session's requests run as its own user, and that the user has only
+ * the given role.
+ */
+const expectSessionRole = async ( session, role ) => {
+	const me = await call( session, 'GET', 'wp-json/wp/v2/users/me?context=edit' );
+
+	expect( me.status ).toBe( 200 );
+	expect( me.body.id ).toBe( session.id );
+	expect( me.body.roles ).toEqual( [ role ] );
+};
+
 const deleteUsers = async ( requestUtils, users ) => {
 	for ( const user of users ) {
 		await requestUtils.rest( {
@@ -532,6 +544,7 @@ module.exports = {
 	call,
 	createUserSession,
 	deleteUsers,
+	expectSessionRole,
 	expectNeutral,
 	fixture,
 	group,

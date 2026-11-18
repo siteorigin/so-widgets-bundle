@@ -9,7 +9,7 @@ const config = require('siteorigin-tests-common/playwright/config');
  * (tests/scripts/run-playwright.js) runs that project after the others, so
  * no ability spec overlaps another spec.
  */
-const ABILITY_SPECS = /[\\/]wb-(?:abilities|abilities-mcp|widget-block-abilities|widget-block-abilities-mcp|widget-block-shortcodes|customizer-widget-blocks)\.test\.js$/;
+const ABILITY_SPECS = /[\\/]wb-(?:abilities|abilities-mcp|widget-block-abilities|widget-block-abilities-mcp|widget-block-shortcodes|customizer-widget-blocks|tinymce-toolbar-rows)\.test\.js$/;
 const ABILITIES_PROJECT = 'abilities';
 
 /**

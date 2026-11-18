@@ -19,6 +19,8 @@ const {
 	switchWidgetMode,
 } = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
+const wordPressVersion = require( 'siteorigin-tests-common/playground/wordPressVersion' );
+
 const path = require( 'path' );
 
 test.describe.configure( { mode: 'serial' } );
@@ -557,8 +559,15 @@ test(
 			const preSaveBlockState = await findDirectBlockState( page, blockName );
 			await attachBlockDiagnostics( testInfo, 'pre-save-image-widget-attrs.json', preSaveBlockState );
 
+			// The field's value is set without a change event, so the block's
+			// attributes are stale and only the save itself can carry the value.
+			const preSaveWidgetData = preSaveBlockState.attributes.widgetData || {};
+			expect( String( preSaveWidgetData.image || '' ) ).not.toBe( attachmentId );
+
+			// The form reads a hidden input's value as text, so the ID is saved
+			// quoted; an unquoted ID is the same image.
 			const savedContent = await clickSaveAndCaptureContent( page, post.id );
-			expect( savedContent ).toContain( `"image":${ attachmentId }` );
+			expect( savedContent ).toMatch( new RegExp( `"image":"?${ attachmentId }"?[,}]` ) );
 
 			const postSaveBlockState = await findDirectBlockState( page, blockName );
 			expect( String( postSaveBlockState.attributes.widgetData.image ) ).toBe( attachmentId );
@@ -1133,3 +1142,1198 @@ test(
 		}
 	}
 );
+
+/**
+ * What the editor does with the values the save bridge sends. The bridge reads
+ * each open widget form when a post is saved. If nothing in the editor changed
+ * while it read them, it gives each block its form's values and leaves the
+ * post clean. If anything changed, it writes nothing to the editor.
+ */
+const IMAGE_BLOCK = 'sowb/siteorigin-widget-image-widget';
+const EDITOR_BLOCK = 'sowb/siteorigin-widget-editor-widget';
+const TEST_IMAGE = path.resolve(
+	process.cwd(),
+	'node_modules/siteorigin-tests-common/playwright/utilities/assets/test-image.png'
+);
+
+// A block's attributes and the values its form last reported to it.
+const readWidgetBlock = ( page, clientId ) => page.evaluate( ( id ) => {
+	const block = window.wp.data.select( 'core/block-editor' ).getBlock( id );
+	const frameWindow = document.querySelector( 'iframe[name="editor-canvas"]' ).contentWindow;
+	const $form = frameWindow.jQuery( frameWindow.document )
+		.find( `[data-block="${ id }"]` )
+		.find( '.siteorigin-widget-form-main[data-class]' )
+		.first();
+	const record = $form.data( 'sowb-block-last-widget-data-json' );
+
+	return {
+		attributeKeys: block ? Object.keys( block.attributes ) : [],
+		widgetData: block ? block.attributes.widgetData || {} : null,
+		record: record ? JSON.parse( record ) : null,
+	};
+}, clientId );
+
+const readPost = ( page ) => page.evaluate( () => {
+	const editor = window.wp.data.select( 'core/editor' );
+
+	return {
+		dirty: editor.isEditedPostDirty(),
+		content: editor.getEditedPostContent(),
+		title: editor.getEditedPostAttribute( 'title' ),
+	};
+} );
+
+// The content edit the editor has recorded for the post: what kind it is,
+// and its text when it is a string.
+const readContentEdit = ( page ) => page.evaluate( () => {
+	const editor = window.wp.data.select( 'core/editor' );
+	const edits = window.wp.data.select( 'core' ).getEntityRecordEdits(
+		'postType',
+		editor.getCurrentPostType(),
+		editor.getCurrentPostId()
+	) || {};
+
+	return {
+		type: typeof edits.content,
+		text: typeof edits.content === 'string' ? edits.content : null,
+	};
+} );
+
+// Set a form field's value, with or without the change event the form listens for.
+const setIframeFieldValue = ( page, clientId, fieldName, value, withChange = false ) => page.evaluate(
+	( { id, name, fieldValue, change } ) => {
+		const frameWindow = document.querySelector( 'iframe[name="editor-canvas"]' ).contentWindow;
+		const form = frameWindow.document
+			.querySelector( `[data-block="${ id }"] .siteorigin-widget-form.siteorigin-widget-form-main[data-class]` );
+		const input = Array.from( form.querySelectorAll( '.siteorigin-widget-input' ) )
+			.find( ( field ) => field.name.endsWith( `[${ name }]` ) );
+
+		input.value = String( fieldValue );
+
+		if ( change ) {
+			frameWindow.jQuery( input ).trigger( 'change' );
+		}
+
+		return input.value;
+	},
+	{ id: clientId, name: fieldName, fieldValue: value, change: withChange }
+);
+
+// A widget's own preview request sets an attribute when it returns, which is
+// an edit of its own. A form asks for one 300ms after it reports a change,
+// which can be as it opens. Count the requests in flight and note when a form
+// loads, so a test can wait until nothing has been pending for a while and
+// then see only what the save does.
+const PREVIEW_DEBOUNCE_MS = 500;
+const PREVIEW_QUIET_MS = 1500;
+
+const trackWidgetPreviews = ( page ) => {
+	const previews = { pending: 0, lastChange: Date.now() };
+	const isPreview = ( request ) => request.url().includes( '/sowb/v1/widgets/previews' );
+	const settle = ( request ) => {
+		if ( isPreview( request ) ) {
+			previews.pending--;
+			previews.lastChange = Date.now();
+		}
+	};
+
+	page.on( 'request', ( request ) => {
+		if ( isPreview( request ) ) {
+			previews.pending++;
+			previews.lastChange = Date.now();
+		}
+	} );
+	page.on( 'requestfinished', ( request ) => {
+		if ( request.url().includes( '/sowb/v1/widgets/forms' ) ) {
+			previews.lastChange = Date.now();
+		}
+	} );
+	page.on( 'requestfinished', settle );
+	page.on( 'requestfailed', settle );
+
+	return previews;
+};
+
+const waitForWidgetPreviews = async ( page, previews ) => {
+	// Longer than the debounce, so a change just made has asked for its preview.
+	await page.waitForTimeout( PREVIEW_DEBOUNCE_MS );
+	await expect.poll(
+		() => previews.pending === 0 && Date.now() - previews.lastChange >= PREVIEW_QUIET_MS,
+		{ timeout: 30000 }
+	).toBe( true );
+};
+
+const insertWidget = async ( admin, blockName ) => {
+	const widget = await insertDirectWidgetBlock( admin, blockName );
+
+	return widget.getAttribute( 'data-block' );
+};
+
+const waitForSaveToEnd = async ( page ) => {
+	await page.waitForFunction( () => ! window.wp.data.select( 'core/editor' ).isSavingPost() );
+};
+
+const saveAndCapture = async ( page, fixture ) => {
+	await waitForWidgetPreviews( page, fixture.previews );
+
+	const content = await clickSaveAndCaptureContent( page, fixture.post.id );
+
+	await waitForSaveToEnd( page );
+
+	return content;
+};
+
+const expectNoClientIdAttributes = ( block ) => {
+	expect( block.attributeKeys.filter( ( key ) => /^[0-9a-f-]{36}$/.test( key ) ) ).toEqual( [] );
+};
+
+// Hold the bridge at the nth form it reads, until the test releases it.
+const holdSnapshot = ( page, nth ) => page.evaluate( ( holdAt ) => {
+	const forms = document.querySelector( 'iframe[name="editor-canvas"]' ).contentWindow.sowbForms;
+	const original = forms.getWidgetFormSnapshot;
+	let calls = 0;
+
+	window.sowbTestHold = { held: false, release: null };
+	forms.getWidgetFormSnapshot = async function() {
+		calls++;
+
+		if ( calls === holdAt ) {
+			window.sowbTestHold.held = true;
+			await new Promise( ( resolve ) => {
+				window.sowbTestHold.release = resolve;
+			} );
+			forms.getWidgetFormSnapshot = original;
+		}
+
+		return original.apply( this, arguments );
+	};
+}, nth );
+
+// The bridge is a filter on editor.preSavePost, which WordPress has from 6.7.
+const hasSaveFilter = () => {
+	const version = wordPressVersion();
+
+	if ( version === '' ) {
+		return true;
+	}
+
+	const [ major, minor ] = version.split( '.' ).map( Number );
+
+	return major > 6 || ( major === 6 && minor >= 7 );
+};
+
+const useBridgePost = ( title, needsSaveFilter = true ) => {
+	const fixture = {};
+
+	test.skip( needsSaveFilter && ! hasSaveFilter(), 'WordPress below 6.7 has no editor.preSavePost, so the save bridge does not run (#2523).' );
+
+	test.beforeEach( async ( { page } ) => {
+		fixture.previews = trackWidgetPreviews( page );
+		Object.assign( fixture, await setupPublishedPostEditor( page, title ) );
+		fixture.attachment = await fixture.requestUtils.uploadMedia( TEST_IMAGE );
+	} );
+
+	test.afterEach( async () => {
+		await fixture.requestUtils.rest( {
+			method: 'DELETE',
+			path: `/wp/v2/posts/${ fixture.post.id }`,
+			params: { force: true },
+		} ).catch( () => {} );
+		await fixture.requestUtils.deleteMedia( fixture.attachment.id ).catch( () => {} );
+	} );
+
+	return fixture;
+};
+
+test.describe( 'Save bridge and the editor, when nothing else changes during the save', () => {
+	const fixture = useBridgePost( 'WB bridge undisturbed' );
+
+	test( 'the block holds what was saved, and the post is clean', async ( { page } ) => {
+		const { admin, post, attachment } = fixture;
+		const imageId = String( attachment.id );
+		const clientId = await insertWidget( admin, IMAGE_BLOCK );
+		const form = getWidgetBlock( admin, IMAGE_BLOCK ).locator( '.siteorigin-widget-form-main[data-class]' );
+		const formRequests = [];
+
+		page.on( 'request', ( request ) => {
+			if ( request.url().includes( '/sowb/v1/widgets/forms' ) ) {
+				formRequests.push( request.url() );
+			}
+		} );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		const formNode = await form.elementHandle();
+		formRequests.length = 0;
+
+		await setIframeFieldValue( page, clientId, 'image', imageId );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.image ).not.toBe( imageId );
+
+		const sent = await saveAndCapture( page, fixture );
+		expect( sent ).toMatch( new RegExp( `"image":"?${ imageId }"?[,}]` ) );
+
+		const block = await readWidgetBlock( page, clientId );
+		expect( String( block.widgetData.image ) ).toBe( imageId );
+		expectNoClientIdAttributes( block );
+
+		const saved = await readPost( page );
+		expect( saved.dirty ).toBe( false );
+		expect( saved.content ).toBe( sent );
+
+		// The open form is left alone.
+		expect( formRequests ).toEqual( [] );
+		expect( await formNode.evaluate( ( node ) => node.isConnected ) ).toBe( true );
+		expect( await form.evaluate( ( node, original ) => node === original, formNode ) ).toBe( true );
+	} );
+
+	test( 'two widget blocks, one inside a Group, each hold their own values', async ( { page } ) => {
+		const { admin, post, attachment } = fixture;
+		const imageId = String( attachment.id );
+		const editorId = await insertWidget( admin, EDITOR_BLOCK );
+		// The Image widget goes inside a core Group.
+		const nestedId = await page.evaluate( ( name ) => {
+			const { insertBlock } = window.wp.data.dispatch( 'core/block-editor' );
+			const widget = window.wp.blocks.createBlock( name );
+
+			// A Group made with a block inside it skips its layout chooser.
+			insertBlock( window.wp.blocks.createBlock( 'core/group', { layout: { type: 'constrained' } }, [ widget ] ) );
+
+			return widget.clientId;
+		}, IMAGE_BLOCK );
+
+		await admin.editor.canvas
+			.locator( `[data-block="${ nestedId }"] .siteorigin-widget-form-main[data-class]` )
+			.waitFor( { timeout: 20000 } );
+
+		expect( await page.evaluate(
+			( id ) => window.wp.data.select( 'core/block-editor' ).getBlockName(
+				window.wp.data.select( 'core/block-editor' ).getBlockRootClientId( id )
+			),
+			nestedId
+		) ).toBe( 'core/group' );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, editorId, 'title', 'Bridge title' );
+		await setIframeFieldValue( page, nestedId, 'image', imageId );
+
+		const sent = await saveAndCapture( page, fixture );
+		expect( sent ).toContain( '"title":"Bridge title"' );
+
+		const editorBlock = await readWidgetBlock( page, editorId );
+		const imageBlock = await readWidgetBlock( page, nestedId );
+
+		expect( editorBlock.widgetData.title ).toBe( 'Bridge title' );
+		expect( editorBlock.widgetData.image ).toBeUndefined();
+		expect( String( imageBlock.widgetData.image ) ).toBe( imageId );
+		expect( imageBlock.widgetData.title ).not.toBe( 'Bridge title' );
+		expectNoClientIdAttributes( editorBlock );
+		expectNoClientIdAttributes( imageBlock );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+	} );
+
+	test( 'a field changed back to its earlier value after a save still reaches the block', async ( { page } ) => {
+		const { admin, post } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, clientId, 'title', 'First', true );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'First' );
+
+		await setIframeFieldValue( page, clientId, 'title', 'Second' );
+		await saveAndCapture( page, fixture );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Second' );
+
+		await setIframeFieldValue( page, clientId, 'title', 'First', true );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'First' );
+	} );
+
+	test( 'a save adds no undo step of its own', async ( { page } ) => {
+		const { admin } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const title = async () => ( await readWidgetBlock( page, clientId ) ).widgetData.title;
+
+		// Press Undo until the edit is gone, and say how many presses it took.
+		const undoTheEdit = async () => {
+			let presses = 0;
+
+			while ( await title() === 'Edited' && presses < 10 ) {
+				await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
+				presses++;
+			}
+
+			return presses;
+		};
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, clientId, 'title', 'Edited', true );
+		expect( await title() ).toBe( 'Edited' );
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		// The widget's own preview can record a step after the edit, so count
+		// what it takes before the save, then put the edit back.
+		const pressesBefore = await undoTheEdit();
+		expect( pressesBefore ).toBeGreaterThan( 0 );
+		expect( await title() ).not.toBe( 'Edited' );
+
+		for ( let i = 0; i < pressesBefore; i++ ) {
+			await page.evaluate( () => window.wp.data.dispatch( 'core' ).redo() );
+		}
+		expect( await title() ).toBe( 'Edited' );
+
+		await saveAndCapture( page, fixture );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+
+		// The same number of presses undoes the edit after the save.
+		expect( await undoTheEdit() ).toBe( pressesBefore );
+		expect( await title() ).not.toBe( 'Edited' );
+		expect( ( await readPost( page ) ).dirty ).toBe( true );
+	} );
+
+	test( 'an autosave sends the form values and leaves the editor alone', async ( { page } ) => {
+		const { admin, post, attachment } = fixture;
+		const imageId = String( attachment.id );
+		const clientId = await insertWidget( admin, IMAGE_BLOCK );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, clientId, 'image', imageId );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		const before = await readWidgetBlock( page, clientId );
+		const contentBefore = ( await readPost( page ) ).content;
+		const autosaveRequest = page.waitForRequest(
+			( request ) => request.method() === 'POST' &&
+				new URL( request.url() ).pathname.includes( `/wp/v2/posts/${ post.id }` ),
+			{ timeout: 30000 }
+		);
+
+		await page.evaluate( () => window.wp.data.dispatch( 'core/editor' ).autosave() );
+
+		const sent = getPayloadContent( parseRequestPayload( await autosaveRequest ) );
+		expect( sent ).toMatch( new RegExp( `"image":"?${ imageId }"?[,}]` ) );
+
+		await page.waitForFunction( () => ! window.wp.data.select( 'core/editor' ).isAutosavingPost() );
+
+		const after = await readWidgetBlock( page, clientId );
+		expect( after.widgetData ).toEqual( before.widgetData );
+		expect( after.record ).toEqual( before.record );
+		expectNoClientIdAttributes( after );
+
+		// The post's content in the editor is as it was too. WordPress records
+		// it as text before an autosave; the bridge must not replace that with
+		// what it sent.
+		expect( ( await readContentEdit( page ) ).text ).not.toBe( sent );
+		expect( ( await readPost( page ) ).content ).toBe( contentBefore );
+	} );
+
+	test( 'a TinyMCE field keeps its content and its caret through a save', async ( { page } ) => {
+		const { admin } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		// Where the caret is in the visual editor, and what the editor holds.
+		const readCaret = () => visualBody.evaluate( ( body ) => {
+			const selection = body.ownerDocument.getSelection();
+
+			return {
+				text: body.textContent,
+				hasFocus: body.ownerDocument.hasFocus(),
+				offset: selection.rangeCount ? selection.getRangeAt( 0 ).startOffset : null,
+				nodeText: selection.rangeCount ? selection.getRangeAt( 0 ).startContainer.textContent : null,
+			};
+		} );
+
+		// Let the forms finish loading before their fields are set.
+		await waitForWidgetPreviews( page, fixture.previews );
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Caret stays here' );
+
+		// Put the caret inside the text, so "the end" can't pass by default.
+		for ( let i = 0; i < 5; i++ ) {
+			await page.keyboard.press( 'ArrowLeft' );
+		}
+
+		const before = await readCaret();
+		expect( before.text ).toContain( 'Caret stays here' );
+		expect( before.offset ).toBe( 'Caret stays here'.length - 5 );
+
+		const sent = await saveAndCapture( page, fixture );
+		expect( sent ).toContain( 'Caret stays here' );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.text ).toContain( 'Caret stays here' );
+
+		const after = await readCaret();
+		expect( after.text ).toBe( before.text );
+		expect( after.offset ).toBe( before.offset );
+		expect( after.nodeText ).toBe( before.nodeText );
+
+		// Typing goes on from where the caret was.
+		await visualBody.pressSequentially( 'X' );
+		expect( ( await readCaret() ).text ).toContain( 'Caret staysX here' );
+	} );
+} );
+
+test.describe( 'Save bridge and the editor, when something changes during the save', () => {
+	const fixture = useBridgePost( 'WB bridge disturbed' );
+
+	// Each is done while the bridge is held at the second form it reads.
+	const DISTURBANCES = [
+		{
+			name: 'the first widget changes with a change event',
+			run: ( page, ids ) => setIframeFieldValue( page, ids.editor, 'title', 'Changed during save', true ),
+			// Its own change handler gives the block the new value.
+			firstWidgetTitle: 'Changed during save',
+		},
+		{
+			name: 'the first widget changes with no change event',
+			run: ( page, ids ) => setIframeFieldValue( page, ids.editor, 'title', 'Changed during save' ),
+		},
+		{
+			name: 'a paragraph is typed in, not yet recorded as a content edit',
+			run: ( page, ids ) => page.evaluate( ( id ) => {
+				const dispatch = window.wp.data.dispatch( 'core/block-editor' );
+
+				dispatch.__unstableMarkNextChangeAsNotPersistent();
+				dispatch.updateBlockAttributes( id, { content: 'Typed during save' } );
+			}, ids.paragraph ),
+		},
+		{
+			name: 'the post title is edited',
+			run: ( page ) => page.evaluate( () => {
+				window.wp.data.dispatch( 'core/editor' ).editPost( { title: 'Retitled during save' } );
+			} ),
+		},
+		{
+			name: 'the first widget block is removed, taking its form with it',
+			run: ( page, ids ) => page.evaluate( ( id ) => {
+				window.wp.data.dispatch( 'core/block-editor' ).removeBlock( id );
+			}, ids.editor ),
+		},
+	];
+
+	for ( const disturbance of DISTURBANCES ) {
+		test( `nothing is written to the editor when ${ disturbance.name }`, async ( { page } ) => {
+			const { admin, post, attachment } = fixture;
+			const imageId = String( attachment.id );
+			const ids = {
+				paragraph: await page.evaluate( () => {
+					const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
+
+					window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
+
+					return block.clientId;
+				} ),
+				editor: await insertWidget( admin, EDITOR_BLOCK ),
+				image: await insertWidget( admin, IMAGE_BLOCK ),
+			};
+
+			// Let the forms finish loading before their fields are set.
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			// Both forms hold a value their block doesn't have yet.
+			await setIframeFieldValue( page, ids.editor, 'title', 'Unsynced before save' );
+			await setIframeFieldValue( page, ids.image, 'image', imageId );
+
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			const firstBefore = await readWidgetBlock( page, ids.editor );
+			const before = await readWidgetBlock( page, ids.image );
+			expect( firstBefore.widgetData.title ).not.toBe( 'Unsynced before save' );
+			expect( String( before.widgetData.image ) ).not.toBe( imageId );
+
+			await holdSnapshot( page, 2 );
+
+			const save = clickSaveAndCaptureContent( page, post.id );
+			await page.waitForFunction( () => window.sowbTestHold.held );
+
+			// From here on, note any content the editor is told to record. The
+			// editor's own, made before the bridge runs, is already behind us.
+			await page.evaluate( () => {
+				const dispatch = window.wp.data.dispatch( 'core/editor' );
+				const original = dispatch.editPost;
+
+				window.sowbTestContentEdits = [];
+				dispatch.editPost = function( edits, ...rest ) {
+					if ( edits && Object.prototype.hasOwnProperty.call( edits, 'content' ) ) {
+						window.sowbTestContentEdits.push( typeof edits.content );
+					}
+
+					return original.call( this, edits, ...rest );
+				};
+			} );
+
+			await disturbance.run( page, ids );
+			await page.evaluate( () => window.sowbTestHold.release() );
+
+			const sent = await save;
+			await waitForSaveToEnd( page );
+
+			// The save still carries both forms' values as they were read.
+			expect( sent ).toContain( '"title":"Unsynced before save"' );
+			expect( sent ).toMatch( new RegExp( `"image":"?${ imageId }"?[,}]` ) );
+
+			// The bridge wrote nothing to the editor. The second widget and its
+			// form record are as they were before the save.
+			const after = await readWidgetBlock( page, ids.image );
+			expect( after.widgetData ).toEqual( before.widgetData );
+			expect( after.record ).toEqual( before.record );
+			expectNoClientIdAttributes( after );
+
+			// So is the first, unless it changed itself or was removed. It never
+			// holds the value that only the bridge had read.
+			const firstExists = await page.evaluate(
+				( id ) => !! window.wp.data.select( 'core/block-editor' ).getBlock( id ),
+				ids.editor
+			);
+
+			if ( firstExists ) {
+				const firstAfter = await readWidgetBlock( page, ids.editor );
+
+				expect( firstAfter.widgetData.title ).not.toBe( 'Unsynced before save' );
+				expectNoClientIdAttributes( firstAfter );
+
+				if ( disturbance.firstWidgetTitle ) {
+					expect( firstAfter.widgetData.title ).toBe( disturbance.firstWidgetTitle );
+					expect( firstAfter.record.title ).toBe( disturbance.firstWidgetTitle );
+				} else {
+					expect( firstAfter.widgetData ).toEqual( firstBefore.widgetData );
+					expect( firstAfter.record ).toEqual( firstBefore.record );
+				}
+			}
+
+			// No content was recorded for the post, and it is still unsaved.
+			expect( await page.evaluate( () => window.sowbTestContentEdits ) ).toEqual( [] );
+			expect( ( await readPost( page ) ).dirty ).toBe( true );
+		} );
+	}
+
+	// Each is made by a store subscriber, as soon as the widget block holds the image.
+	const SUBSCRIBER_EDITS = [
+		{
+			name: 'a paragraph',
+			edit: 'paragraph',
+			kept: ( saved ) => expect( saved.content ).toContain( 'Edited by a subscriber' ),
+		},
+		{
+			name: 'the post title',
+			edit: 'title',
+			kept: ( saved ) => expect( saved.title ).toBe( 'Retitled by a subscriber' ),
+		},
+		{
+			name: 'another attribute of the widget block',
+			edit: 'anchor',
+			kept: ( saved ) => expect( saved.content ).toContain( '"anchor":"set-by-a-subscriber"' ),
+		},
+		{
+			// Not persistent, and not an attribute the paragraph saves, so neither
+			// the post's content edit nor the serialised content shows it.
+			name: 'an attribute of the paragraph that is not saved in the content',
+			edit: 'local',
+			kept: ( saved, state ) => expect( state.paragraphLocal ).toBe( 'set-by-a-subscriber' ),
+		},
+		{
+			// Two identical paragraphs swap places, so the content reads the same.
+			name: 'the order of two identical paragraphs',
+			edit: 'swap',
+			kept: ( saved, state ) => expect( state.firstTwo ).toEqual( state.twinsSwapped ),
+		},
+		{
+			name: 'where the paragraph sits, moved into a Group',
+			edit: 'move',
+			kept: ( saved ) => expect( saved.content ).toMatch( /wp:group[\s\S]*Paragraph[\s\S]*\/wp:group/ ),
+		},
+	];
+
+	for ( const subscriber of SUBSCRIBER_EDITS ) {
+		test( `an edit to ${ subscriber.name } by other code while the blocks are updated is kept, and the post stays dirty`, async ( { page } ) => {
+			const { admin, attachment } = fixture;
+			const imageId = String( attachment.id );
+			const paragraphId = await page.evaluate( () => {
+				const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
+
+				return block.clientId;
+			} );
+			// Two identical paragraphs, first in the post.
+			const twinIds = await page.evaluate( () => {
+				const twins = [ 0, 1 ].map( () => window.wp.blocks.createBlock( 'core/paragraph', { content: 'Twin' } ) );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlocks( twins, 0 );
+
+				return twins.map( ( twin ) => twin.clientId );
+			} );
+			// A Group that holds a block of its own, for a block to be moved into.
+			const groupId = await page.evaluate( () => {
+				const group = window.wp.blocks.createBlock( 'core/group', { layout: { type: 'constrained' } }, [
+					window.wp.blocks.createBlock( 'core/paragraph', { content: 'In the Group' } ),
+				] );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( group );
+
+				return group.clientId;
+			} );
+			const clientId = await insertWidget( admin, IMAGE_BLOCK );
+
+			// Let the forms finish loading before their fields are set.
+			await waitForWidgetPreviews( page, fixture.previews );
+			await setIframeFieldValue( page, clientId, 'image', imageId );
+
+			await page.evaluate( ( { widgetId, paragraph, group, twins, image, edit } ) => {
+				const select = window.wp.data.select( 'core/block-editor' );
+				let done = false;
+
+				window.wp.data.subscribe( () => {
+					const block = select.getBlock( widgetId );
+
+					if ( done || ! block || String( ( block.attributes.widgetData || {} ).image ) !== image ) {
+						return;
+					}
+
+					done = true;
+
+					if ( edit === 'title' ) {
+						window.wp.data.dispatch( 'core/editor' ).editPost( { title: 'Retitled by a subscriber' } );
+						return;
+					}
+
+					if ( edit === 'anchor' ) {
+						window.wp.data.dispatch( 'core/block-editor' )
+							.updateBlockAttributes( widgetId, { anchor: 'set-by-a-subscriber' } );
+						return;
+					}
+
+					if ( edit === 'swap' ) {
+						const dispatch = window.wp.data.dispatch( 'core/block-editor' );
+
+						dispatch.__unstableMarkNextChangeAsNotPersistent();
+						dispatch.moveBlockToPosition( twins[ 0 ], '', '', 1 );
+						return;
+					}
+
+					if ( edit === 'local' ) {
+						const dispatch = window.wp.data.dispatch( 'core/block-editor' );
+
+						dispatch.__unstableMarkNextChangeAsNotPersistent();
+						dispatch.updateBlockAttributes( paragraph, { sowbTestLocal: 'set-by-a-subscriber' } );
+						return;
+					}
+
+					if ( edit === 'move' ) {
+						window.wp.data.dispatch( 'core/block-editor' )
+							.moveBlockToPosition( paragraph, '', group, 0 );
+						return;
+					}
+
+					window.wp.data.dispatch( 'core/block-editor' )
+						.updateBlockAttributes( paragraph, { content: 'Edited by a subscriber' } );
+				} );
+			}, { widgetId: clientId, paragraph: paragraphId, group: groupId, twins: twinIds, image: imageId, edit: subscriber.edit } );
+
+			await saveAndCapture( page, fixture );
+
+			// The block holds what was saved; nothing more was written.
+			const block = await readWidgetBlock( page, clientId );
+			expect( String( block.widgetData.image ) ).toBe( imageId );
+			expect( block.record ).toBeNull();
+
+			const saved = await readPost( page );
+			subscriber.kept( saved, {
+				paragraphLocal: await page.evaluate(
+					( id ) => window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).sowbTestLocal,
+					paragraphId
+				),
+				firstTwo: await page.evaluate(
+					() => window.wp.data.select( 'core/block-editor' ).getBlockOrder().slice( 0, 2 )
+				),
+				twinsSwapped: [ twinIds[ 1 ], twinIds[ 0 ] ],
+			} );
+			expect( saved.dirty ).toBe( true );
+		} );
+	}
+
+	for ( const failing of [ 'updateBlockAttributes', 'editPost' ] ) {
+		test( `the save still carries the form values when ${ failing } throws`, async ( { page } ) => {
+			const { admin } = fixture;
+			const paragraphId = await page.evaluate( () => {
+				const block = window.wp.blocks.createBlock( 'core/paragraph', { content: 'Paragraph' } );
+
+				window.wp.data.dispatch( 'core/block-editor' ).insertBlock( block );
+
+				return block.clientId;
+			} );
+			const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+			// Let the forms finish loading before their fields are set.
+			await waitForWidgetPreviews( page, fixture.previews );
+			await setIframeFieldValue( page, clientId, 'title', 'Reported', true );
+			await setIframeFieldValue( page, clientId, 'title', 'Sent in the save' );
+
+			await page.evaluate( ( name ) => {
+				const store = name === 'editPost' ? 'core/editor' : 'core/block-editor';
+				const dispatch = window.wp.data.dispatch( store );
+				const original = dispatch[ name ];
+
+				dispatch[ name ] = function( ...args ) {
+					const fromBridge = name === 'editPost' ?
+						args[ 0 ] && typeof args[ 0 ].content === 'string' && args[ 0 ].content.includes( 'Sent in the save' ) :
+						args[ 2 ] === true;
+
+					if ( fromBridge ) {
+						dispatch[ name ] = original;
+						throw new Error( `${ name } failed for the test` );
+					}
+
+					return original.apply( this, args );
+				};
+			}, failing );
+
+			const sent = await saveAndCapture( page, fixture );
+			expect( sent ).toContain( '"title":"Sent in the save"' );
+
+			const block = await readWidgetBlock( page, clientId );
+			expect( block.record ).toBeNull();
+
+			if ( failing === 'editPost' ) {
+				expect( block.widgetData.title ).toBe( 'Sent in the save' );
+				expect( ( await readPost( page ) ).dirty ).toBe( true );
+			}
+
+			// The first edit after the failure is still an ordinary one: recorded, and undone by one Undo.
+			const paragraphContent = () => page.evaluate(
+				( id ) => String( window.wp.data.select( 'core/block-editor' ).getBlockAttributes( id ).content ),
+				paragraphId
+			);
+
+			await page.evaluate( ( id ) => {
+				window.wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( id, { content: 'Edited after the failure' } );
+			}, paragraphId );
+			expect( await paragraphContent() ).toBe( 'Edited after the failure' );
+			expect( ( await readPost( page ) ).dirty ).toBe( true );
+
+			await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
+			expect( await paragraphContent() ).toBe( 'Paragraph' );
+
+			// With no record, a change back to the value last reported still reaches the block.
+			await setIframeFieldValue( page, clientId, 'title', 'Reported', true );
+			expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Reported' );
+		} );
+	}
+} );
+
+/**
+ * A widget's preview is something to look at. It arriving, or a block showing
+ * one, is never an edit: it does not change the block, mark the post unsaved
+ * or add an undo step. The stored markup is built on the server at save.
+ */
+test.describe( 'A widget preview is not an edit', () => {
+	const fixture = useBridgePost( 'WB preview is not an edit', false );
+
+	const typeInVisualEditor = async ( admin, clientId, text ) => {
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await visualBody.click();
+		await visualBody.pressSequentially( text );
+	};
+
+	const saveButton = ( page ) => page
+		.getByRole( 'region', { name: 'Editor top bar' } )
+		.getByRole( 'button', { name: /^(Save|Update)$/ } )
+		.first();
+
+	test( 'typing in a widget and saving at once leaves the post clean, and the preview changes nothing', async ( { page } ) => {
+		const { admin, post, requestUtils } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await typeInVisualEditor( admin, clientId, 'Saved at once' );
+
+		// No pause: the save starts while the widget is still asking for its preview.
+		const sent = await clickSaveAndCaptureContent( page, post.id );
+		await waitForSaveToEnd( page );
+
+		expect( sent ).toContain( 'Saved at once' );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+
+		const afterSave = await readWidgetBlock( page, clientId );
+
+		// Once the preview is back, nothing has changed.
+		await waitForWidgetPreviews( page, fixture.previews );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+		expect( await readWidgetBlock( page, clientId ) ).toEqual( afterSave );
+		expect( afterSave.attributeKeys ).not.toContain( 'widgetMarkup' );
+
+		// The stored content has the markup the server built for the new text.
+		const stored = await requestUtils.rest( { path: `/wp/v2/posts/${ post.id }`, params: { context: 'edit' } } );
+		expect( stored.content.raw ).toMatch( /"widgetMarkup":"[^"]*Saved at once/ );
+	} );
+
+	test( 'a preview that returns after the save does not mark the post unsaved', async ( { page } ) => {
+		const { admin, post } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		// Hold every preview from here until the save has finished.
+		let release;
+		const held = new Promise( ( resolve ) => {
+			release = resolve;
+		} );
+		await page.route( '**/sowb/v1/widgets/previews*', async ( route ) => {
+			await held;
+			await route.continue().catch( () => {} );
+		} );
+
+		await setIframeFieldValue( page, clientId, 'title', 'Held preview', true );
+		const previewAsked = page.waitForRequest( ( request ) => request.url().includes( '/sowb/v1/widgets/previews' ) );
+		const sent = await clickSaveAndCaptureContent( page, post.id );
+		await waitForSaveToEnd( page );
+		await previewAsked;
+
+		expect( sent ).toContain( '"title":"Held preview"' );
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+
+		const afterSave = await readWidgetBlock( page, clientId );
+
+		release();
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		expect( ( await readPost( page ) ).dirty ).toBe( false );
+		expect( await readWidgetBlock( page, clientId ) ).toEqual( afterSave );
+	} );
+
+	test( 'one Undo undoes an edit, with its preview back', async ( { page } ) => {
+		const { admin } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await setIframeFieldValue( page, clientId, 'title', 'Edited', true );
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).toBe( 'Edited' );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+		await page.evaluate( () => window.wp.data.dispatch( 'core' ).undo() );
+
+		expect( ( await readWidgetBlock( page, clientId ) ).widgetData.title ).not.toBe( 'Edited' );
+	} );
+
+	test( 'opening a post that holds a widget block does not mark it unsaved', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Opened', text: 'Stored text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const stored = await requestUtils.createPost( {
+			status: 'publish',
+			title: 'WB preview on open',
+			content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->`,
+		} );
+
+		try {
+			const preview = page.waitForResponse( ( response ) => response.url().includes( '/sowb/v1/widgets/previews' ), { timeout: 30000 } );
+
+			await admin.editPost( stored.id );
+			await waitForPostEditorCanvas( page, admin );
+			await preview;
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			await expect( getWidgetBlock( admin, EDITOR_BLOCK ) ).toContainText( 'Stored text', { timeout: 20000 } );
+			expect( ( await readPost( page ) ).dirty ).toBe( false );
+			expect( await page.evaluate( () => window.wp.data.select( 'core' ).hasUndo() ) ).toBe( false );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+
+	test( 'the first click on Save after an edit saves, ten times running', async ( { page } ) => {
+		test.setTimeout( 300000 );
+
+		const { admin, post } = fixture;
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+
+		await waitForWidgetPreviews( page, fixture.previews );
+
+		for ( let i = 1; i <= 10; i++ ) {
+			await typeInVisualEditor( admin, clientId, ` edit ${ i }` );
+
+			const request = page.waitForRequest(
+				( candidate ) => candidate.method() === 'POST' &&
+					new URL( candidate.url() ).pathname.endsWith( getPostUpdatePath( post.id ) ),
+				{ timeout: 10000 }
+			);
+
+			// One click, made the moment the typing stops. Forced, so it is
+			// not held back until the button is enabled: a click on a
+			// disabled button sends nothing and the wait above fails.
+			await saveButton( page ).click( { force: true } );
+
+			expect( getPayloadContent( parseRequestPayload( await request ) ), `save ${ i }` ).toContain( `edit ${ i }` );
+			await waitForSaveToEnd( page );
+		}
+	} );
+
+	test( 'a synced pattern keeps its title markup on the front end when its widget is edited', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Pattern title', text: 'Pattern text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const pattern = await requestUtils.rest( {
+			method: 'POST',
+			path: '/wp/v2/blocks',
+			data: { title: 'WB preview pattern', status: 'publish', content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->` },
+		} );
+		const usingPage = await requestUtils.rest( {
+			method: 'POST',
+			path: '/wp/v2/pages',
+			data: { title: 'WB preview pattern page', status: 'publish', content: `<!-- wp:block {"ref":${ pattern.id }} /-->` },
+		} );
+		const frontEnd = async () => ( await requestUtils.request.get( usingPage.link ) ).text();
+		const titleWrappers = ( html ) => ( html.match( /class="widget-title"/g ) || [] ).length;
+
+		try {
+			const before = await frontEnd();
+			expect( before ).toContain( 'Pattern title' );
+
+			await admin.editPost( pattern.id );
+			const widget = await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			const clientId = await widget.getAttribute( 'data-block' );
+
+			await waitForWidgetPreviews( page, fixture.previews );
+			await setIframeFieldValue( page, clientId, 'title', 'Edited pattern title', true );
+
+			const saved = page.waitForResponse(
+				( response ) => response.request().method() === 'POST' &&
+					new URL( response.url() ).pathname.endsWith( `/wp/v2/blocks/${ pattern.id }` ) &&
+					response.ok(),
+				{ timeout: 30000 }
+			);
+			await saveButton( page ).click();
+			await saved;
+			await waitForSaveToEnd( page );
+
+			const stored = await requestUtils.rest( { path: `/wp/v2/blocks/${ pattern.id }`, params: { context: 'edit' } } );
+			expect( stored.content.raw ).toMatch( /"widgetMarkup":"[^"]*Edited pattern title/ );
+
+			const after = await frontEnd();
+			expect( after ).toContain( 'Edited pattern title' );
+			expect( after ).not.toContain( 'Pattern title</' );
+			expect( titleWrappers( after ) ).toBe( titleWrappers( before ) );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/pages/${ usingPage.id }`, params: { force: true } } ).catch( () => {} );
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/blocks/${ pattern.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+} );
+
+test.describe( 'A widget block loads its form once', () => {
+	const fixture = useBridgePost( 'WB one form load', false );
+
+	const isFormRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/forms' );
+	const isPreviewRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/previews' );
+
+	const countRequests = ( page, matches ) => {
+		const seen = { count: 0 };
+
+		page.on( 'request', ( request ) => {
+			if ( matches( request ) ) {
+				seen.count++;
+			}
+		} );
+
+		return seen;
+	};
+
+	// With SCRIPT_DEBUG on, React mounts a new block twice, so its first load
+	// is requested exactly twice. The first mount's response is ignored. A
+	// later switch between form and preview is not a mount: one request.
+	const loadsPerMount = async ( page ) => await page.evaluate(
+		() => !! window.sowbBlockEditorAdmin.wpScriptDebug
+	) ? 2 : 1;
+
+	const startedVisualEditor = async ( admin, clientId ) => {
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await expect( tinymceField.locator( '.mce-toolbar-grp' ).first() ).toBeVisible( { timeout: 20000 } );
+
+		return tinymceField;
+	};
+
+	test( 'inserting a block sends one form request, and the form it shows is not replaced', async ( { page } ) => {
+		const { admin } = fixture;
+		const forms = countRequests( page, isFormRequest );
+
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const tinymceField = await startedVisualEditor( admin, clientId );
+		const textarea = tinymceField.locator( 'textarea.wp-editor-area' );
+
+		// Keep hold of the nodes the visual editor started on.
+		await textarea.evaluate( ( element ) => {
+			element.ownerDocument.defaultView.sowbTestFormNodes = {
+				textarea: element,
+				form: element.closest( '.siteorigin-widget-form-main' ),
+			};
+		} );
+
+		await page.waitForTimeout( 3000 );
+
+		const kept = await textarea.evaluate( ( element ) => {
+			const nodes = element.ownerDocument.defaultView.sowbTestFormNodes;
+
+			return {
+				textarea: nodes.textarea === element && element.isConnected,
+				form: nodes.form === element.closest( '.siteorigin-widget-form-main' ) && nodes.form.isConnected,
+			};
+		} );
+
+		expect( kept ).toEqual( { textarea: true, form: true } );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
+
+		// The editor that started is one a person can type in.
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
+	test( 'a stored block asks for one preview, then one form each time its form is opened', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Stored title', text: 'Stored text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const stored = await requestUtils.createPost( {
+			status: 'publish',
+			title: 'WB one form load, stored',
+			content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->`,
+		} );
+		const forms = countRequests( page, isFormRequest );
+		const previews = countRequests( page, isPreviewRequest );
+
+		try {
+			await admin.editPost( stored.id );
+			await waitForPostEditorCanvas( page, admin );
+
+			const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+			await expect( widget ).toContainText( 'Stored text', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			const perMount = await loadsPerMount( page );
+
+			expect( previews.count ).toBe( perMount );
+			expect( forms.count ).toBe( 0 );
+
+			const title = widget.locator( 'input[name*="[title]"]' ).first();
+
+			// Preview to form: one request, and the form holds the stored values.
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Stored title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 1 );
+
+			// Form to preview and back: one more request, and an edit is kept.
+			await title.fill( 'Edited title' );
+			await title.dispatchEvent( 'change' );
+			await switchWidgetMode( admin, widget, 'preview' );
+			await expect( widget ).toContainText( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 2 );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+
+	test( 'where React mounts a new block twice, the form shown is the last mount\'s', async ( { page } ) => {
+		const { admin } = fixture;
+
+		test.skip(
+			! await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug ),
+			'React mounts a block twice only with SCRIPT_DEBUG on, a wp-config constant. Run against a site that sets it.'
+		);
+
+		const formIdIn = ( text ) => ( text.match( /siteorigin_widget_form_[a-f0-9]+/ ) || [] )[ 0 ];
+		const held = [];
+
+		// Hold both mounts' responses, so they can be released out of order.
+		// Each request takes its place as it is sent, before anything is awaited.
+		await page.route( '**/sowb/v1/widgets/forms*', async ( route ) => {
+			const entry = { route };
+
+			held.push( entry );
+			entry.response = await route.fetch();
+			entry.body = await entry.response.text();
+		} );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+		await expect.poll(
+			() => held.length === 2 && held.every( ( entry ) => typeof entry.body === 'string' ),
+			{ timeout: 20000 }
+		).toBe( true );
+
+		const [ firstMount, lastMount ] = held;
+		const lastFormId = formIdIn( lastMount.body );
+
+		expect( lastFormId ).toBeTruthy();
+		expect( formIdIn( firstMount.body ) ).not.toBe( lastFormId );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		const shownForm = widget.locator( '[id^="siteorigin_widget_form_"]' );
+
+		await lastMount.route.fulfill( { response: lastMount.response, body: lastMount.body } );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId, { timeout: 20000 } );
+
+		// The first mount's response arrives last, and changes nothing.
+		await firstMount.route.fulfill( { response: firstMount.response, body: firstMount.body } );
+		await page.waitForTimeout( 2000 );
+
+		await expect( shownForm ).toHaveCount( 1 );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId );
+
+		const tinymceField = await startedVisualEditor( admin, await widget.getAttribute( 'data-block' ) );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
+	test( 'a form request that fails is not sent again, and raises no script error', async ( { page } ) => {
+		const { admin } = fixture;
+		const errors = [];
+
+		page.on( 'pageerror', ( error ) => errors.push( String( error ) ) );
+		await page.route( '**/sowb/v1/widgets/forms*', ( route ) => route.fulfill( {
+			status: 500,
+			contentType: 'application/json',
+			body: JSON.stringify( { code: 'test_failure', message: 'Form unavailable.' } ),
+		} ) );
+
+		const forms = countRequests( page, isFormRequest );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		await expect( widget ).toBeVisible( { timeout: 20000 } );
+		await expect.poll( () => forms.count, { timeout: 20000 } ).toBeGreaterThan( 0 );
+		await page.waitForTimeout( 2000 );
+
+		// The block is still there, without a form.
+		await expect( widget ).toBeVisible();
+		await expect( widget.locator( '.siteorigin-widget-form-main[data-class]' ) ).toHaveCount( 0 );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
+		expect( errors ).toEqual( [] );
+	} );
+} );

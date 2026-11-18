@@ -1,3 +1,11 @@
+const sowbSerializeWidgetData = ( widgetData ) => {
+	try {
+		return JSON.stringify( widgetData || {} );
+	} catch ( error ) {
+		return null;
+	}
+};
+
 ( async function( blocks, i18n, element, components, blockEditor ) {
 
 	const el = element.createElement;
@@ -25,14 +33,6 @@
 			errorMessage = response.responseText;
 		}
 		return errorMessage;
-	};
-
-	const sowbSerializeWidgetData = ( widgetData ) => {
-		try {
-			return JSON.stringify( widgetData || {} );
-		} catch ( error ) {
-			return null;
-		}
 	};
 
 	// Certain widgets are excluded from the content check as
@@ -117,13 +117,6 @@
 			widgetPreviewHtml: null,
 		} );
 
-		const canLockPostSaving = typeof wp.data.select( 'core/editor' ) == 'object' &&
-			typeof wp.data.dispatch( 'core/editor' ) == 'object';
-
-		if ( canLockPostSaving ) {
-			wp.data.dispatch( 'core/editor' ).lockPostSaving();
-		}
-
 		/**
 		 * Check if the provided HTML contains any text or images.
 		 *
@@ -195,14 +188,10 @@
 					previewInitialized: false,
 				} );
 
-				// A saved widget area keeps its stored block, so a preview can
-				// neither mark it as changed nor put old markup back.
-				if ( ! sowbIsWidgetScreen() ) {
-					props.setAttributes( {
-						widgetMarkup: widgetPreview.html,
-						widgetIcons: widgetPreview.widgetIcons,
-					} );
-				}
+
+				// The preview is only shown. It is not written to the block: the
+				// server builds the stored markup when the content is saved, so
+				// a preview arriving is never an edit.
 			} )
 			.fail( ( response ) => {
 				if ( response && response.statusText === 'abort' ) {
@@ -213,10 +202,6 @@
 			} )
 			.always( () => {
 				activeRequestRef.current = null;
-
-				if ( canLockPostSaving ) {
-					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-				}
 
 				setState( { loadingWidgetPreview: false } );
 			} );
@@ -586,6 +571,10 @@
 
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
+		// Changes each time the block mounts or unmounts, so a form response
+		// from an earlier mount can tell it is no longer wanted.
+		const mountTokenRef = element.useRef( 0 );
+		const formLoadedTimerRef = element.useRef( null );
 		const iframeFormInitKeyRef = element.useRef( null );
 
 		const switchToBlockPreview = async () => {
@@ -630,6 +619,9 @@
 				const loadWidgetForm = ! widgetFormHtml.length;
 
 				if ( loadWidgetForm && ! loadingForm ) {
+					const mountToken = mountTokenRef.current;
+					const isCurrentMount = () => mountTokenRef.current === mountToken;
+
 					mergeState( { loadingForm: true } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
@@ -642,11 +634,21 @@
 						}
 					} )
 					.done( ( widgetForm ) => {
+						if ( ! isCurrentMount() ) {
+							return;
+						}
+
 						mergeState( {
 							widgetFormHtml: widgetForm
 						} );
 
-						setTimeout( () => {
+						formLoadedTimerRef.current = setTimeout( () => {
+							formLoadedTimerRef.current = null;
+
+							if ( ! isCurrentMount() ) {
+								return;
+							}
+
 							mergeState( {
 								loadingForm: false,
 								formInitialized: false,
@@ -654,6 +656,10 @@
 						}, 0 );
 					} )
 					.fail( ( response ) => {
+						if ( ! isCurrentMount() ) {
+							return;
+						}
+
 						mergeState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
@@ -663,13 +669,6 @@
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				if ( ! sowbIsWidgetScreen() ) {
-					props.setAttributes( {
-						widgetMarkup: null,
-						widgetIcons: null
-					} );
-				}
-
 				sowbGenerateWidgetPreview(
 					props,
 					state.loadingWidgetPreview,
@@ -681,16 +680,20 @@
 			}
 		};
 
-		// componentDidMount / componentWillUnmount replacement
+		// Resets the block's state when it mounts and when it unmounts. It loads
+		// nothing: the next effect loads the form or the preview, on mount too.
 		element.useEffect( () => {
+			mountTokenRef.current++;
+
 			mergeState( {
 				...initialState,
 				isStillMounted: true,
 			} );
 
-			loadWidgetData();
-
 			return () => {
+				mountTokenRef.current++;
+				clearTimeout( formLoadedTimerRef.current );
+				formLoadedTimerRef.current = null;
 				isMountedRef.current = false;
 				mergeState( {
 					...initialState,
@@ -1550,13 +1553,260 @@ const sowbCloneBlocksWithWidgetData = ( blocks, widgetDataByClientId ) => {
 	} );
 };
 
+const SOWB_FORM_RECORD = 'sowb-block-last-widget-data-json';
+
+/**
+ * Reads a widget form's values as they are now, without flushing its fields.
+ *
+ * @param {jQuery} $form The widget form.
+ *
+ * @returns {string|null} The serialised values, or null if they can't be read.
+ */
+const sowbSerializeBlockFormNow = ( $form ) => {
+	const formWindow = sowbGetElementWindow( $form[0] );
+	const formJQuery = formWindow.jQuery || jQuery;
+	const formForms = formWindow.sowbForms || sowbForms;
+
+	if ( ! formForms || typeof formForms.getWidgetFormValues !== 'function' ) {
+		return null;
+	}
+
+	return sowbSerializeWidgetData( formForms.getWidgetFormValues( formJQuery( $form[0] ) ) );
+};
+
+/**
+ * Forgets the values each form last reported, so the form's next change is
+ * always passed on to its block.
+ *
+ * @param {Object} formsByClientId The widget forms, keyed by block client ID.
+ */
+const sowbForgetFormRecords = ( formsByClientId ) => {
+	Object.keys( formsByClientId ).forEach( ( clientId ) => {
+		formsByClientId[ clientId ].removeData( SOWB_FORM_RECORD );
+	} );
+};
+
+/**
+ * Whether every form the save bridge read is still in place, in a block that
+ * is still a widget block, and still holds the values that were read.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ *
+ * @returns {boolean}
+ */
+const sowbAreFormsAsRead = ( bridge ) => {
+	const blockEditorSelect = wp.data.select( 'core/block-editor' );
+
+	return bridge.clientIds.every( ( clientId ) => {
+		const $readForm = bridge.formsByClientId[ clientId ];
+		const $form = sowbGetBlockForm( clientId );
+		const snapshotJson = bridge.snapshotJsonByClientId[ clientId ];
+
+		return sowbIsDirectWidgetBlock( blockEditorSelect.getBlock( clientId ) ) &&
+			$form.length > 0 &&
+			$form[0] === $readForm[0] &&
+			snapshotJson !== null &&
+			sowbSerializeBlockFormNow( $form ) === snapshotJson;
+	} );
+};
+
+/**
+ * Whether the editor is as it was when the save bridge started reading the
+ * forms: no block or post edit since, and every form it read still in place
+ * and holding the values that were read.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ *
+ * @returns {boolean}
+ */
+const sowbIsEditorUndisturbed = ( bridge ) => {
+	const blockEditorSelect = wp.data.select( 'core/block-editor' );
+
+	// Either store hands back a new reference after any change.
+	if (
+		blockEditorSelect.getBlocks() !== bridge.blocks ||
+		bridge.getPostEdits() !== bridge.postEdits
+	) {
+		return false;
+	}
+
+	return sowbAreFormsAsRead( bridge );
+};
+
+/**
+ * Whether the only thing that changed in the editor during the save bridge's
+ * block update is that update: every other post edit and every other block
+ * attribute is as it was just before, the blocks serialise to exactly the
+ * content being saved, and every form still holds the values that were read.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ * @param {Object} before The post's edits, the blocks' order and parents, and each block's attributes, just before the update.
+ *
+ * @returns {boolean}
+ */
+const sowbIsEditorAsWritten = ( bridge, before ) => {
+	const blockEditorSelect = wp.data.select( 'core/block-editor' );
+	const postEdits = bridge.getPostEdits() || {};
+	const postEditsBefore = before.postEdits;
+
+	// The update itself is reported to the post as its blocks and selection.
+	const isOwnEdit = ( key ) => key === 'blocks' || key === 'selection';
+	const editKeys = Object.keys( postEdits ).filter( ( key ) => ! isOwnEdit( key ) );
+	const editKeysBefore = Object.keys( postEditsBefore ).filter( ( key ) => ! isOwnEdit( key ) );
+
+	if (
+		editKeys.length !== editKeysBefore.length ||
+		! editKeys.every( ( key ) => postEdits[ key ] === postEditsBefore[ key ] )
+	) {
+		return false;
+	}
+
+	// An attribute that isn't saved in the content can change, and identical
+	// blocks can swap places, without the content changing. So the blocks are
+	// compared one by one as well as by the content below.
+	const clientIds = blockEditorSelect.getClientIdsWithDescendants();
+	const areAttributesAsWritten = clientIds.length === before.clientIds.length &&
+		clientIds.every( ( clientId, index ) => {
+			// The same blocks, in the same order, under the same parents.
+			if (
+				clientId !== before.clientIds[ index ] ||
+				blockEditorSelect.getBlockRootClientId( clientId ) !== before.parentsByClientId[ clientId ]
+			) {
+				return false;
+			}
+
+			const attributes = blockEditorSelect.getBlockAttributes( clientId );
+			const attributesBefore = before.attributesByClientId[ clientId ];
+
+			if ( ! attributes || ! attributesBefore ) {
+				return false;
+			}
+
+			if ( ! Object.prototype.hasOwnProperty.call( bridge.widgetDataByClientId, clientId ) ) {
+				return attributes === attributesBefore;
+			}
+
+			const keys = Object.keys( attributes );
+
+			return keys.length === Object.keys( { ...attributesBefore, widgetData: true } ).length &&
+				keys.every( ( key ) => key === 'widgetData' ?
+					attributes.widgetData === bridge.widgetDataByClientId[ clientId ] :
+					attributes[ key ] === attributesBefore[ key ]
+				);
+		} );
+
+	// The content is compared too: it is what the post's content edit is set to.
+	return areAttributesAsWritten &&
+		wp.blocks.serialize( blockEditorSelect.getBlocks() ) === bridge.content &&
+		sowbAreFormsAsRead( bridge );
+};
+
+/**
+ * Gives the editor what the save bridge is sending: each block gets its
+ * form's values, and the post's recorded content becomes the content being
+ * saved, so the post is clean once the save completes.
+ *
+ * All or nothing. If anything in the editor changed while the forms were
+ * being read, or this is an autosave, nothing is written and the editor is
+ * left to its own edits. The content being saved is not affected either way.
+ *
+ * @param {Object} bridge The bridge's state for this save.
+ */
+const sowbSyncEditorWithSavedSnapshot = ( bridge ) => {
+	const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
+	const editorDispatch = wp.data.dispatch( 'core/editor' );
+	let isNextChangeMarked = false;
+
+	try {
+
+		if (
+			bridge.isAutosave ||
+			! blockEditorDispatch ||
+			typeof blockEditorDispatch.updateBlockAttributes !== 'function' ||
+			typeof blockEditorDispatch.__unstableMarkNextChangeAsNotPersistent !== 'function' ||
+			! editorDispatch ||
+			typeof editorDispatch.editPost !== 'function' ||
+			! sowbIsEditorUndisturbed( bridge )
+		) {
+			return;
+		}
+
+		const blockEditorSelect = wp.data.select( 'core/block-editor' );
+		const before = {
+			postEdits: bridge.getPostEdits() || {},
+			clientIds: blockEditorSelect.getClientIdsWithDescendants(),
+			parentsByClientId: {},
+			attributesByClientId: {},
+		};
+
+		before.clientIds.forEach( ( clientId ) => {
+			before.parentsByClientId[ clientId ] = blockEditorSelect.getBlockRootClientId( clientId );
+			before.attributesByClientId[ clientId ] = blockEditorSelect.getBlockAttributes( clientId );
+		} );
+
+		const attrsByClientId = bridge.clientIds.reduce( ( attributes, clientId ) => {
+			attributes[ clientId ] = {
+				widgetData: bridge.widgetDataByClientId[ clientId ],
+			};
+
+			return attributes;
+		}, {} );
+
+		// Not persistent: the blocks change without a new content edit or undo
+		// step. The map is keyed by client ID, which the third argument says.
+		blockEditorDispatch.__unstableMarkNextChangeAsNotPersistent();
+		isNextChangeMarked = true;
+		blockEditorDispatch.updateBlockAttributes( bridge.clientIds, attrsByClientId, true );
+		isNextChangeMarked = false;
+
+		// A store subscriber can edit the editor during that dispatch. If one
+		// did, the blocks keep what is being saved and the rest is not written.
+		if ( ! sowbIsEditorAsWritten( bridge, before ) ) {
+			sowbForgetFormRecords( bridge.formsByClientId );
+			return;
+		}
+
+		// Each form's change handler skips values equal to the last it reported.
+		bridge.clientIds.forEach( ( clientId ) => {
+			bridge.formsByClientId[ clientId ].data(
+				SOWB_FORM_RECORD,
+				bridge.snapshotJsonByClientId[ clientId ]
+			);
+		} );
+
+		// The editor recorded the content before the forms were read. Replace it
+		// with what is sent, so the two match once the save completes.
+		editorDispatch.editPost( { content: bridge.content }, { undoIgnore: true } );
+	} catch ( err ) {
+		console.error( 'SiteOrigin Widgets: could not update the editor with the saved widget values', err );
+		sowbForgetFormRecords( bridge.formsByClientId );
+
+		// The mark applies to the next block change. If the update never
+		// happened, use the mark up, so it can't fall on an edit of the user's.
+		if ( isNextChangeMarked ) {
+			try {
+				blockEditorDispatch.__unstableMarkLastChangeAsPersistent();
+			} catch ( markErr ) {
+				console.error( 'SiteOrigin Widgets: could not clear the editor change mark', markErr );
+			}
+		}
+	}
+};
+
 wp.hooks.addFilter(
 	'editor.preSavePost',
 	'sowb/direct-widget-block-save-bridge',
-	async function( edits ) {
+	async function( edits, options ) {
 		try {
 			const blockEditorSelect = wp.data.select( 'core/block-editor' );
+			const editorSelect = wp.data.select( 'core/editor' );
+			const postType = editorSelect.getCurrentPostType();
+			const postId = editorSelect.getCurrentPostId();
+			const getPostEdits = () => wp.data.select( 'core' ).getEntityRecordEdits( 'postType', postType, postId );
+
+			// Both are read before any form, to tell later whether the editor changed.
 			const blocks = blockEditorSelect.getBlocks();
+			const postEdits = getPostEdits();
 			const directBlocks = sowbFindDirectWidgetBlocks( blocks );
 
 			if ( directBlocks.length === 0 ) {
@@ -1564,6 +1814,7 @@ wp.hooks.addFilter(
 			}
 
 			const widgetDataByClientId = {};
+			const formsByClientId = {};
 
 			for ( const block of directBlocks ) {
 				try {
@@ -1580,6 +1831,7 @@ wp.hooks.addFilter(
 					}
 
 					widgetDataByClientId[ block.clientId ] = widgetData;
+					formsByClientId[ block.clientId ] = $form;
 				} catch ( blockErr ) {
 					console.error( 'SiteOrigin Widgets: failed to snapshot block ' + block.clientId, blockErr );
 				}
@@ -1595,24 +1847,21 @@ wp.hooks.addFilter(
 				...( edits || {} ),
 				content: wp.blocks.serialize( clonedBlocks ),
 			};
-			const attrsByClientId = clientIds.reduce( ( attributes, clientId ) => {
-				attributes[ clientId ] = {
-					widgetData: widgetDataByClientId[ clientId ],
-				};
+			sowbSyncEditorWithSavedSnapshot( {
+				isAutosave: !! ( options && options.isAutosave ),
+				blocks,
+				postEdits,
+				getPostEdits,
+				clientIds,
+				widgetDataByClientId,
+				formsByClientId,
+				snapshotJsonByClientId: clientIds.reduce( ( snapshots, clientId ) => {
+					snapshots[ clientId ] = sowbSerializeWidgetData( widgetDataByClientId[ clientId ] );
 
-				return attributes;
-			}, {} );
-			const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
-
-			if (
-				blockEditorDispatch &&
-				typeof blockEditorDispatch.updateBlockAttributes === 'function'
-			) {
-				blockEditorDispatch.updateBlockAttributes(
-					clientIds,
-					attrsByClientId
-				);
-			}
+					return snapshots;
+				}, {} ),
+				content: nextEdits.content,
+			} );
 
 			return nextEdits;
 		} catch ( err ) {

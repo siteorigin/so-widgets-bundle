@@ -8,6 +8,7 @@ Domain Path: /lang
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Plugin URI: https://siteorigin.com/widgets-bundle/
+Requires at least: 6.6
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
