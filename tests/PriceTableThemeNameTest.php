@@ -1,26 +1,7 @@
 <?php
 
-use Brain\Monkey\Functions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SiteOrigin\Tests\SiteOriginTests;
-
-// price-table.php registers itself while it is being required, and the widget
-// constructor resolves its plugin folder, so both need real functions then.
-if ( ! function_exists( 'siteorigin_widget_register' ) ) {
-	function siteorigin_widget_register() {
-		return true;
-	}
-}
-
-if ( ! function_exists( 'plugin_dir_path' ) ) {
-	function plugin_dir_path( $file ) {
-		return rtrim( dirname( $file ), '/\\' ) . '/';
-	}
-}
-
-if ( ! defined( 'SOW_BUNDLE_BASE_FILE' ) ) {
-	define( 'SOW_BUNDLE_BASE_FILE', __DIR__ . '/../so-widgets-bundle.php' );
-}
 
 if ( ! class_exists( 'SiteOrigin_Widget_PriceTable_Widget' ) ) {
 	require __DIR__ . '/../widgets/price-table/price-table.php';
@@ -32,21 +13,11 @@ if ( ! class_exists( 'SiteOrigin_Widget_PriceTable_Widget' ) ) {
  * used; anything else falls back to Atom.
  */
 class PriceTableThemeNameTest extends SiteOriginTests {
-	protected function setUp(): void {
-		parent::setUp();
-
-		Functions\when( 'wp_parse_args' )->alias(
-			function ( $args, $defaults ) {
-				return array_merge( $defaults, (array) $args );
-			}
-		);
-	}
-
 	public static function themes() {
 		return array(
 			'atom' => array( array( 'design' => array( 'theme' => 'atom' ) ), 'atom' ),
 			'empty' => array( array( 'design' => array( 'theme' => '' ) ), 'atom' ),
-			// empty() treats '0' as empty, which keeps the fallback the widget always had.
+			// empty() treats '0' as empty, so '0' falls back to Atom.
 			'zero' => array( array( 'design' => array( 'theme' => '0' ) ), 'atom' ),
 			'unset' => array( array( 'design' => array() ), 'atom' ),
 			'no design section' => array( array(), 'atom' ),

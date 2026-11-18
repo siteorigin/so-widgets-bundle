@@ -171,6 +171,15 @@ class TemplateFileTest extends SiteOriginTests {
 		$this->assertSame( array( $this->fixtures . 'tpl/default.php' ), $this->filter_calls );
 	}
 
+	public function test_filter_may_supply_a_template_for_a_missing_candidate() {
+		$this->filter_return = $this->fixtures . 'outside.php';
+
+		$output = $this->render( 'missing' );
+
+		$this->assertStringContainsString( 'OUTSIDE', $output );
+		$this->assertSame( array( $this->fixtures . 'tpl/missing.php' ), $this->filter_calls );
+	}
+
 	public function test_filter_returning_a_non_php_file_includes_nothing() {
 		$this->filter_return = $this->fixtures . 'tpl/notes.txt';
 
