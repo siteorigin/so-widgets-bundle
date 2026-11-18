@@ -571,6 +571,10 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
+		// Changes each time the block mounts or unmounts, so a form response
+		// from an earlier mount can tell it is no longer wanted.
+		const mountTokenRef = element.useRef( 0 );
+		const formLoadedTimerRef = element.useRef( null );
 		const iframeFormInitKeyRef = element.useRef( null );
 
 		const switchToBlockPreview = async () => {
@@ -615,6 +619,9 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 				const loadWidgetForm = ! widgetFormHtml.length;
 
 				if ( loadWidgetForm && ! loadingForm ) {
+					const mountToken = mountTokenRef.current;
+					const isCurrentMount = () => mountTokenRef.current === mountToken;
+
 					mergeState( { loadingForm: true } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
@@ -627,11 +634,21 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 						}
 					} )
 					.done( ( widgetForm ) => {
+						if ( ! isCurrentMount() ) {
+							return;
+						}
+
 						mergeState( {
 							widgetFormHtml: widgetForm
 						} );
 
-						setTimeout( () => {
+						formLoadedTimerRef.current = setTimeout( () => {
+							formLoadedTimerRef.current = null;
+
+							if ( ! isCurrentMount() ) {
+								return;
+							}
+
 							mergeState( {
 								loadingForm: false,
 								formInitialized: false,
@@ -639,6 +656,10 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 						}, 0 );
 					} )
 					.fail( ( response ) => {
+						if ( ! isCurrentMount() ) {
+							return;
+						}
+
 						mergeState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
@@ -659,16 +680,20 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 			}
 		};
 
-		// componentDidMount / componentWillUnmount replacement
+		// componentDidMount / componentWillUnmount replacement. The effect below
+		// loads the form or the preview: it runs on mount as well as on changes.
 		element.useEffect( () => {
+			mountTokenRef.current++;
+
 			mergeState( {
 				...initialState,
 				isStillMounted: true,
 			} );
 
-			loadWidgetData();
-
 			return () => {
+				mountTokenRef.current++;
+				clearTimeout( formLoadedTimerRef.current );
+				formLoadedTimerRef.current = null;
 				isMountedRef.current = false;
 				mergeState( {
 					...initialState,
