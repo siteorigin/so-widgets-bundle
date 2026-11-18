@@ -46,6 +46,8 @@ class PriceTableThemeNameTest extends SiteOriginTests {
 		return array(
 			'atom' => array( array( 'design' => array( 'theme' => 'atom' ) ), 'atom' ),
 			'empty' => array( array( 'design' => array( 'theme' => '' ) ), 'atom' ),
+			// empty() treats '0' as empty, which keeps the fallback the widget always had.
+			'zero' => array( array( 'design' => array( 'theme' => '0' ) ), 'atom' ),
 			'unset' => array( array( 'design' => array() ), 'atom' ),
 			'no design section' => array( array(), 'atom' ),
 			'parent directory path' => array( array( 'design' => array( 'theme' => '../../../../../../wp-includes/theme-compat/embed-404' ) ), 'atom' ),
