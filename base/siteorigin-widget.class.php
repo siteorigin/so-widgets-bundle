@@ -222,9 +222,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			if ( $real_template_file !== false ) {
 				$real_template_dir = realpath( $template_dir );
+				// realpath() returns native separators, so the paths are compared as returned:
+				// on Unix a backslash is part of a folder name, not a separator.
 				$template_allowed = $real_template_dir !== false && strpos(
-					wp_normalize_path( $real_template_file ),
-					trailingslashit( wp_normalize_path( $real_template_dir ) )
+					$real_template_file,
+					rtrim( $real_template_dir, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR
 				) === 0;
 			} else {
 				$template_allowed = ! preg_match( '#(?:^|/)\.\.[. ]*(?:/|$)#', wp_normalize_path( $template_file ) );

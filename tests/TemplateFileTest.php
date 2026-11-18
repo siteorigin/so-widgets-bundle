@@ -207,6 +207,28 @@ class TemplateFileTest extends SiteOriginTests {
 		$this->assertSame( array( $this->tmp . '/linked-widget/tpl/default.php' ), $this->filter_calls );
 	}
 
+	public function test_sibling_folder_with_a_backslash_in_its_name_is_not_included() {
+		if ( DIRECTORY_SEPARATOR === '\\' ) {
+			$this->markTestSkipped( 'A backslash is a path separator on Windows, not a file name character.' );
+		}
+
+		// On Unix, tpl\evil is one folder beside tpl/, not tpl/evil.
+		mkdir( $this->tmp . '/backslash-widget/tpl', 0777, true );
+		mkdir( $this->tmp . '/backslash-widget/tpl\\evil', 0777, true );
+		file_put_contents( $this->tmp . '/backslash-widget/tpl\\evil/payload.php', "<?php\necho 'BACKSLASH';\n" );
+		$this->use_widget_folder( $this->tmp . '/backslash-widget/' );
+
+		$output = $this->render( '../tpl\\evil/payload' );
+
+		unlink( $this->tmp . '/backslash-widget/tpl\\evil/payload.php' );
+		rmdir( $this->tmp . '/backslash-widget/tpl\\evil' );
+		rmdir( $this->tmp . '/backslash-widget/tpl' );
+		rmdir( $this->tmp . '/backslash-widget' );
+
+		$this->assertStringNotContainsString( 'BACKSLASH', $output );
+		$this->assertSame( array(), $this->filter_calls );
+	}
+
 	public function test_template_file_symlinked_outside_the_folder_is_not_included() {
 		$this->use_widget_folder( $this->tmp . '/file-link-widget/' );
 
