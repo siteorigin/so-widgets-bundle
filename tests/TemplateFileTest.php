@@ -140,6 +140,9 @@ class TemplateFileTest extends SiteOriginTests {
 			'.. with a Windows separator' => array( '..\\outside', null, null ),
 			'missing name' => array( 'missing', null, 'tpl/missing.php' ),
 			'.. to a missing file' => array( '../missing', null, null ),
+			// A case-insensitive filesystem resolves this into tpl/, but realpath() keeps
+			// the TPL spelling, so it is refused like any other name that steps out and back.
+			'.. back in with different case' => array( '../TPL/default', null, null ),
 		);
 	}
 
