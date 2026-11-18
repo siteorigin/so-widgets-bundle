@@ -172,6 +172,7 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 		if ( ! file_exists( $this->root . '/plugin/widget/TPL' ) ) {
 			mkdir( $this->root . '/plugin/widget/TPL' );
 			file_put_contents( $this->root . '/plugin/widget/TPL/payload.php', "<?php\necho 'INC:' . __FILE__ . ':END';\n" );
+			$this->assertFileExists( $this->root . '/plugin/widget/TPL/payload.php' );
 		}
 
 		file_put_contents( $this->root . '/plugin/widget/tpl/notes.txt', 'NOTES' );
