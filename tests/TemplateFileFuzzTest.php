@@ -33,13 +33,16 @@ class SiteOrigin_Template_File_Fuzz_Widget extends SiteOrigin_Widget {
 }
 
 /**
- * Compares the template widget() includes with the template the code before
- * the template folder check included, over generated template names and the
- * ways plugins and themes use the siteorigin_widgets_template_file_ filter.
+ * Compares the template widget() includes with the template a reference
+ * resolver includes, over generated template names and the ways plugins and
+ * themes use the siteorigin_widgets_template_file_ filter. The reference has no
+ * template folder check: it builds the path, applies the filter, resolves it
+ * and requires an existing .php file.
  *
- * The rule: both include the same file, unless the template name has a `..`
- * segment, or the old code resolved the widget's own template outside its
- * template folder. Any other difference fails the test and is listed.
+ * The rule: both include the same file, unless the widget's own template path,
+ * before any filter, resolves outside its template folder, or doesn't resolve
+ * and has a `..` segment. Any other difference fails the test and is listed,
+ * so a name like sub/../a that resolves inside the folder must still render.
  *
  * The filter behaviours model real uses:
  * - pass_through: no filter, or one that returns its input.
@@ -173,6 +176,14 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 
 		file_put_contents( $this->root . '/plugin/widget/tpl/notes.txt', 'NOTES' );
 		symlink( $this->root . '/plugin/widget/outside.php', $this->root . '/plugin/widget/tpl/link.php' );
+
+		// A tree that failed to build would make both sides include nothing and agree.
+		foreach ( $files as $file ) {
+			$this->assertFileExists( $this->root . '/' . $file );
+		}
+
+		$this->assertFileExists( $this->root . '/plugin/widget/tpl/notes.txt' );
+		$this->assertTrue( is_link( $this->root . '/plugin/widget/tpl/link.php' ) );
 	}
 
 	private function remove( $path ) {
@@ -223,10 +234,10 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The template the code before the template folder check included, for the
+	 * The template a resolver with no template folder check includes, for the
 	 * same folder, name and filter.
 	 */
-	private function previous_include( $template_dir, $template_name ) {
+	private function reference_include( $template_dir, $template_name ) {
 		$template_file = $this->widget_folder . $template_dir . '/' . $template_name . '.php';
 		$template_file = $this->filter( $template_file );
 		$template_file = @realpath( (string) $template_file );
@@ -251,14 +262,20 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 	}
 
 	/**
-	 * Whether the widget's own computed template, before any filter, resolved
-	 * to a file outside its template folder.
+	 * Whether a change is one the template folder check is meant to make: the
+	 * widget's own template path, before any filter, resolves to a file outside
+	 * its template folder, or doesn't resolve and has a `..` segment.
 	 */
-	private function own_template_outside( $template_dir, $template_name ) {
+	private function change_expected( $template_dir, $template_name ) {
 		$real_file = realpath( $this->widget_folder . $template_dir . '/' . $template_name . '.php' );
+
+		if ( $real_file === false ) {
+			return $this->has_parent_segment( $template_name );
+		}
+
 		$real_dir = realpath( $this->widget_folder . $template_dir );
 
-		return $real_file !== false && ( $real_dir === false || strpos( $real_file, rtrim( $real_dir, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR ) !== 0 );
+		return $real_dir === false || strpos( $real_file, rtrim( $real_dir, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR ) !== 0;
 	}
 
 	private function names() {
@@ -300,6 +317,7 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 		$template_dirs = array( 'tpl', '' );
 		$cases = 0;
 		$changed = 0;
+		$included = 0;
 		$unexpected = array();
 		$outside = array();
 
@@ -311,9 +329,10 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 					$widget->template_dir = $template_dir;
 					$widget->template_name = $name;
 
-					$before = $this->previous_include( $template_dir, $name );
+					$before = $this->reference_include( $template_dir, $name );
 					$after = $this->current_include( $widget );
 					$cases++;
+					$included += $after !== false ? 1 : 0;
 
 					// Only an accepted candidate reaches the filter, so a file outside
 					// the template folder can only come from the filter's own choice.
@@ -331,7 +350,7 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 
 					$changed++;
 
-					if ( ! $this->has_parent_segment( $name ) && ! $this->own_template_outside( $template_dir, $name ) ) {
+					if ( ! $this->change_expected( $template_dir, $name ) ) {
 						$unexpected[] = "$behaviour | dir '$template_dir' | name '$name' | before " . var_export( $before, true ) . ' | after ' . var_export( $after, true );
 					}
 				}
@@ -339,10 +358,11 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 		}
 
 		if ( getenv( 'SOW_FUZZ_REPORT' ) ) {
-			fwrite( STDERR, "\nTemplate file fuzz: $cases cases, $changed changed, " . count( $unexpected ) . ' unexpected, ' . count( $outside ) . " outside.\n" );
+			fwrite( STDERR, "\nTemplate file fuzz: $cases cases, $included included a template, $changed changed, " . count( $unexpected ) . ' unexpected, ' . count( $outside ) . " outside.\n" );
 		}
 
 		$this->assertGreaterThan( 45000, $cases );
+		$this->assertGreaterThan( 5000, $included, 'Enough cases include a template for the comparison to mean something.' );
 		$this->assertSame( array(), $outside, 'With no filter, only files inside the template folder are included.' );
 		$this->assertSame( array(), $unexpected, 'Only names that step out of the template folder render differently.' );
 	}
