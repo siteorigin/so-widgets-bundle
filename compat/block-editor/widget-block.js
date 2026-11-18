@@ -680,8 +680,8 @@ const sowbSerializeWidgetData = ( widgetData ) => {
 			}
 		};
 
-		// componentDidMount / componentWillUnmount replacement. The effect below
-		// loads the form or the preview: it runs on mount as well as on changes.
+		// Resets the block's state when it mounts and when it unmounts. It loads
+		// nothing: the next effect loads the form or the preview, on mount too.
 		element.useEffect( () => {
 			mountTokenRef.current++;
 
