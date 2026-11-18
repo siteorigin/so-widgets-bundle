@@ -2256,6 +2256,54 @@ test.describe( 'A widget block loads its form once', () => {
 		}
 	} );
 
+	test( 'where React mounts a new block twice, the form shown is the last mount\'s', async ( { page } ) => {
+		const { admin } = fixture;
+
+		test.skip(
+			! await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug ),
+			'React mounts a block twice only with SCRIPT_DEBUG on, which the test site sets in wp-config.'
+		);
+
+		const formIdIn = ( text ) => ( text.match( /siteorigin_widget_form_[a-f0-9]+/ ) || [] )[ 0 ];
+		const held = [];
+
+		// Hold both mounts' responses, so they can be released out of order.
+		await page.route( '**/sowb/v1/widgets/forms*', async ( route ) => {
+			const response = await route.fetch();
+
+			held.push( { route, response, body: await response.text() } );
+		} );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+		await expect.poll( () => held.length, { timeout: 20000 } ).toBe( 2 );
+
+		const [ firstMount, lastMount ] = held;
+		const lastFormId = formIdIn( lastMount.body );
+
+		expect( lastFormId ).toBeTruthy();
+		expect( formIdIn( firstMount.body ) ).not.toBe( lastFormId );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		const shownForm = widget.locator( '[id^="siteorigin_widget_form_"]' );
+
+		await lastMount.route.fulfill( { response: lastMount.response, body: lastMount.body } );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId, { timeout: 20000 } );
+
+		// The first mount's response arrives last, and changes nothing.
+		await firstMount.route.fulfill( { response: firstMount.response, body: firstMount.body } );
+		await page.waitForTimeout( 2000 );
+
+		await expect( shownForm ).toHaveCount( 1 );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId );
+
+		const tinymceField = await startedVisualEditor( admin, await widget.getAttribute( 'data-block' ) );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
 	test( 'a form request that fails is not sent again, and raises no script error', async ( { page } ) => {
 		const { admin } = fixture;
 		const errors = [];
