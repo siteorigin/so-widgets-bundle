@@ -2261,21 +2261,27 @@ test.describe( 'A widget block loads its form once', () => {
 
 		test.skip(
 			! await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug ),
-			'React mounts a block twice only with SCRIPT_DEBUG on, which the test site sets in wp-config.'
+			'React mounts a block twice only with SCRIPT_DEBUG on, a wp-config constant. Run against a site that sets it.'
 		);
 
 		const formIdIn = ( text ) => ( text.match( /siteorigin_widget_form_[a-f0-9]+/ ) || [] )[ 0 ];
 		const held = [];
 
 		// Hold both mounts' responses, so they can be released out of order.
+		// Each request takes its place as it is sent, before anything is awaited.
 		await page.route( '**/sowb/v1/widgets/forms*', async ( route ) => {
-			const response = await route.fetch();
+			const entry = { route };
 
-			held.push( { route, response, body: await response.text() } );
+			held.push( entry );
+			entry.response = await route.fetch();
+			entry.body = await entry.response.text();
 		} );
 
 		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
-		await expect.poll( () => held.length, { timeout: 20000 } ).toBe( 2 );
+		await expect.poll(
+			() => held.length === 2 && held.every( ( entry ) => typeof entry.body === 'string' ),
+			{ timeout: 20000 }
+		).toBe( true );
 
 		const [ firstMount, lastMount ] = held;
 		const lastFormId = formIdIn( lastMount.body );
