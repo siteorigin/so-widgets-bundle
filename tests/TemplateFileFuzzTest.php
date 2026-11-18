@@ -124,6 +124,8 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 	 *                             file outside the folder
 	 * plugin/widget/tpl-evil/     a sibling folder sharing the tpl prefix
 	 * plugin/widget/tpl\evil/     a sibling folder with a backslash (not Windows)
+	 * plugin/widget/tpl-evil.php  a file beside the folder whose name starts with tpl
+	 * plugin/widget/TPL/          a different folder from tpl/ (case-sensitive filesystems only)
 	 * plugin/widget/outside.php   a file beside the template folder
 	 * plugin/other/own.php        a filter's own template
 	 * theme/overrides/            a theme's template overrides
@@ -139,6 +141,7 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 			'plugin/widget/tpl/Default.php',
 			'plugin/widget/tpl-evil/default.php',
 			'plugin/widget/tpl-evil/payload.php',
+			'plugin/widget/tpl-evil.php',
 			'plugin/widget/outside.php',
 			'plugin/widget/payload.php',
 			'plugin/other/own.php',
@@ -160,6 +163,12 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 			}
 
 			file_put_contents( $path, "<?php\necho 'INC:' . __FILE__ . ':END';\n" );
+		}
+
+		// On a case-sensitive filesystem TPL/ is a different folder from tpl/.
+		if ( ! file_exists( $this->root . '/plugin/widget/TPL' ) ) {
+			mkdir( $this->root . '/plugin/widget/TPL' );
+			file_put_contents( $this->root . '/plugin/widget/TPL/payload.php', "<?php\necho 'INC:' . __FILE__ . ':END';\n" );
 		}
 
 		file_put_contents( $this->root . '/plugin/widget/tpl/notes.txt', 'NOTES' );
@@ -279,6 +288,9 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 			$name = implode( mt_rand( 0, 4 ) ? '/' : '\\', $parts );
 			$names[] = mt_rand( 0, 9 ) ? $name : '/' . $name;
 		}
+
+		// Names that reach each sibling the fixture tree holds.
+		array_push( $names, '../tpl-evil/default', '../tpl-evil/payload', '../TPL/payload', '../TPL/default', '../tpl\\evil/payload', '../../payload', '../../other/own' );
 
 		return array_values( array_unique( $names ) );
 	}
