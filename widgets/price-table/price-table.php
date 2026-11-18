@@ -470,7 +470,12 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_style_name( $instance ) {
-		if ( empty( $instance['design']['theme'] ) ) {
+		// The theme names the template, LESS and CSS files, so only a plain name is used.
+		if (
+			empty( $instance['design']['theme'] ) ||
+			! is_string( $instance['design']['theme'] ) ||
+			! preg_match( '/^[A-Za-z0-9_-]+$/D', $instance['design']['theme'] )
+		) {
 			return 'atom';
 		}
 
