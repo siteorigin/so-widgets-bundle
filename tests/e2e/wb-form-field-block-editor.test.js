@@ -2152,16 +2152,12 @@ test.describe( 'A widget block loads its form once', () => {
 		return seen;
 	};
 
-	// With SCRIPT_DEBUG on, React mounts each block twice, so a second request
-	// is sent. Its response replaces nothing: the first mount's is ignored.
+	// With SCRIPT_DEBUG on, React mounts a new block twice, so its first load
+	// is requested exactly twice. The first mount's response is ignored. A
+	// later switch between form and preview is not a mount: one request.
 	const loadsPerMount = async ( page ) => await page.evaluate(
 		() => !! window.sowbBlockEditorAdmin.wpScriptDebug
 	) ? 2 : 1;
-
-	const expectLoads = ( count, loads, perMount ) => {
-		expect( count ).toBeGreaterThanOrEqual( loads );
-		expect( count ).toBeLessThanOrEqual( loads * perMount );
-	};
 
 	const startedVisualEditor = async ( admin, clientId ) => {
 		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
@@ -2201,7 +2197,7 @@ test.describe( 'A widget block loads its form once', () => {
 		} );
 
 		expect( kept ).toEqual( { textarea: true, form: true } );
-		expectLoads( forms.count, 1, await loadsPerMount( page ) );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
 
 		// The editor that started is one a person can type in.
 		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
@@ -2234,7 +2230,7 @@ test.describe( 'A widget block loads its form once', () => {
 
 			const perMount = await loadsPerMount( page );
 
-			expectLoads( previews.count, 1, perMount );
+			expect( previews.count ).toBe( perMount );
 			expect( forms.count ).toBe( 0 );
 
 			const title = widget.locator( 'input[name*="[title]"]' ).first();
@@ -2243,7 +2239,7 @@ test.describe( 'A widget block loads its form once', () => {
 			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
 			await expect( title ).toHaveValue( 'Stored title', { timeout: 20000 } );
 			await waitForWidgetPreviews( page, fixture.previews );
-			expectLoads( forms.count, 1, perMount );
+			expect( forms.count ).toBe( 1 );
 
 			// Form to preview and back: one more request, and an edit is kept.
 			await title.fill( 'Edited title' );
@@ -2254,13 +2250,13 @@ test.describe( 'A widget block loads its form once', () => {
 			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
 			await expect( title ).toHaveValue( 'Edited title', { timeout: 20000 } );
 			await waitForWidgetPreviews( page, fixture.previews );
-			expectLoads( forms.count, 2, perMount );
+			expect( forms.count ).toBe( 2 );
 		} finally {
 			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
 		}
 	} );
 
-	test( 'a form request that fails leaves the block loading, with no script error', async ( { page } ) => {
+	test( 'a form request that fails is not sent again, and raises no script error', async ( { page } ) => {
 		const { admin } = fixture;
 		const errors = [];
 
@@ -2276,11 +2272,14 @@ test.describe( 'A widget block loads its form once', () => {
 		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
 
 		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
-		await expect( widget.locator( '.so-widgets-spinner-container' ) ).toBeVisible( { timeout: 20000 } );
+		await expect( widget ).toBeVisible( { timeout: 20000 } );
+		await expect.poll( () => forms.count, { timeout: 20000 } ).toBeGreaterThan( 0 );
 		await page.waitForTimeout( 2000 );
 
-		await expect( widget.locator( '.so-widgets-spinner-container' ) ).toBeVisible();
-		expectLoads( forms.count, 1, await loadsPerMount( page ) );
+		// The block is still there, without a form.
+		await expect( widget ).toBeVisible();
+		await expect( widget.locator( '.siteorigin-widget-form-main[data-class]' ) ).toHaveCount( 0 );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
 		expect( errors ).toEqual( [] );
 	} );
 } );

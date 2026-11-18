@@ -445,10 +445,8 @@ test(
 );
 
 /**
- * Validates the following for the SiteOrigin Editor widget in the Site Editor:
- * 1. TinyMCE field: media upload and image insertion.
- * 2. Ensures the TinyMCE editor is focused before media insertion.
- * 3. Confirms the <img> tag appears in the TinyMCE editor iframe after upload.
+ * An inserted SiteOrigin Editor widget loads its form once in the Site Editor,
+ * keeps the form it loaded, and starts a visual editor that can be typed in.
  *
  * @param {Object} page The Playwright page object.
  */
@@ -484,12 +482,11 @@ test(
 		expect( await textarea.evaluate(
 			( element ) => element.ownerDocument.defaultView.sowbTestTextarea === element && element.isConnected
 		) ).toBe( true );
-		// With SCRIPT_DEBUG on, React mounts the block twice and a second
-		// request is sent; the first mount's response is ignored.
+		// With SCRIPT_DEBUG on, React mounts a new block twice, so exactly one
+		// more request is sent; the first mount's response is ignored.
 		const debug = await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug );
 
-		expect( forms ).toBeGreaterThanOrEqual( 1 );
-		expect( forms ).toBeLessThanOrEqual( debug ? 2 : 1 );
+		expect( forms ).toBe( debug ? 2 : 1 );
 
 		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
 		await visualBody.click();
@@ -498,6 +495,14 @@ test(
 	}
 );
 
+/**
+ * Validates the following for the SiteOrigin Editor widget in the Site Editor:
+ * 1. TinyMCE field: media upload and image insertion.
+ * 2. Ensures the TinyMCE editor is focused before media insertion.
+ * 3. Confirms the <img> tag appears in the TinyMCE editor iframe after upload.
+ *
+ * @param {Object} page The Playwright page object.
+ */
 test(
 	'Test the Editor widget.',
 	async ( { page } ) => {
