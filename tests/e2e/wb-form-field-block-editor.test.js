@@ -2133,3 +2133,141 @@ test.describe( 'A widget preview is not an edit', () => {
 		}
 	} );
 } );
+
+test.describe( 'A widget block loads its form once', () => {
+	const fixture = useBridgePost( 'WB one form load', false );
+
+	const isFormRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/forms' );
+	const isPreviewRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/previews' );
+
+	const countRequests = ( page, matches ) => {
+		const seen = { count: 0 };
+
+		page.on( 'request', ( request ) => {
+			if ( matches( request ) ) {
+				seen.count++;
+			}
+		} );
+
+		return seen;
+	};
+
+	const startedVisualEditor = async ( admin, clientId ) => {
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await expect( tinymceField.locator( '.mce-toolbar-grp' ).first() ).toBeVisible( { timeout: 20000 } );
+
+		return tinymceField;
+	};
+
+	test( 'inserting a block sends one form request, and the form it shows is not replaced', async ( { page } ) => {
+		const { admin } = fixture;
+		const forms = countRequests( page, isFormRequest );
+
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const tinymceField = await startedVisualEditor( admin, clientId );
+		const textarea = tinymceField.locator( 'textarea.wp-editor-area' );
+
+		// Keep hold of the nodes the visual editor started on.
+		await textarea.evaluate( ( element ) => {
+			element.ownerDocument.defaultView.sowbTestFormNodes = {
+				textarea: element,
+				form: element.closest( '.siteorigin-widget-form-main' ),
+			};
+		} );
+
+		await page.waitForTimeout( 3000 );
+
+		const kept = await textarea.evaluate( ( element ) => {
+			const nodes = element.ownerDocument.defaultView.sowbTestFormNodes;
+
+			return {
+				textarea: nodes.textarea === element && element.isConnected,
+				form: nodes.form === element.closest( '.siteorigin-widget-form-main' ) && nodes.form.isConnected,
+			};
+		} );
+
+		expect( kept ).toEqual( { textarea: true, form: true } );
+		expect( forms.count ).toBe( 1 );
+
+		// The editor that started is one a person can type in.
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
+	test( 'a stored block asks for one preview, then one form each time its form is opened', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Stored title', text: 'Stored text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const stored = await requestUtils.createPost( {
+			status: 'publish',
+			title: 'WB one form load, stored',
+			content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->`,
+		} );
+		const forms = countRequests( page, isFormRequest );
+		const previews = countRequests( page, isPreviewRequest );
+
+		try {
+			await admin.editPost( stored.id );
+			await waitForPostEditorCanvas( page, admin );
+
+			const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+			await expect( widget ).toContainText( 'Stored text', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			expect( previews.count ).toBe( 1 );
+			expect( forms.count ).toBe( 0 );
+
+			const title = widget.locator( 'input[name*="[title]"]' ).first();
+
+			// Preview to form: one request, and the form holds the stored values.
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Stored title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 1 );
+
+			// Form to preview and back: one more request, and an edit is kept.
+			await title.fill( 'Edited title' );
+			await title.dispatchEvent( 'change' );
+			await switchWidgetMode( admin, widget, 'preview' );
+			await expect( widget ).toContainText( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 2 );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+
+	test( 'a form request that fails leaves the block loading, with no script error', async ( { page } ) => {
+		const { admin } = fixture;
+		const errors = [];
+
+		page.on( 'pageerror', ( error ) => errors.push( String( error ) ) );
+		await page.route( '**/sowb/v1/widgets/forms*', ( route ) => route.fulfill( {
+			status: 500,
+			contentType: 'application/json',
+			body: JSON.stringify( { code: 'test_failure', message: 'Form unavailable.' } ),
+		} ) );
+
+		const forms = countRequests( page, isFormRequest );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		await expect( widget.locator( '.so-widgets-spinner-container' ) ).toBeVisible( { timeout: 20000 } );
+		await page.waitForTimeout( 2000 );
+
+		await expect( widget.locator( '.so-widgets-spinner-container' ) ).toBeVisible();
+		expect( forms.count ).toBe( 1 );
+		expect( errors ).toEqual( [] );
+	} );
+} );

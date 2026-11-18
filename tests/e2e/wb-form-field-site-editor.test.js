@@ -453,6 +453,47 @@ test(
  * @param {Object} page The Playwright page object.
  */
 test(
+	'Inserting an Editor widget sends one form request, and its visual editor starts.',
+	async ( { page } ) => {
+		let forms = 0;
+
+		page.on( 'request', ( request ) => {
+			if ( request.url().includes( '/sowb/v1/widgets/forms' ) ) {
+				forms++;
+			}
+		} );
+
+		const { offset, widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-editor-widget'
+		);
+
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const textarea = tinymceField.locator( 'textarea.wp-editor-area' );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), offset, 20000 );
+		await expect( tinymceField.locator( '.mce-toolbar-grp' ).first() ).toBeVisible( { timeout: 20000 } );
+
+		// Keep hold of the textarea the visual editor started on.
+		await textarea.evaluate( ( element ) => {
+			element.ownerDocument.defaultView.sowbTestTextarea = element;
+		} );
+
+		await page.waitForTimeout( 3000 );
+
+		expect( await textarea.evaluate(
+			( element ) => element.ownerDocument.defaultView.sowbTestTextarea === element && element.isConnected
+		) ).toBe( true );
+		expect( forms ).toBe( 1 );
+
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	}
+);
+
+test(
 	'Test the Editor widget.',
 	async ( { page } ) => {
 		const {
