@@ -212,9 +212,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( ! method_exists( $this, 'get_html_content' ) ) {
-			$template_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
-			$template_file = apply_filters( 'siteorigin_widgets_template_file_' . $this->id_base, $template_file, $instance, $this );
-			$template_file = realpath( $template_file );
+			$template_dir = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance );
+			$template_file = $template_dir . '/' . $this->get_template_name( $instance ) . '.php';
+
+			// The template name can come from widget settings, so a template path is only
+			// passed to the filter if it stays inside the template folder, or is missing and
+			// has no `..` segment.
+			$real_template_file = realpath( $template_file );
+
+			if ( $real_template_file !== false ) {
+				$real_template_dir = realpath( $template_dir );
+				$template_allowed = $real_template_dir !== false && strpos(
+					wp_normalize_path( $real_template_file ),
+					trailingslashit( wp_normalize_path( $real_template_dir ) )
+				) === 0;
+			} else {
+				$template_allowed = ! preg_match( '#(?:^|/)\.\.[. ]*(?:/|$)#', wp_normalize_path( $template_file ) );
+			}
+
+			if ( $template_allowed ) {
+				$template_file = apply_filters( 'siteorigin_widgets_template_file_' . $this->id_base, $template_file, $instance, $this );
+				$template_file = ! empty( $template_file ) ? realpath( $template_file ) : false;
+			} else {
+				$template_file = false;
+			}
 
 			// Don't accept non PHP files
 			if ( substr( $template_file, -4 ) != '.php' ) {
