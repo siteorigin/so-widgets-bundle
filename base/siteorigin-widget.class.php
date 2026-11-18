@@ -962,8 +962,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove the old CSS, it'll be regenerated on page load. The stored
 		// instance is read here without add_defaults(), so its containers are
 		// normalised first for the same reason they are before sanitizing.
-		// A block render only sanitizes the stored instance, so its CSS stays.
-		if ( $form_type == 'widget' && empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) ) {
+		// A block render only sanitizes the stored instance, so its CSS stays. So does an instance
+		// from Page Builder: its stored copy has no panels_info, so the name built here is the
+		// stylesheet shared with other widgets, not the one for the post being built.
+		if (
+			$form_type == 'widget' &&
+			empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
+			empty( $new_instance['panels_info'] )
+		) {
 			$this->delete_css(
 				$this->modify_instance(
 					$this->normalize_container_values( $form_options, $old_instance )

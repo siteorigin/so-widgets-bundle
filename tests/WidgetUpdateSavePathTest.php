@@ -359,4 +359,41 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 
 		$this->assertFalse( $deleted );
 	}
+
+	public function test_an_instance_from_page_builder_keeps_the_stylesheet() {
+		$deleted = false;
+		Functions\when( 'do_action' )->alias(
+			function ( $hook ) use ( &$deleted ) {
+				if ( $hook === 'siteorigin_widgets_stylesheet_deleted' ) {
+					$deleted = true;
+				}
+			}
+		);
+
+		$instance = $this->complete_instance();
+		$instance['panels_info'] = array( 'class' => 'SiteOrigin_Test_Widget' );
+
+		$this->run_capturing_errors(
+			fn() => $this->widget()->update( $instance, $this->complete_instance() )
+		);
+
+		$this->assertFalse( $deleted );
+	}
+
+	public function test_an_instance_without_page_builder_data_deletes_the_stylesheet() {
+		$deleted = false;
+		Functions\when( 'do_action' )->alias(
+			function ( $hook ) use ( &$deleted ) {
+				if ( $hook === 'siteorigin_widgets_stylesheet_deleted' ) {
+					$deleted = true;
+				}
+			}
+		);
+
+		$this->run_capturing_errors(
+			fn() => $this->widget()->update( $this->complete_instance(), $this->complete_instance() )
+		);
+
+		$this->assertTrue( $deleted );
+	}
 }
