@@ -445,6 +445,57 @@ test(
 );
 
 /**
+ * An inserted SiteOrigin Editor widget loads its form once in the Site Editor,
+ * keeps the form it loaded, and starts a visual editor that can be typed in.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Inserting an Editor widget sends one form request, and its visual editor starts.',
+	async ( { page } ) => {
+		let forms = 0;
+
+		page.on( 'request', ( request ) => {
+			if ( request.url().includes( '/sowb/v1/widgets/forms' ) ) {
+				forms++;
+			}
+		} );
+
+		const { offset, widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-editor-widget'
+		);
+
+		const tinymceField = await getField( widget, 'tinymce', true );
+		const textarea = tinymceField.locator( 'textarea.wp-editor-area' );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), offset, 20000 );
+		await expect( tinymceField.locator( '.mce-toolbar-grp' ).first() ).toBeVisible( { timeout: 20000 } );
+
+		// Keep hold of the textarea the visual editor started on.
+		await textarea.evaluate( ( element ) => {
+			element.ownerDocument.defaultView.sowbTestTextarea = element;
+		} );
+
+		await page.waitForTimeout( 3000 );
+
+		expect( await textarea.evaluate(
+			( element ) => element.ownerDocument.defaultView.sowbTestTextarea === element && element.isConnected
+		) ).toBe( true );
+		// With SCRIPT_DEBUG on, React mounts a new block twice, so exactly one
+		// more request is sent; the first mount's response is ignored.
+		const debug = await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug );
+
+		expect( forms ).toBe( debug ? 2 : 1 );
+
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	}
+);
+
+/**
  * Validates the following for the SiteOrigin Editor widget in the Site Editor:
  * 1. TinyMCE field: media upload and image insertion.
  * 2. Ensures the TinyMCE editor is focused before media insertion.

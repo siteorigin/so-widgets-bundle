@@ -2133,3 +2133,207 @@ test.describe( 'A widget preview is not an edit', () => {
 		}
 	} );
 } );
+
+test.describe( 'A widget block loads its form once', () => {
+	const fixture = useBridgePost( 'WB one form load', false );
+
+	const isFormRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/forms' );
+	const isPreviewRequest = ( request ) => request.url().includes( '/sowb/v1/widgets/previews' );
+
+	const countRequests = ( page, matches ) => {
+		const seen = { count: 0 };
+
+		page.on( 'request', ( request ) => {
+			if ( matches( request ) ) {
+				seen.count++;
+			}
+		} );
+
+		return seen;
+	};
+
+	// With SCRIPT_DEBUG on, React mounts a new block twice, so its first load
+	// is requested exactly twice. The first mount's response is ignored. A
+	// later switch between form and preview is not a mount: one request.
+	const loadsPerMount = async ( page ) => await page.evaluate(
+		() => !! window.sowbBlockEditorAdmin.wpScriptDebug
+	) ? 2 : 1;
+
+	const startedVisualEditor = async ( admin, clientId ) => {
+		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
+		const tinymceField = await getField( widget, 'tinymce', true );
+
+		await ensureElementVisible( tinymceField.locator( 'iframe' ).first(), 120, 20000 );
+		await expect( tinymceField.locator( '.mce-toolbar-grp' ).first() ).toBeVisible( { timeout: 20000 } );
+
+		return tinymceField;
+	};
+
+	test( 'inserting a block sends one form request, and the form it shows is not replaced', async ( { page } ) => {
+		const { admin } = fixture;
+		const forms = countRequests( page, isFormRequest );
+
+		const clientId = await insertWidget( admin, EDITOR_BLOCK );
+		const tinymceField = await startedVisualEditor( admin, clientId );
+		const textarea = tinymceField.locator( 'textarea.wp-editor-area' );
+
+		// Keep hold of the nodes the visual editor started on.
+		await textarea.evaluate( ( element ) => {
+			element.ownerDocument.defaultView.sowbTestFormNodes = {
+				textarea: element,
+				form: element.closest( '.siteorigin-widget-form-main' ),
+			};
+		} );
+
+		await page.waitForTimeout( 3000 );
+
+		const kept = await textarea.evaluate( ( element ) => {
+			const nodes = element.ownerDocument.defaultView.sowbTestFormNodes;
+
+			return {
+				textarea: nodes.textarea === element && element.isConnected,
+				form: nodes.form === element.closest( '.siteorigin-widget-form-main' ) && nodes.form.isConnected,
+			};
+		} );
+
+		expect( kept ).toEqual( { textarea: true, form: true } );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
+
+		// The editor that started is one a person can type in.
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
+	test( 'a stored block asks for one preview, then one form each time its form is opened', async ( { page } ) => {
+		const { admin, requestUtils } = fixture;
+		const attrs = JSON.stringify( {
+			widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+			widgetData: { title: 'Stored title', text: 'Stored text', autop: false, text_selected_editor: 'tinymce' },
+		} );
+		const stored = await requestUtils.createPost( {
+			status: 'publish',
+			title: 'WB one form load, stored',
+			content: `<!-- wp:${ EDITOR_BLOCK } ${ attrs } /-->`,
+		} );
+		const forms = countRequests( page, isFormRequest );
+		const previews = countRequests( page, isPreviewRequest );
+
+		try {
+			await admin.editPost( stored.id );
+			await waitForPostEditorCanvas( page, admin );
+
+			const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+			await expect( widget ).toContainText( 'Stored text', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+
+			const perMount = await loadsPerMount( page );
+
+			expect( previews.count ).toBe( perMount );
+			expect( forms.count ).toBe( 0 );
+
+			const title = widget.locator( 'input[name*="[title]"]' ).first();
+
+			// Preview to form: one request, and the form holds the stored values.
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Stored title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 1 );
+
+			// Form to preview and back: one more request, and an edit is kept.
+			await title.fill( 'Edited title' );
+			await title.dispatchEvent( 'change' );
+			await switchWidgetMode( admin, widget, 'preview' );
+			await expect( widget ).toContainText( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
+			await expect( title ).toHaveValue( 'Edited title', { timeout: 20000 } );
+			await waitForWidgetPreviews( page, fixture.previews );
+			expect( forms.count ).toBe( 2 );
+		} finally {
+			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
+		}
+	} );
+
+	test( 'where React mounts a new block twice, the form shown is the last mount\'s', async ( { page } ) => {
+		const { admin } = fixture;
+
+		test.skip(
+			! await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug ),
+			'React mounts a block twice only with SCRIPT_DEBUG on, a wp-config constant. Run against a site that sets it.'
+		);
+
+		const formIdIn = ( text ) => ( text.match( /siteorigin_widget_form_[a-f0-9]+/ ) || [] )[ 0 ];
+		const held = [];
+
+		// Hold both mounts' responses, so they can be released out of order.
+		// Each request takes its place as it is sent, before anything is awaited.
+		await page.route( '**/sowb/v1/widgets/forms*', async ( route ) => {
+			const entry = { route };
+
+			held.push( entry );
+			entry.response = await route.fetch();
+			entry.body = await entry.response.text();
+		} );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+		await expect.poll(
+			() => held.length === 2 && held.every( ( entry ) => typeof entry.body === 'string' ),
+			{ timeout: 20000 }
+		).toBe( true );
+
+		const [ firstMount, lastMount ] = held;
+		const lastFormId = formIdIn( lastMount.body );
+
+		expect( lastFormId ).toBeTruthy();
+		expect( formIdIn( firstMount.body ) ).not.toBe( lastFormId );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		const shownForm = widget.locator( '[id^="siteorigin_widget_form_"]' );
+
+		await lastMount.route.fulfill( { response: lastMount.response, body: lastMount.body } );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId, { timeout: 20000 } );
+
+		// The first mount's response arrives last, and changes nothing.
+		await firstMount.route.fulfill( { response: firstMount.response, body: firstMount.body } );
+		await page.waitForTimeout( 2000 );
+
+		await expect( shownForm ).toHaveCount( 1 );
+		await expect( shownForm ).toHaveAttribute( 'id', lastFormId );
+
+		const tinymceField = await startedVisualEditor( admin, await widget.getAttribute( 'data-block' ) );
+		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+
+		await visualBody.click();
+		await visualBody.pressSequentially( 'Typed once' );
+		await expect( visualBody ).toContainText( 'Typed once' );
+	} );
+
+	test( 'a form request that fails is not sent again, and raises no script error', async ( { page } ) => {
+		const { admin } = fixture;
+		const errors = [];
+
+		page.on( 'pageerror', ( error ) => errors.push( String( error ) ) );
+		await page.route( '**/sowb/v1/widgets/forms*', ( route ) => route.fulfill( {
+			status: 500,
+			contentType: 'application/json',
+			body: JSON.stringify( { code: 'test_failure', message: 'Form unavailable.' } ),
+		} ) );
+
+		const forms = countRequests( page, isFormRequest );
+
+		await admin.editor.insertBlock( { name: EDITOR_BLOCK } );
+
+		const widget = getWidgetBlock( admin, EDITOR_BLOCK );
+		await expect( widget ).toBeVisible( { timeout: 20000 } );
+		await expect.poll( () => forms.count, { timeout: 20000 } ).toBeGreaterThan( 0 );
+		await page.waitForTimeout( 2000 );
+
+		// The block is still there, without a form.
+		await expect( widget ).toBeVisible();
+		await expect( widget.locator( '.siteorigin-widget-form-main[data-class]' ) ).toHaveCount( 0 );
+		expect( forms.count ).toBe( await loadsPerMount( page ) );
+		expect( errors ).toEqual( [] );
+	} );
+} );

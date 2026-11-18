@@ -93,7 +93,7 @@ test(
 
 test(
 	'Editor widget block content from a user without unfiltered_html is sanitized at save.',
-	async () => {
+	async ( { browser } ) => {
 		const requestUtils = await setupRequestUtils();
 		const created = [];
 		let session = null;
@@ -107,10 +107,10 @@ test(
 			await expectSessionRole( session, 'author' );
 
 			const response = await call( session, 'POST', 'wp-json/wp/v2/posts', {
-				status: 'draft',
+				status: 'publish',
 				title: 'WB render capability - author save',
 				content: editorWidgetBlock(
-					'<p>keep</p><script>alert(1)</script><iframe src="https://example.com/frame"></iframe>'
+					'<p>keep</p><script>alert(1)</script><iframe src="https://example.com/frame"></iframe><b onclick="window.sowbClicked = 1">bold</b>'
 				),
 			} );
 			expect( response.status ).toBe( 201 );
@@ -118,12 +118,43 @@ test(
 			const saved = response.body;
 			postId = saved.id;
 
-			// Core kses runs at save under the saving user: tags are stripped
-			// from the decoded attributes, inner text survives.
+			// Core kses runs at save under the saving user and strips the tags
+			// from the decoded attributes. WordPress 7.2 also removes the text
+			// inside a script element; earlier versions leave it as plain text.
+			// Either is safe, so that text is not checked.
 			expect( saved.content.raw ).toContain( 'keep' );
-			expect( saved.content.raw ).toContain( 'alert(1)' );
 			expect( saved.content.raw ).not.toContain( 'example.com/frame' );
 			expect( saved.content.raw ).not.toMatch( /script/ );
+
+			// The raw content stores each `<` escaped, so read the block's
+			// attributes as WordPress decodes them.
+			const attrs = JSON.parse(
+				saved.content.raw.match( /<!-- wp:sowb\/siteorigin-widget-editor-widget (\{.*\}) \/-->/s )[ 1 ]
+			);
+			const unsafe = /<script|<iframe|onclick|example\.com\/frame/i;
+
+			expect( attrs.widgetData.text ).toContain( '<p>keep</p>' );
+			expect( attrs.widgetData.text ).toContain( '<b>bold</b>' );
+			expect( attrs.widgetData.text ).not.toMatch( unsafe );
+			expect( attrs.widgetMarkup ).toContain( 'keep' );
+			expect( attrs.widgetMarkup ).not.toMatch( unsafe );
+
+			// And what a visitor is sent.
+			const anonContext = await browser.newContext();
+
+			try {
+				const anonPage = await anonContext.newPage();
+
+				await anonPage.goto( saved.link );
+
+				const widgetHtml = await anonPage.locator( '.siteorigin-widget-tinymce' ).first().innerHTML();
+
+				expect( widgetHtml ).toContain( 'keep' );
+				expect( widgetHtml ).not.toMatch( unsafe );
+				expect( await anonPage.locator( '.siteorigin-widget-tinymce iframe, .siteorigin-widget-tinymce script' ).count() ).toBe( 0 );
+			} finally {
+				await anonContext.close();
+			}
 		} finally {
 			if ( postId ) {
 				await requestUtils.rest( {
