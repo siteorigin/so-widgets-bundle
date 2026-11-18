@@ -484,7 +484,12 @@ test(
 		expect( await textarea.evaluate(
 			( element ) => element.ownerDocument.defaultView.sowbTestTextarea === element && element.isConnected
 		) ).toBe( true );
-		expect( forms ).toBe( 1 );
+		// With SCRIPT_DEBUG on, React mounts the block twice and a second
+		// request is sent; the first mount's response is ignored.
+		const debug = await page.evaluate( () => !! window.sowbBlockEditorAdmin.wpScriptDebug );
+
+		expect( forms ).toBeGreaterThanOrEqual( 1 );
+		expect( forms ).toBeLessThanOrEqual( debug ? 2 : 1 );
 
 		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
 		await visualBody.click();

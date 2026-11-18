@@ -2152,6 +2152,17 @@ test.describe( 'A widget block loads its form once', () => {
 		return seen;
 	};
 
+	// With SCRIPT_DEBUG on, React mounts each block twice, so a second request
+	// is sent. Its response replaces nothing: the first mount's is ignored.
+	const loadsPerMount = async ( page ) => await page.evaluate(
+		() => !! window.sowbBlockEditorAdmin.wpScriptDebug
+	) ? 2 : 1;
+
+	const expectLoads = ( count, loads, perMount ) => {
+		expect( count ).toBeGreaterThanOrEqual( loads );
+		expect( count ).toBeLessThanOrEqual( loads * perMount );
+	};
+
 	const startedVisualEditor = async ( admin, clientId ) => {
 		const widget = admin.editor.canvas.locator( `[data-block="${ clientId }"]` );
 		const tinymceField = await getField( widget, 'tinymce', true );
@@ -2190,7 +2201,7 @@ test.describe( 'A widget block loads its form once', () => {
 		} );
 
 		expect( kept ).toEqual( { textarea: true, form: true } );
-		expect( forms.count ).toBe( 1 );
+		expectLoads( forms.count, 1, await loadsPerMount( page ) );
 
 		// The editor that started is one a person can type in.
 		const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
@@ -2221,7 +2232,9 @@ test.describe( 'A widget block loads its form once', () => {
 			await expect( widget ).toContainText( 'Stored text', { timeout: 20000 } );
 			await waitForWidgetPreviews( page, fixture.previews );
 
-			expect( previews.count ).toBe( 1 );
+			const perMount = await loadsPerMount( page );
+
+			expectLoads( previews.count, 1, perMount );
 			expect( forms.count ).toBe( 0 );
 
 			const title = widget.locator( 'input[name*="[title]"]' ).first();
@@ -2230,7 +2243,7 @@ test.describe( 'A widget block loads its form once', () => {
 			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
 			await expect( title ).toHaveValue( 'Stored title', { timeout: 20000 } );
 			await waitForWidgetPreviews( page, fixture.previews );
-			expect( forms.count ).toBe( 1 );
+			expectLoads( forms.count, 1, perMount );
 
 			// Form to preview and back: one more request, and an edit is kept.
 			await title.fill( 'Edited title' );
@@ -2241,7 +2254,7 @@ test.describe( 'A widget block loads its form once', () => {
 			await reopenSavedWidgetForm( page, admin, EDITOR_BLOCK );
 			await expect( title ).toHaveValue( 'Edited title', { timeout: 20000 } );
 			await waitForWidgetPreviews( page, fixture.previews );
-			expect( forms.count ).toBe( 2 );
+			expectLoads( forms.count, 2, perMount );
 		} finally {
 			await requestUtils.rest( { method: 'DELETE', path: `/wp/v2/posts/${ stored.id }`, params: { force: true } } ).catch( () => {} );
 		}
@@ -2267,7 +2280,7 @@ test.describe( 'A widget block loads its form once', () => {
 		await page.waitForTimeout( 2000 );
 
 		await expect( widget.locator( '.so-widgets-spinner-container' ) ).toBeVisible();
-		expect( forms.count ).toBe( 1 );
+		expectLoads( forms.count, 1, await loadsPerMount( page ) );
 		expect( errors ).toEqual( [] );
 	} );
 } );
