@@ -291,6 +291,20 @@ class TemplateFileFuzzTest extends SiteOriginTests {
 			}
 		}
 
+		// Every three segment name over the segments that step out of a folder and
+		// back into it, such as sub/../default and ../tpl/a. Two segments can't do
+		// this, as the .php suffix joins the last segment.
+		$walk = array( '..', '.', 'sub', 'tpl', 'TPL', 'default', 'a', 'b' );
+
+		foreach ( $walk as $first ) {
+			foreach ( $walk as $second ) {
+				foreach ( $walk as $third ) {
+					$names[] = "$first/$second/$third";
+					$names[] = "$first\\$second\\$third";
+				}
+			}
+		}
+
 		// Seeded three to five segment names.
 		mt_srand( 20261118 );
 
