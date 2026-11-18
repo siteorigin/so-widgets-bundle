@@ -140,10 +140,28 @@ class TemplateFileTest extends SiteOriginTests {
 			'.. with a Windows separator' => array( '..\\outside', null, null ),
 			'missing name' => array( 'missing', null, 'tpl/missing.php' ),
 			'.. to a missing file' => array( '../missing', null, null ),
-			// A case-insensitive filesystem resolves this into tpl/, but realpath() keeps
-			// the TPL spelling, so it is refused like any other name that steps out and back.
-			'.. back in with different case' => array( '../TPL/default', null, null ),
+			'.. back in with the same case' => array( '../tpl/default', 'TPL-DEFAULT', 'tpl/../tpl/default.php' ),
 		);
+	}
+
+	/**
+	 * A name that steps out and back in with different case renders only when
+	 * realpath() returns the folder as it is spelled on disk. On a case-sensitive
+	 * filesystem TPL/ doesn't exist, and on a case-insensitive one where realpath()
+	 * keeps the TPL spelling, the path doesn't start with the template folder.
+	 */
+	public function test_template_name_back_in_with_different_case() {
+		$real_template = realpath( $this->fixtures . 'tpl/../TPL/default.php' );
+		$renders = $real_template !== false && strpos( $real_template, realpath( $this->fixtures . 'tpl' ) . DIRECTORY_SEPARATOR ) === 0;
+
+		$output = $this->render( '../TPL/default' );
+
+		if ( $renders ) {
+			$this->assertStringContainsString( 'TPL-DEFAULT', $output );
+		} else {
+			$this->assertStringNotContainsString( 'TPL-DEFAULT', $output );
+			$this->assertSame( array(), $this->filter_calls );
+		}
 	}
 
 	#[DataProvider( 'template_names' )]
