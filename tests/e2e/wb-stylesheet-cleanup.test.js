@@ -293,6 +293,9 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 			path: '/sowb-e2e/v1/next-widget-number',
 			params: { id_base: 'sow-button' },
 		} );
+		// A colour no other button has, so the stylesheet's name is this
+		// widget's alone.
+		const color = '#' + Math.floor( Math.random() * 0xffffff ).toString( 16 ).padStart( 6, '0' );
 		const save = ( method, path, text ) => requestUtils.rest( {
 			method,
 			path,
@@ -302,6 +305,7 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 				form_data: new URLSearchParams( {
 					[ `widget-sow-button[${ number }][text]` ]: text,
 					[ `widget-sow-button[${ number }][url]` ]: '#',
+					[ `widget-sow-button[${ number }][design][button_color]` ]: color,
 				} ).toString(),
 			},
 		} );
@@ -312,20 +316,13 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 
 			// The test site's theme has no widget area to show the widget
 			// in, so the fixture writes the stylesheet a page view would.
-			// Buttons with the same design share a name, so any left by an
-			// earlier test go first.
-			const isButton = ( name ) => name.startsWith( 'sow-button-' );
-			await requestUtils.rest( {
-				method: 'DELETE',
-				path: ROUTE,
-				data: { names: ( await folder() ).names.filter( isButton ) },
-			} );
+			const before = ( await folder() ).names;
 			await requestUtils.rest( {
 				method: 'POST',
 				path: '/sowb-e2e/v1/widget-stylesheet',
 				data: { id: created.id },
 			} );
-			const stylesheet = ( await folder() ).names.filter( isButton );
+			const stylesheet = ( await folder() ).names.filter( ( name ) => ! before.includes( name ) && name.startsWith( 'sow-button-' ) );
 			expect( stylesheet ).toHaveLength( 1 );
 
 			await arrange( [] );

@@ -637,18 +637,14 @@ add_action(
 
 					$body = json_decode( $request->get_body(), true );
 					$parsed = wp_parse_widget_id( isset( $body['id'] ) ? (string) $body['id'] : '' );
+					$widget = $wp_widget_factory->get_widget_object( $parsed['id_base'] );
+					$settings = $widget ? $widget->get_settings() : array();
 
-					foreach ( $wp_widget_factory->widgets as $widget ) {
-						if ( $widget->id_base !== $parsed['id_base'] || ! isset( $parsed['number'] ) ) {
-							continue;
-						}
-
-						$settings = $widget->get_settings();
-
-						if ( empty( $settings[ $parsed['number'] ] ) ) {
-							break;
-						}
-
+					if (
+						isset( $parsed['number'] ) &&
+						! empty( $settings[ $parsed['number'] ] ) &&
+						method_exists( $widget, 'generate_and_enqueue_instance_styles' )
+					) {
 						$widget->generate_and_enqueue_instance_styles( $settings[ $parsed['number'] ] );
 
 						return array( 'ok' => true );
