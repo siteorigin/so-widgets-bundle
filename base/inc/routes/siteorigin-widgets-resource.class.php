@@ -98,7 +98,9 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			if ( ! empty( $widget_data ) ) {
-				$widget_data = $widget->update( $widget_data, $widget_data );
+				// The form is being shown, not saved, so the widget's
+				// stylesheet is kept.
+				$widget_data = $widget->update_without_saving( $widget_data );
 			}
 			ob_start();
 			$widget->form( $widget_data );
@@ -139,7 +141,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	 */
 	public function get_widget_preview( $request ) {
 		return rest_ensure_response(
-			SiteOrigin_Widgets_Bundle_Widget_Block::single()->get_widget_preview(
+			SiteOrigin_Widgets_Bundle_Widget_Block::single()->get_editor_preview(
 				$request
 			)
 		);

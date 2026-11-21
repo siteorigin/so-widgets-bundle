@@ -292,6 +292,33 @@ add_filter(
 	999
 );
 
+/**
+ * A record of the stylesheet events the weekly cleanup and a full clear
+ * fire, for the stylesheet cleanup spec.
+ */
+function sowb_e2e_probe_log_stylesheet_event( $event, $name = '' ) {
+	$log = get_option( 'sowb_e2e_stylesheet_events', array() );
+	$log[] = array(
+		'event' => $event,
+		'name' => (string) $name,
+	);
+	update_option( 'sowb_e2e_stylesheet_events', $log, false );
+}
+
+add_action(
+	'siteorigin_widgets_stylesheet_deleted',
+	function ( $name ) {
+		sowb_e2e_probe_log_stylesheet_event( 'deleted', $name );
+	}
+);
+
+add_action(
+	'siteorigin_widgets_stylesheet_cleared',
+	function () {
+		sowb_e2e_probe_log_stylesheet_event( 'cleared' );
+	}
+);
+
 add_action(
 	'rest_api_init',
 	function () {
@@ -491,6 +518,152 @@ add_action(
 						'anchor_filter' => $id_base !== '' && has_filter( 'siteorigin_widgets_wrapper_id_' . $id_base ) !== false,
 						'ob_delta' => $ob_after - $ob_before,
 					);
+				},
+			)
+		);
+		// The generated stylesheet folder: what it holds, and the events
+		// fired since the last reset.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/stylesheets',
+			array(
+				array(
+					'methods' => 'GET',
+					'permission_callback' => $admin_only,
+					'callback' => function () {
+						$upload_dir = wp_upload_dir();
+						$names = array();
+
+						foreach ( (array) glob( $upload_dir['basedir'] . '/siteorigin-widgets/*' ) as $path ) {
+							$names[] = basename( $path );
+						}
+
+						return array(
+							'names' => $names,
+							'events' => get_option( 'sowb_e2e_stylesheet_events', array() ),
+						);
+					},
+				),
+				// Write entries with a chosen age, forget the events so far,
+				// and let the weekly cleanup run on the next admin request.
+				array(
+					'methods' => 'POST',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$body = json_decode( $request->get_body(), true );
+						$upload_dir = wp_upload_dir();
+						$dir = $upload_dir['basedir'] . '/siteorigin-widgets/';
+						wp_mkdir_p( $dir );
+
+						foreach ( isset( $body['entries'] ) ? (array) $body['entries'] : array() as $entry ) {
+							$path = $dir . sanitize_file_name( (string) $entry['name'] );
+							$modified = time() - DAY_IN_SECONDS * (int) $entry['days'];
+
+							// A folder that holds a file cannot be deleted by the
+							// cleanup. An empty one can.
+							if ( ! empty( $entry['folder'] ) ) {
+								wp_mkdir_p( $path );
+
+								if ( empty( $entry['empty'] ) ) {
+									file_put_contents( $path . '/keep.txt', 'keep' );
+								}
+							} else {
+								file_put_contents( $path, '/* sowb e2e */' );
+							}
+							touch( $path, $modified );
+						}
+
+						if ( empty( $body['keep_timer'] ) ) {
+							delete_transient( 'sow:cleared' );
+						}
+						delete_option( 'sowb_e2e_stylesheet_events' );
+
+						return array( 'ok' => true );
+					},
+				),
+				// Remove the entries a test wrote.
+				array(
+					'methods' => 'DELETE',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$body = json_decode( $request->get_body(), true );
+						$upload_dir = wp_upload_dir();
+						$dir = $upload_dir['basedir'] . '/siteorigin-widgets/';
+
+						foreach ( isset( $body['names'] ) ? (array) $body['names'] : array() as $name ) {
+							$path = $dir . sanitize_file_name( (string) $name );
+
+							if ( is_dir( $path ) ) {
+								@unlink( $path . '/keep.txt' );
+								@rmdir( $path );
+							} elseif ( file_exists( $path ) ) {
+								@unlink( $path );
+							}
+						}
+
+						delete_option( 'sowb_e2e_stylesheet_events' );
+
+						return array( 'ok' => true );
+					},
+				),
+			)
+		);
+
+		// The number WordPress gives the next widget of a kind: a form saved
+		// through the widgets API has to name its widget by that number.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/next-widget-number',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					require_once ABSPATH . 'wp-admin/includes/widgets.php';
+
+					return array( 'number' => next_widget_id_number( (string) $request->get_param( 'id_base' ) ) );
+				},
+			)
+		);
+
+		// Write a stored widget's stylesheet, as showing the widget on a page does.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widget-stylesheet',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					global $wp_widget_factory;
+
+					$body = json_decode( $request->get_body(), true );
+					$parsed = wp_parse_widget_id( isset( $body['id'] ) ? (string) $body['id'] : '' );
+					$widget = $wp_widget_factory->get_widget_object( $parsed['id_base'] );
+					$settings = $widget ? $widget->get_settings() : array();
+
+					if (
+						isset( $parsed['number'] ) &&
+						! empty( $settings[ $parsed['number'] ] ) &&
+						method_exists( $widget, 'generate_and_enqueue_instance_styles' )
+					) {
+						$widget->generate_and_enqueue_instance_styles( $settings[ $parsed['number'] ] );
+
+						return array( 'ok' => true );
+					}
+
+					return new WP_Error( 'sowb_e2e_no_widget', 'No stored widget has that ID.', array( 'status' => 404 ) );
+				},
+			)
+		);
+
+		// The nonce the widget preview action checks, for the session that asks.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widgets-nonce',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'nonce' => wp_create_nonce( 'widgets_action' ) );
 				},
 			)
 		);
