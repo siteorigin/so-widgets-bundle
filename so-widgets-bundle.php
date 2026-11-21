@@ -384,7 +384,11 @@ class SiteOrigin_Widgets_Bundle {
 				if ( ! empty( $list ) ) {
 					foreach ( $list as $file ) {
 						if ( $file['lastmodunix'] < time() - $css_expire || $force_delete ) {
+							// Delete the file.
 							$deleted = $wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+
+							// Alert other plugins that we've deleted a CSS file.
+							do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
 
 							if (
 								$deleted &&
@@ -392,8 +396,6 @@ class SiteOrigin_Widgets_Bundle {
 								$file['type'] === 'f' &&
 								substr( $file['name'], -4 ) === '.css'
 							) {
-								// Alert other plugins that we've deleted a CSS file.
-								do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
 								$deleted_stylesheet = true;
 							}
 						}
