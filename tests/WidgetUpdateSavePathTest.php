@@ -2,6 +2,8 @@
 
 use Brain\Monkey\Functions;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use SiteOrigin\Tests\SiteOriginTests;
 
 require_once __DIR__ . '/fixtures/TestWidget.php';
@@ -361,6 +363,7 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	}
 
 	public function test_an_instance_from_page_builder_keeps_the_stylesheet() {
+		$this->with_page_builder();
 		$deleted = false;
 		Functions\when( 'do_action' )->alias(
 			function ( $hook ) use ( &$deleted ) {
@@ -398,6 +401,15 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	}
 
 	/**
+	 * Stand in for Page Builder being active.
+	 */
+	private function with_page_builder() {
+		if ( ! class_exists( 'SiteOrigin_Panels' ) ) {
+			eval( 'class SiteOrigin_Panels {}' );
+		}
+	}
+
+	/**
 	 * Count the stylesheet deletes update() announces.
 	 */
 	private function count_deletes( &$deletes ) {
@@ -416,6 +428,7 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	 * filter that removes it cannot bring the delete back.
 	 */
 	public function test_a_filter_that_removes_the_page_builder_marker_does_not_bring_the_delete_back() {
+		$this->with_page_builder();
 		$this->count_deletes( $deletes );
 		Functions\when( 'apply_filters' )->alias(
 			function ( $hook, $value ) {
@@ -528,5 +541,25 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 		}
 
 		$this->assertSame( array( 'new_instance', 'old_instance', 'form_type' ), $parameters );
+	}
+
+	/**
+	 * The marker is Page Builder's. On a site without Page Builder an
+	 * instance that carries it is saved like any other.
+	 */
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_the_page_builder_marker_means_nothing_without_page_builder() {
+		$this->assertFalse( class_exists( 'SiteOrigin_Panels' ) );
+		$this->count_deletes( $deletes );
+
+		$instance = $this->complete_instance();
+		$instance['panels_info'] = array( 'class' => 'SiteOrigin_Test_Widget' );
+
+		$this->run_capturing_errors(
+			fn() => $this->widget()->update( $instance, $this->complete_instance() )
+		);
+
+		$this->assertSame( 1, $deletes );
 	}
 }
