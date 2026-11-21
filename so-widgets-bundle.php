@@ -379,16 +379,33 @@ class SiteOrigin_Widgets_Bundle {
 
 				$list = $wp_filesystem->dirlist( $upload_dir['basedir'] . '/siteorigin-widgets/' );
 
+				$deleted_stylesheet = false;
+
 				if ( ! empty( $list ) ) {
 					foreach ( $list as $file ) {
 						if ( $file['lastmodunix'] < time() - $css_expire || $force_delete ) {
-							// Delete the file.
-							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+							$deleted = $wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
 
-							// Alert other plugins that we've deleted a CSS file.
-							do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
+							if (
+								$deleted &&
+								isset( $file['type'] ) &&
+								$file['type'] === 'f' &&
+								substr( $file['name'], -4 ) === '.css'
+							) {
+								// Alert other plugins that we've deleted a CSS file.
+								do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
+								$deleted_stylesheet = true;
+							}
 						}
 					}
+				}
+
+				// A stylesheet's name is the widget's settings, so any page
+				// may link it and nothing records which. Cached pages that
+				// link a deleted stylesheet have to be rebuilt, so ask for
+				// every cache to be cleared, once.
+				if ( $deleted_stylesheet ) {
+					do_action( 'siteorigin_widgets_stylesheet_cleared' );
 				}
 			}
 
