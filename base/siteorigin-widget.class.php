@@ -1012,7 +1012,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// widget, it passes that copy without panels_info, and the name has no
 		// post ID: it is a stylesheet other widgets with the same settings may
 		// link, so it is kept. Where it found none, it passes the incoming
-		// widget as the stored copy too, and that widget has no stylesheet yet.
+		// widget as the stored copy too. A stylesheet's name carries a hash of
+		// the widget's settings, so a changed widget links a new stylesheet
+		// either way.
 		if (
 			$form_type == 'widget' &&
 			empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
