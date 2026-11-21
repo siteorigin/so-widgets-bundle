@@ -609,6 +609,56 @@ add_action(
 			)
 		);
 
+		// The number WordPress gives the next widget of a kind: a form saved
+		// through the widgets API has to name its widget by that number.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/next-widget-number',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					require_once ABSPATH . 'wp-admin/includes/widgets.php';
+
+					return array( 'number' => next_widget_id_number( (string) $request->get_param( 'id_base' ) ) );
+				},
+			)
+		);
+
+		// Write a stored widget's stylesheet, as showing the widget on a page does.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widget-stylesheet',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					global $wp_widget_factory;
+
+					$body = json_decode( $request->get_body(), true );
+					$parsed = wp_parse_widget_id( isset( $body['id'] ) ? (string) $body['id'] : '' );
+
+					foreach ( $wp_widget_factory->widgets as $widget ) {
+						if ( $widget->id_base !== $parsed['id_base'] || ! isset( $parsed['number'] ) ) {
+							continue;
+						}
+
+						$settings = $widget->get_settings();
+
+						if ( empty( $settings[ $parsed['number'] ] ) ) {
+							break;
+						}
+
+						$widget->generate_and_enqueue_instance_styles( $settings[ $parsed['number'] ] );
+
+						return array( 'ok' => true );
+					}
+
+					return new WP_Error( 'sowb_e2e_no_widget', 'No stored widget has that ID.', array( 'status' => 404 ) );
+				},
+			)
+		);
+
 		// The nonce the widget preview action checks, for the session that asks.
 		register_rest_route(
 			'sowb-e2e/v1',

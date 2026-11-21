@@ -284,29 +284,56 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 		}
 	} );
 
-	test( 'saving a widget through the widgets API still announces a delete', async () => {
-		await arrange( [] );
-
+	test( 'saving a stored widget through the widgets API still deletes its stylesheet', async () => {
 		// WordPress runs the submitted form through the widget's update(),
-		// as it does for a save on the Widgets screen. The test site's theme
-		// has no widget area to show the widget in, so there is no stylesheet
-		// file to look for here; the post save above checks the file.
-		const created = await requestUtils.rest( {
-			method: 'POST',
-			path: '/wp/v2/widgets',
+		// as it does for a save on the Widgets screen. The form names the
+		// widget by its number.
+		const { number } = await requestUtils.rest( {
+			method: 'GET',
+			path: '/sowb-e2e/v1/next-widget-number',
+			params: { id_base: 'sow-button' },
+		} );
+		const save = ( method, path, text ) => requestUtils.rest( {
+			method,
+			path,
 			data: {
 				id_base: 'sow-button',
 				sidebar: 'wp_inactive_widgets',
 				form_data: new URLSearchParams( {
-					'widget-sow-button[1][text]': 'Stylesheet cleanup',
-					'widget-sow-button[1][url]': '#',
+					[ `widget-sow-button[${ number }][text]` ]: text,
+					[ `widget-sow-button[${ number }][url]` ]: '#',
 				} ).toString(),
 			},
 		} );
+		const created = await save( 'POST', '/wp/v2/widgets', 'Stylesheet cleanup' );
 
 		try {
-			expect( created.id_base ).toBe( 'sow-button' );
-			expect( eventsNamed( ( await folder() ).events, 'deleted' ).length ).toBeGreaterThan( 0 );
+			expect( created.id ).toBe( `sow-button-${ number }` );
+
+			// The test site's theme has no widget area to show the widget
+			// in, so the fixture writes the stylesheet a page view would.
+			// Buttons with the same design share a name, so any left by an
+			// earlier test go first.
+			const isButton = ( name ) => name.startsWith( 'sow-button-' );
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: ROUTE,
+				data: { names: ( await folder() ).names.filter( isButton ) },
+			} );
+			await requestUtils.rest( {
+				method: 'POST',
+				path: '/sowb-e2e/v1/widget-stylesheet',
+				data: { id: created.id },
+			} );
+			const stylesheet = ( await folder() ).names.filter( isButton );
+			expect( stylesheet ).toHaveLength( 1 );
+
+			await arrange( [] );
+			await save( 'PUT', `/wp/v2/widgets/${ created.id }`, 'Stylesheet cleanup, saved again' );
+
+			const { names, events } = await folder();
+			expect( names ).not.toContain( stylesheet[ 0 ] );
+			expect( eventsNamed( events, 'deleted' ).length ).toBeGreaterThan( 0 );
 		} finally {
 			await requestUtils.rest( {
 				method: 'DELETE',
