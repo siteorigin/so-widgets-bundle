@@ -1007,10 +1007,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// instance is read here without add_defaults(), so its containers are
 		// normalised first for the same reason they are before sanitizing.
 		// The CSS stays where nothing is being saved: a block render, and a
-		// call made through update_without_saving(). It also stays for an instance from Page
-		// Builder. Page Builder removes panels_info from the stored copy it
-		// passes, so the name built here has no post ID: it is the stylesheet
-		// shared with other widgets, never the one for the post being built.
+		// call made through update_without_saving(). It also stays for an
+		// instance from Page Builder, because the name built here is never
+		// the stylesheet its page links. Where Page Builder found the stored
+		// widget, it passes that copy without panels_info, and the name has no
+		// post ID: it is the stylesheet shared with other widgets. Where it
+		// found none, it passes the incoming widget as the stored copy too,
+		// and that widget has no stylesheet yet.
 		if (
 			$form_type == 'widget' &&
 			empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
