@@ -609,5 +609,17 @@ add_action(
 			)
 		);
 
+		// The nonce the widget preview action checks, for the session that asks.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widgets-nonce',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'nonce' => wp_create_nonce( 'widgets_action' ) );
+				},
+			)
+		);
 	}
 );

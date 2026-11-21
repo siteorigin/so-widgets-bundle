@@ -12,9 +12,10 @@
  * its own entries in the stylesheet folder, lets the cleanup run by loading an
  * admin page, and reads what was deleted and which actions fired.
  *
- * The last group covers the block editor: loading a widget block's form or
- * preview cleans its settings and saves nothing, so it deletes no stylesheet,
- * while saving the post still does.
+ * The last group covers the requests that run a widget's settings through its
+ * save routine and save nothing: a widget block's form and preview, the widget
+ * preview action, and Page Builder opening a page. None deletes a stylesheet,
+ * while saving a post still does.
  *
  * Uses the sowb-e2e-probe fixture plugin, installed and removed by this file.
  */
@@ -29,9 +30,12 @@ const {
 } = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
+	call,
 	installFixture,
+	login,
 	loginPage,
 	removeFixture,
+	siteUrl,
 } = require( './helpers/widget-block-abilities' );
 
 test.describe.configure( { mode: 'serial' } );
@@ -41,6 +45,7 @@ const OLD = 8;
 const NEW = 1;
 
 let requestUtils;
+let admin;
 let page;
 let written = [];
 
@@ -74,6 +79,8 @@ test.beforeAll( async ( { browser } ) => {
 	requestUtils = await setupRequestUtils();
 
 	await installFixture( browser, requestUtils );
+
+	admin = await login( process.env.WP_USERNAME, process.env.WP_PASSWORD );
 
 	page = await browser.newPage();
 	await loginPage( page );
@@ -171,10 +178,10 @@ test( 'an old file that is not a stylesheet is removed without a full clear', as
 	const { names, events } = await folder();
 
 	expect( names ).not.toContain( other );
-	expect( events ).toEqual( [] );
+	expect( eventsNamed( events, 'cleared' ) ).toEqual( [] );
 } );
 
-test( 'a stylesheet that could not be deleted is not announced and causes no full clear', async () => {
+test( 'a stylesheet that could not be deleted causes no full clear', async () => {
 	// A folder holding a file: the cleanup's delete fails on it.
 	const stuck = uniqueName( 'stuck', '.css' );
 
@@ -184,10 +191,10 @@ test( 'a stylesheet that could not be deleted is not announced and causes no ful
 	const { names, events } = await folder();
 
 	expect( names ).toContain( stuck );
-	expect( events ).toEqual( [] );
+	expect( eventsNamed( events, 'cleared' ) ).toEqual( [] );
 } );
 
-test( 'an old, empty folder named like a stylesheet is removed without being announced', async () => {
+test( 'an old, empty folder named like a stylesheet is removed without a full clear', async () => {
 	const emptyFolder = uniqueName( 'folder', '.css' );
 
 	await arrange( [ { name: emptyFolder, days: OLD, folder: true, empty: true } ] );
@@ -196,7 +203,7 @@ test( 'an old, empty folder named like a stylesheet is removed without being ann
 	const { names, events } = await folder();
 
 	expect( names ).not.toContain( emptyFolder );
-	expect( events ).toEqual( [] );
+	expect( eventsNamed( events, 'cleared' ) ).toEqual( [] );
 } );
 
 test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () => {
@@ -250,6 +257,53 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 			await requestUtils.rest( {
 				method: 'DELETE',
 				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	} );
+
+	test( 'the widget preview action deletes no stylesheet', async () => {
+		await arrange( [] );
+
+		const { status, body } = await call( admin, 'GET', 'wp-json/sowb-e2e/v1/widgets-nonce' );
+		expect( status ).toBe( 200 );
+
+		const response = await admin.context.fetch( siteUrl( 'wp-admin/admin-ajax.php' ), {
+			method: 'POST',
+			form: {
+				action: 'so_widgets_preview',
+				_widgets_nonce: body.nonce,
+				class: widget.widgetClass,
+				data: JSON.stringify( widget.widgetData ),
+			},
+		} );
+
+		expect( response.status() ).toBe( 200 );
+		expect( await response.text() ).toContain( 'Stylesheet cleanup' );
+		expect( eventsNamed( ( await folder() ).events, 'deleted' ) ).toEqual( [] );
+	} );
+
+	test( 'opening a Page Builder page in the editor deletes no stylesheet', async () => {
+		const seeded = await call( admin, 'POST', 'wp-json/sowb-e2e/v1/panels-page', { marker: `Stylesheet cleanup ${ Date.now() }`, nested: 0 } );
+		expect( seeded.status ).toBe( 200 );
+
+		try {
+			await arrange( [] );
+
+			// Page Builder asks for the layout's content as the editor opens,
+			// which runs every widget in it through update().
+			const built = page.waitForResponse(
+				( response ) => response.url().includes( 'admin-ajax.php' ) &&
+					( response.request().postData() || '' ).includes( 'so_panels_builder_content' )
+			);
+			await soGoTo( page, `wp-admin/post.php?post=${ seeded.body.id }&action=edit` );
+			expect( ( await built ).status() ).toBe( 200 );
+
+			expect( eventsNamed( ( await folder() ).events, 'deleted' ) ).toEqual( [] );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/pages/${ seeded.body.id }`,
 				params: { force: true },
 			} ).catch( () => {} );
 		}
