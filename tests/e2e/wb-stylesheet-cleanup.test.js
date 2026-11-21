@@ -239,24 +239,76 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 	} );
 
 	test( 'saving a post with a widget block still deletes the block\'s stylesheet', async () => {
-		await arrange( [] );
+		const button = {
+			widgetClass: 'SiteOrigin_Widget_Button_Widget',
+			widgetData: { text: 'Stylesheet cleanup', url: '#' },
+		};
+		const content = `<!-- wp:sowb/siteorigin-widget-button-widget ${ JSON.stringify( button ) } /-->`;
+		const before = ( await folder() ).names;
 
 		const post = await requestUtils.rest( {
 			method: 'POST',
 			path: '/wp/v2/posts',
-			data: {
-				title: 'Stylesheet cleanup',
-				status: 'draft',
-				content: `<!-- wp:sowb/siteorigin-widget-editor-widget ${ JSON.stringify( widget ) } /-->`,
-			},
+			data: { title: 'Stylesheet cleanup', status: 'publish', content },
 		} );
 
 		try {
-			expect( eventsNamed( ( await folder() ).events, 'deleted' ).length ).toBeGreaterThan( 0 );
+			// Viewing the post writes the block's stylesheet.
+			const visitor = await page.context().browser().newContext();
+			try {
+				const view = await visitor.request.get( post.link );
+				expect( view.status() ).toBe( 200 );
+			} finally {
+				await visitor.close();
+			}
+
+			const written = ( await folder() ).names.filter( ( name ) => ! before.includes( name ) && name.startsWith( 'sow-button-' ) );
+			expect( written ).toHaveLength( 1 );
+
+			await arrange( [] );
+			await requestUtils.rest( {
+				method: 'POST',
+				path: `/wp/v2/posts/${ post.id }`,
+				data: { content },
+			} );
+
+			const { names, events } = await folder();
+			expect( names ).not.toContain( written[ 0 ] );
+			expect( eventsNamed( events, 'deleted' ).length ).toBeGreaterThan( 0 );
 		} finally {
 			await requestUtils.rest( {
 				method: 'DELETE',
 				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	} );
+
+	test( 'saving a widget through the widgets API still announces a delete', async () => {
+		await arrange( [] );
+
+		// WordPress runs the submitted form through the widget's update(),
+		// as it does for a save on the Widgets screen.
+		const created = await requestUtils.rest( {
+			method: 'POST',
+			path: '/wp/v2/widgets',
+			data: {
+				id_base: 'sow-button',
+				sidebar: 'wp_inactive_widgets',
+				form_data: new URLSearchParams( {
+					'widget-sow-button[1][text]': 'Stylesheet cleanup',
+					'widget-sow-button[1][url]': '#',
+				} ).toString(),
+			},
+		} );
+
+		try {
+			expect( created.id_base ).toBe( 'sow-button' );
+			expect( eventsNamed( ( await folder() ).events, 'deleted' ).length ).toBeGreaterThan( 0 );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/widgets/${ created.id }`,
 				params: { force: true },
 			} ).catch( () => {} );
 		}
@@ -284,7 +336,8 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 	} );
 
 	test( 'opening a Page Builder page in the editor deletes no stylesheet', async () => {
-		const seeded = await call( admin, 'POST', 'wp-json/sowb-e2e/v1/panels-page', { marker: `Stylesheet cleanup ${ Date.now() }`, nested: 0 } );
+		const marker = `Stylesheet cleanup ${ Date.now() }`;
+		const seeded = await call( admin, 'POST', 'wp-json/sowb-e2e/v1/panels-page', { marker, nested: 0 } );
 		expect( seeded.status ).toBe( 200 );
 
 		try {
@@ -292,9 +345,11 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 
 			// Page Builder asks for the layout's content as the editor opens,
 			// which runs every widget in it through update().
+			// The reply holds the seeded widget's text, so the widget was run.
 			const built = page.waitForResponse(
-				( response ) => response.url().includes( 'admin-ajax.php' ) &&
-					( response.request().postData() || '' ).includes( 'so_panels_builder_content' )
+				async ( response ) => response.url().includes( 'admin-ajax.php' ) &&
+					( response.request().postData() || '' ).includes( 'so_panels_builder_content' ) &&
+					( await response.text() ).includes( marker )
 			);
 			await soGoTo( page, `wp-admin/post.php?post=${ seeded.body.id }&action=edit` );
 			expect( ( await built ).status() ).toBe( 200 );
