@@ -22,7 +22,8 @@ function siteorigin_widget_preview_widget_action() {
 
 	$instance = json_decode( stripslashes_deep( $_POST['data'] ), true );
 	/* @var $widget SiteOrigin_Widget */
-	$instance = $widget->update( $instance, $instance );
+	// A preview saves nothing, so the widget's stylesheet is kept.
+	$instance = $widget->update_without_saving( $instance );
 	$instance['is_preview'] = true;
 
 	// The theme stylesheet will change how the button looks

@@ -1133,7 +1133,36 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $class_name;
 	}
 
+	/**
+	 * Whether the next get_widget_preview() call is the editor's preview
+	 * request, which saves nothing. Set by get_editor_preview().
+	 *
+	 * @var bool
+	 */
+	private $editor_preview = false;
+
+	/**
+	 * Build the preview the block editor asks for while a block is edited.
+	 * Nothing is saved, so the widget's stylesheet is left in place.
+	 *
+	 * @param array|WP_REST_Request $block The block's widgetClass and widgetData.
+	 */
+	public function get_editor_preview( $block ) {
+		$this->editor_preview = true;
+
+		try {
+			return $this->get_widget_preview( $block );
+		} finally {
+			$this->editor_preview = false;
+		}
+	}
+
 	public function get_widget_preview( $block, $just_html = true ) {
+		// Taken here, before anything else runs, so a preview built from
+		// inside this one is treated as a save.
+		$editor_preview = $this->editor_preview;
+		$this->editor_preview = false;
+
 		$widget_class = empty( $block['widgetClass'] ) ? '' : $block['widgetClass'];
 		$widget_data = empty( $block['widgetData'] ) ? array() : $block['widgetData'];
 
@@ -1186,7 +1215,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 
 				/* @var $widget SiteOrigin_Widget */
-				$instance = $widget->update( $widget_data, $widget_data );
+				$instance = $editor_preview
+					? $widget->update_without_saving( $widget_data )
+					: $widget->update( $widget_data, $widget_data );
 
 				// Untrusted data is normalised and floored before it is
 				// rendered, so the cached markup is built from floored data.
