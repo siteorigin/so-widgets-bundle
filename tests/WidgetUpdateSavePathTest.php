@@ -362,6 +362,8 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 		$this->assertFalse( $deleted );
 	}
 
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_an_instance_from_page_builder_keeps_the_stylesheet() {
 		$this->with_page_builder();
 		$deleted = false;
@@ -401,7 +403,8 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	}
 
 	/**
-	 * Stand in for Page Builder being active.
+	 * Stand in for Page Builder being active. A class cannot be removed once
+	 * it is declared, so a test that calls this runs in its own process.
 	 */
 	private function with_page_builder() {
 		if ( ! class_exists( 'SiteOrigin_Panels' ) ) {
@@ -427,6 +430,8 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	 * Page Builder's marker is read before the sanitize filters run, so a
 	 * filter that removes it cannot bring the delete back.
 	 */
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_a_filter_that_removes_the_page_builder_marker_does_not_bring_the_delete_back() {
 		$this->with_page_builder();
 		$this->count_deletes( $deletes );

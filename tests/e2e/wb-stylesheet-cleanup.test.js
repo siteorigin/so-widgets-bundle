@@ -288,7 +288,9 @@ test.describe( 'Cleaning a widget block\'s settings keeps its stylesheet', () =>
 		await arrange( [] );
 
 		// WordPress runs the submitted form through the widget's update(),
-		// as it does for a save on the Widgets screen.
+		// as it does for a save on the Widgets screen. The test site's theme
+		// has no widget area to show the widget in, so there is no stylesheet
+		// file to look for here; the post save above checks the file.
 		const created = await requestUtils.rest( {
 			method: 'POST',
 			path: '/wp/v2/widgets',
