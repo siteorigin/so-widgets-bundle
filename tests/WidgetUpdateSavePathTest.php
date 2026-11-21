@@ -396,4 +396,137 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 
 		$this->assertTrue( $deleted );
 	}
+
+	/**
+	 * Count the stylesheet deletes update() announces.
+	 */
+	private function count_deletes( &$deletes ) {
+		$deletes = 0;
+		Functions\when( 'do_action' )->alias(
+			function ( $hook ) use ( &$deletes ) {
+				if ( $hook === 'siteorigin_widgets_stylesheet_deleted' ) {
+					$deletes++;
+				}
+			}
+		);
+	}
+
+	/**
+	 * Page Builder's marker is read before the sanitize filters run, so a
+	 * filter that removes it cannot bring the delete back.
+	 */
+	public function test_a_filter_that_removes_the_page_builder_marker_does_not_bring_the_delete_back() {
+		$this->count_deletes( $deletes );
+		Functions\when( 'apply_filters' )->alias(
+			function ( $hook, $value ) {
+				if ( $hook === 'siteorigin_widgets_sanitize_instance' && is_array( $value ) ) {
+					unset( $value['panels_info'] );
+				}
+
+				return $value;
+			}
+		);
+
+		$instance = $this->complete_instance();
+		$instance['panels_info'] = array( 'class' => 'SiteOrigin_Test_Widget' );
+
+		list( $stored ) = $this->run_capturing_errors(
+			fn() => $this->widget()->update( $instance, $this->complete_instance() )
+		);
+
+		$this->assertArrayNotHasKey( 'panels_info', $stored );
+		$this->assertSame( 0, $deletes );
+	}
+
+	public function test_a_call_that_only_cleans_an_instance_keeps_the_stylesheet() {
+		$this->count_deletes( $deletes );
+
+		$this->run_capturing_errors(
+			fn() => $this->widget()->update_without_saving( $this->complete_instance() )
+		);
+
+		$this->assertSame( 0, $deletes );
+	}
+
+	public function test_a_save_after_a_cleaning_call_deletes_the_stylesheet() {
+		$this->count_deletes( $deletes );
+		$widget = $this->widget();
+
+		$this->run_capturing_errors(
+			fn() => $widget->update_without_saving( $this->complete_instance() )
+		);
+		$this->run_capturing_errors(
+			fn() => $widget->update( $this->complete_instance(), $this->complete_instance() )
+		);
+
+		$this->assertSame( 1, $deletes );
+	}
+
+	public function test_a_save_after_a_cleaning_call_that_threw_deletes_the_stylesheet() {
+		$this->count_deletes( $deletes );
+		$widget = $this->widget();
+
+		SiteOrigin_Test_Widget::$modify_instance_callback = function () {
+			throw new RuntimeException( 'cleaning failed' );
+		};
+
+		try {
+			$widget->update_without_saving( $this->complete_instance() );
+			$this->fail( 'The cleaning call should have thrown.' );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'cleaning failed', $e->getMessage() );
+		}
+
+		SiteOrigin_Test_Widget::$modify_instance_callback = null;
+
+		$this->run_capturing_errors(
+			fn() => $widget->update( $this->complete_instance(), $this->complete_instance() )
+		);
+
+		$this->assertSame( 1, $deletes );
+	}
+
+	/**
+	 * Keeping the stylesheet belongs to the one call it was asked of. A save
+	 * that starts while that call is running still deletes.
+	 */
+	public function test_a_save_started_during_a_cleaning_call_deletes_the_stylesheet() {
+		$this->count_deletes( $deletes );
+		$widget = $this->widget();
+		$nested = false;
+
+		Functions\when( 'apply_filters' )->alias(
+			function ( $hook, $value ) use ( $widget, &$nested ) {
+				if ( $hook === 'siteorigin_widgets_sanitize_instance' && ! $nested ) {
+					$nested = true;
+					$widget->update( $this->complete_instance(), $this->complete_instance() );
+				}
+
+				return $value;
+			}
+		);
+
+		$this->run_capturing_errors(
+			fn() => $widget->update_without_saving( $this->complete_instance() )
+		);
+
+		$this->assertTrue( $nested );
+		$this->assertSame( 1, $deletes );
+	}
+
+	/**
+	 * Other plugins extend this class and declare their own update() with
+	 * these three parameters. PHP refuses to load a subclass whose method
+	 * takes fewer parameters than its parent's, so adding one here would stop
+	 * those plugins loading.
+	 */
+	public function test_update_keeps_the_parameters_subclasses_declare() {
+		$parameters = array();
+
+		foreach ( ( new ReflectionMethod( 'SiteOrigin_Widget', 'update' ) )->getParameters() as $parameter ) {
+			$parameters[] = $parameter->getName();
+		}
+
+		$this->assertSame( array( 'new_instance', 'old_instance', 'form_type' ), $parameters );
+	}
 }
