@@ -959,10 +959,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 		}
 
-		// Page Builder marks every instance it sends with panels_info. This is
-		// read before the instance is migrated, sanitized or filtered, so
-		// nothing later in this method can change the answer.
-		$from_page_builder = is_array( $new_instance ) && ! empty( $new_instance['panels_info'] );
+		// Page Builder marks every instance it sends with panels_info, and
+		// gives no other sign that it is the caller. This is read before the
+		// instance is migrated, sanitized or filtered, so nothing later in
+		// this method can change the answer. Without Page Builder the marker
+		// means nothing.
+		$from_page_builder = class_exists( 'SiteOrigin_Panels' ) &&
+			is_array( $new_instance ) &&
+			! empty( $new_instance['panels_info'] );
 
 		if ( $form_type == 'widget' ) {
 			if ( empty( $this->form_options ) ) {
