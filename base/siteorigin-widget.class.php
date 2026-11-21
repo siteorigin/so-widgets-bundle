@@ -911,6 +911,35 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Whether the next update() call leaves the stored instance's stylesheet
+	 * in place. Set by update_without_saving().
+	 *
+	 * @var bool
+	 */
+	private $keep_stylesheet = false;
+
+	/**
+	 * Run an instance through update() to clean it, where nothing is being
+	 * saved. update() deletes the instance's stylesheet so that a save is
+	 * followed by fresh CSS; a form load or a preview saves nothing, and the
+	 * stylesheet may be linked by a page that is live, so it is kept.
+	 *
+	 * @param array $instance The instance to clean.
+	 *
+	 * @return array|void The cleaned instance.
+	 */
+	public function update_without_saving( $instance ) {
+		$this->keep_stylesheet = true;
+
+		try {
+			return $this->update( $instance, $instance );
+		} finally {
+			// A subclass's update() may return without reaching this class's.
+			$this->keep_stylesheet = false;
+		}
+	}
+
+	/**
 	 * Update the widget instance.
 	 *
 	 * @param array  $new_instance
@@ -920,9 +949,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array|void
 	 */
 	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
+		// update_without_saving() asks for the stylesheet to be kept for one
+		// call. The request is taken here, before anything else runs, so an
+		// update() started from inside this one does not inherit it.
+		$keep_stylesheet = $this->keep_stylesheet;
+		$this->keep_stylesheet = false;
+
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
 			require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 		}
+
+		// Page Builder marks every instance it sends with panels_info. This is
+		// read before the instance is migrated, sanitized or filtered, so
+		// nothing later in this method can change the answer.
+		$from_page_builder = is_array( $new_instance ) && ! empty( $new_instance['panels_info'] );
 
 		if ( $form_type == 'widget' ) {
 			if ( empty( $this->form_options ) ) {
@@ -962,13 +1002,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove the old CSS, it'll be regenerated on page load. The stored
 		// instance is read here without add_defaults(), so its containers are
 		// normalised first for the same reason they are before sanitizing.
-		// A block render only sanitizes the stored instance, so its CSS stays. So does an instance
-		// from Page Builder: its stored copy has no panels_info, so the name built here is the
-		// stylesheet shared with other widgets, not the one for the post being built.
+		// The CSS stays where nothing is being saved: a block render, and a
+		// call made through update_without_saving(). It also stays for an instance from Page
+		// Builder. Page Builder removes panels_info from the stored copy it
+		// passes, so the name built here has no post ID: it is the stylesheet
+		// shared with other widgets, never the one for the post being built.
 		if (
 			$form_type == 'widget' &&
 			empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
-			empty( $new_instance['panels_info'] )
+			! $keep_stylesheet &&
+			! $from_page_builder
 		) {
 			$this->delete_css(
 				$this->modify_instance(
