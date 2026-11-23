@@ -73,6 +73,7 @@ class WidgetBlockSaveAttributesTest extends SiteOriginTests {
 		Functions\when( 'register_block_type' )->justReturn( true );
 		Functions\when( 'get_option' )->justReturn( false );
 		Functions\when( 'get_post_types' )->justReturn( array( 'post', 'page' ) );
+		Functions\when( 'post_type_supports' )->justReturn( true );
 
 		// The file creates its singleton when it loads, so it must load while
 		// Brain Monkey is active.

@@ -254,6 +254,13 @@
 	border: @container_border_color @container_border_style @container_border_width;
 	background-color: @container_background;
 
+	// Container Text Color.
+	@container_text_color: default;
+
+	& when not ( @container_text_color = default ) {
+		color: @container_text_color;
+	}
+
 	.sow-error {
 		@error_background: #fce4e5;
 		@error_border: #ec666a;

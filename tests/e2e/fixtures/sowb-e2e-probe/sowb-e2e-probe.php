@@ -229,12 +229,194 @@ add_filter(
 	99
 );
 
+/**
+ * Toolbar rows mode for the TinyMCE field tests, in the option
+ * sowb_e2e_tinymce_rows:
+ * - off: no change, the field's own toolbars.
+ * - no-toggle: three rows without the Toolbar Toggle, and
+ *   wordpress_adv_hidden false, as Advanced Editor Tools sets them.
+ * - toggle-kept: three rows with the Toolbar Toggle kept in row 1, and
+ *   wordpress_adv_hidden false.
+ */
+function sowb_e2e_probe_tinymce_rows_mode() {
+	$mode = get_option( 'sowb_e2e_tinymce_rows', 'off' );
+
+	return in_array( $mode, array( 'off', 'no-toggle', 'toggle-kept' ), true ) ? $mode : 'off';
+}
+
+add_filter(
+	'mce_buttons',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() === 'no-toggle' ) {
+			$buttons = array_values( array_diff( (array) $buttons, array( 'wp_adv' ) ) );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'mce_buttons_2',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' && empty( $buttons ) ) {
+			$buttons = array( 'strikethrough', 'hr', 'forecolor', 'removeformat', 'charmap' );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'mce_buttons_3',
+	function ( $buttons ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' ) {
+			$buttons = array( 'outdent', 'indent', 'undo', 'redo' );
+		}
+
+		return $buttons;
+	},
+	999
+);
+
+add_filter(
+	'tiny_mce_before_init',
+	function ( $init ) {
+		if ( sowb_e2e_probe_tinymce_rows_mode() !== 'off' && is_array( $init ) ) {
+			$init['wordpress_adv_hidden'] = false;
+		}
+
+		return $init;
+	},
+	999
+);
+
+/**
+ * A record of the stylesheet events the weekly cleanup and a full clear
+ * fire, for the stylesheet cleanup spec.
+ */
+function sowb_e2e_probe_log_stylesheet_event( $event, $name = '' ) {
+	$log = get_option( 'sowb_e2e_stylesheet_events', array() );
+	$log[] = array(
+		'event' => $event,
+		'name' => (string) $name,
+	);
+	update_option( 'sowb_e2e_stylesheet_events', $log, false );
+}
+
+add_action(
+	'siteorigin_widgets_stylesheet_deleted',
+	function ( $name ) {
+		sowb_e2e_probe_log_stylesheet_event( 'deleted', $name );
+	}
+);
+
+add_action(
+	'siteorigin_widgets_stylesheet_cleared',
+	function () {
+		sowb_e2e_probe_log_stylesheet_event( 'cleared' );
+	}
+);
+
 add_action(
 	'rest_api_init',
 	function () {
 		$admin_only = function () {
 			return current_user_can( 'manage_options' );
 		};
+
+		// The current user's saved user settings, as WordPress stores them.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/user-settings',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'settings' => (string) get_user_option( 'user-settings' ) );
+				},
+			)
+		);
+
+		// A draft Page Builder page holding a SiteOrigin Editor widget, directly or
+		// inside a Layout Builder widget.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/panels-page',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					$marker = sanitize_text_field( (string) $request->get_param( 'marker' ) );
+					$editor = array(
+						'title' => $marker,
+						'text' => '<p>' . $marker . '</p>',
+						'text_selected_editor' => 'tinymce',
+						'autop' => true,
+					);
+					$layout = function ( $widget ) {
+						return array(
+							'widgets' => array( $widget ),
+							'grids' => array( array( 'cells' => 1 ) ),
+							'grid_cells' => array( array( 'grid' => 0, 'weight' => 1, 'index' => 0 ) ),
+						);
+					};
+					$editor_widget = $editor + array( 'panels_info' => array( 'class' => 'SiteOrigin_Widget_Editor_Widget', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ) );
+					$widget = $editor_widget;
+
+					if ( $request->get_param( 'nested' ) ) {
+						$widget = array(
+							'panels_data' => $layout( $editor_widget ),
+							'builder_id' => 'sowbe2e' . wp_rand( 1000, 9999 ),
+							'panels_info' => array( 'class' => 'SiteOrigin_Panels_Widgets_Layout', 'grid' => 0, 'cell' => 0, 'id' => 0, 'widget_index' => 0 ),
+						);
+					}
+
+					$post_id = wp_insert_post( array(
+						'post_type' => 'page',
+						'post_status' => 'draft',
+						'post_title' => 'SOWB e2e ' . $marker,
+					) );
+					update_post_meta( $post_id, 'panels_data', wp_slash( $layout( $widget ) ) );
+
+					return array( 'id' => $post_id );
+				},
+			)
+		);
+
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/tinymce-rows',
+			array(
+				array(
+					'methods' => 'GET',
+					'permission_callback' => $admin_only,
+					'callback' => function () {
+						return array( 'mode' => sowb_e2e_probe_tinymce_rows_mode() );
+					},
+				),
+				array(
+					'methods' => 'POST',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$mode = (string) $request->get_param( 'mode' );
+
+						if ( ! in_array( $mode, array( 'off', 'no-toggle', 'toggle-kept' ), true ) ) {
+							return new WP_Error( 'sowb_e2e_bad_mode', 'Unknown mode.', array( 'status' => 400 ) );
+						}
+
+						if ( $mode === 'off' ) {
+							delete_option( 'sowb_e2e_tinymce_rows' );
+						} else {
+							update_option( 'sowb_e2e_tinymce_rows', $mode, false );
+						}
+
+						return array( 'mode' => sowb_e2e_probe_tinymce_rows_mode() );
+					},
+				),
+			)
+		);
 
 		register_rest_route(
 			'sowb-e2e/v1',
@@ -336,6 +518,152 @@ add_action(
 						'anchor_filter' => $id_base !== '' && has_filter( 'siteorigin_widgets_wrapper_id_' . $id_base ) !== false,
 						'ob_delta' => $ob_after - $ob_before,
 					);
+				},
+			)
+		);
+		// The generated stylesheet folder: what it holds, and the events
+		// fired since the last reset.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/stylesheets',
+			array(
+				array(
+					'methods' => 'GET',
+					'permission_callback' => $admin_only,
+					'callback' => function () {
+						$upload_dir = wp_upload_dir();
+						$names = array();
+
+						foreach ( (array) glob( $upload_dir['basedir'] . '/siteorigin-widgets/*' ) as $path ) {
+							$names[] = basename( $path );
+						}
+
+						return array(
+							'names' => $names,
+							'events' => get_option( 'sowb_e2e_stylesheet_events', array() ),
+						);
+					},
+				),
+				// Write entries with a chosen age, forget the events so far,
+				// and let the weekly cleanup run on the next admin request.
+				array(
+					'methods' => 'POST',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$body = json_decode( $request->get_body(), true );
+						$upload_dir = wp_upload_dir();
+						$dir = $upload_dir['basedir'] . '/siteorigin-widgets/';
+						wp_mkdir_p( $dir );
+
+						foreach ( isset( $body['entries'] ) ? (array) $body['entries'] : array() as $entry ) {
+							$path = $dir . sanitize_file_name( (string) $entry['name'] );
+							$modified = time() - DAY_IN_SECONDS * (int) $entry['days'];
+
+							// A folder that holds a file cannot be deleted by the
+							// cleanup. An empty one can.
+							if ( ! empty( $entry['folder'] ) ) {
+								wp_mkdir_p( $path );
+
+								if ( empty( $entry['empty'] ) ) {
+									file_put_contents( $path . '/keep.txt', 'keep' );
+								}
+							} else {
+								file_put_contents( $path, '/* sowb e2e */' );
+							}
+							touch( $path, $modified );
+						}
+
+						if ( empty( $body['keep_timer'] ) ) {
+							delete_transient( 'sow:cleared' );
+						}
+						delete_option( 'sowb_e2e_stylesheet_events' );
+
+						return array( 'ok' => true );
+					},
+				),
+				// Remove the entries a test wrote.
+				array(
+					'methods' => 'DELETE',
+					'permission_callback' => $admin_only,
+					'callback' => function ( WP_REST_Request $request ) {
+						$body = json_decode( $request->get_body(), true );
+						$upload_dir = wp_upload_dir();
+						$dir = $upload_dir['basedir'] . '/siteorigin-widgets/';
+
+						foreach ( isset( $body['names'] ) ? (array) $body['names'] : array() as $name ) {
+							$path = $dir . sanitize_file_name( (string) $name );
+
+							if ( is_dir( $path ) ) {
+								@unlink( $path . '/keep.txt' );
+								@rmdir( $path );
+							} elseif ( file_exists( $path ) ) {
+								@unlink( $path );
+							}
+						}
+
+						delete_option( 'sowb_e2e_stylesheet_events' );
+
+						return array( 'ok' => true );
+					},
+				),
+			)
+		);
+
+		// The number WordPress gives the next widget of a kind: a form saved
+		// through the widgets API has to name its widget by that number.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/next-widget-number',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					require_once ABSPATH . 'wp-admin/includes/widgets.php';
+
+					return array( 'number' => next_widget_id_number( (string) $request->get_param( 'id_base' ) ) );
+				},
+			)
+		);
+
+		// Write a stored widget's stylesheet, as showing the widget on a page does.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widget-stylesheet',
+			array(
+				'methods' => 'POST',
+				'permission_callback' => $admin_only,
+				'callback' => function ( WP_REST_Request $request ) {
+					global $wp_widget_factory;
+
+					$body = json_decode( $request->get_body(), true );
+					$parsed = wp_parse_widget_id( isset( $body['id'] ) ? (string) $body['id'] : '' );
+					$widget = $wp_widget_factory->get_widget_object( $parsed['id_base'] );
+					$settings = $widget ? $widget->get_settings() : array();
+
+					if (
+						isset( $parsed['number'] ) &&
+						! empty( $settings[ $parsed['number'] ] ) &&
+						method_exists( $widget, 'generate_and_enqueue_instance_styles' )
+					) {
+						$widget->generate_and_enqueue_instance_styles( $settings[ $parsed['number'] ] );
+
+						return array( 'ok' => true );
+					}
+
+					return new WP_Error( 'sowb_e2e_no_widget', 'No stored widget has that ID.', array( 'status' => 404 ) );
+				},
+			)
+		);
+
+		// The nonce the widget preview action checks, for the session that asks.
+		register_rest_route(
+			'sowb-e2e/v1',
+			'/widgets-nonce',
+			array(
+				'methods' => 'GET',
+				'permission_callback' => $admin_only,
+				'callback' => function () {
+					return array( 'nonce' => wp_create_nonce( 'widgets_action' ) );
 				},
 			)
 		);

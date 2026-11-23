@@ -212,9 +212,32 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( ! method_exists( $this, 'get_html_content' ) ) {
-			$template_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
-			$template_file = apply_filters( 'siteorigin_widgets_template_file_' . $this->id_base, $template_file, $instance, $this );
-			$template_file = realpath( $template_file );
+			$template_dir = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance );
+			$template_file = $template_dir . '/' . $this->get_template_name( $instance ) . '.php';
+
+			// The template name can come from widget settings, so a template path is only
+			// passed to the filter if it stays inside the template folder, or is missing and
+			// has no `..` segment.
+			$real_template_file = realpath( $template_file );
+
+			if ( $real_template_file !== false ) {
+				$real_template_dir = realpath( $template_dir );
+				// realpath() returns native separators, so the paths are compared as returned:
+				// on Unix a backslash is part of a folder name, not a separator.
+				$template_allowed = $real_template_dir !== false && strpos(
+					$real_template_file,
+					rtrim( $real_template_dir, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR
+				) === 0;
+			} else {
+				$template_allowed = ! preg_match( '#(?:^|/)\.\.[. ]*(?:/|$)#', wp_normalize_path( $template_file ) );
+			}
+
+			if ( $template_allowed ) {
+				$template_file = apply_filters( 'siteorigin_widgets_template_file_' . $this->id_base, $template_file, $instance, $this );
+				$template_file = ! empty( $template_file ) ? realpath( $template_file ) : false;
+			} else {
+				$template_file = false;
+			}
 
 			// Don't accept non PHP files
 			if ( substr( $template_file, -4 ) != '.php' ) {
@@ -911,6 +934,35 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Whether the next update() call leaves the stored instance's stylesheet
+	 * in place. Set by update_without_saving().
+	 *
+	 * @var bool
+	 */
+	private $keep_stylesheet = false;
+
+	/**
+	 * Run an instance through update() to clean it, where nothing is being
+	 * saved. update() deletes the instance's stylesheet so that a save is
+	 * followed by fresh CSS; a form load or a preview saves nothing, and the
+	 * stylesheet may be linked by a page that is live, so it is kept.
+	 *
+	 * @param array $instance The instance to clean.
+	 *
+	 * @return array|void The cleaned instance.
+	 */
+	public function update_without_saving( $instance ) {
+		$this->keep_stylesheet = true;
+
+		try {
+			return $this->update( $instance, $instance );
+		} finally {
+			// A subclass's update() may return without reaching this class's.
+			$this->keep_stylesheet = false;
+		}
+	}
+
+	/**
 	 * Update the widget instance.
 	 *
 	 * @param array  $new_instance
@@ -920,9 +972,24 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array|void
 	 */
 	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
+		// update_without_saving() asks for the stylesheet to be kept for one
+		// call. The request is taken here, before anything else runs, so an
+		// update() started from inside this one does not inherit it.
+		$keep_stylesheet = $this->keep_stylesheet;
+		$this->keep_stylesheet = false;
+
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
 			require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 		}
+
+		// Page Builder marks every instance it sends with panels_info, and
+		// gives no other sign that it is the caller. This is read before the
+		// instance is migrated, sanitized or filtered, so nothing later in
+		// this method can change the answer. Without Page Builder the marker
+		// means nothing.
+		$from_page_builder = class_exists( 'SiteOrigin_Panels' ) &&
+			is_array( $new_instance ) &&
+			! empty( $new_instance['panels_info'] );
 
 		if ( $form_type == 'widget' ) {
 			if ( empty( $this->form_options ) ) {
@@ -962,7 +1029,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove the old CSS, it'll be regenerated on page load. The stored
 		// instance is read here without add_defaults(), so its containers are
 		// normalised first for the same reason they are before sanitizing.
-		if ( $form_type == 'widget' ) {
+		// The CSS stays where nothing is being saved: a block render, and a
+		// call made through update_without_saving(). It also stays for an
+		// instance from Page Builder. Where Page Builder found the stored
+		// widget, it passes that copy without panels_info, and the name has no
+		// post ID: it is a stylesheet other widgets with the same settings may
+		// link, so it is kept. Where it found none, it passes the incoming
+		// widget as the stored copy too. A stylesheet's name carries a hash of
+		// the widget's settings, so a changed widget links a new stylesheet
+		// either way.
+		if (
+			$form_type == 'widget' &&
+			empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
+			! $keep_stylesheet &&
+			! $from_page_builder
+		) {
 			$this->delete_css(
 				$this->modify_instance(
 					$this->normalize_container_values( $form_options, $old_instance )

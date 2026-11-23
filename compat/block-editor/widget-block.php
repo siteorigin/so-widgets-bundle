@@ -47,12 +47,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
+	 * The post types whose REST saves have their widget blocks rebuilt, each
+	 * with whether a block that cannot be rendered rejects the save.
+	 *
+	 * @var array<string, bool>
+	 */
+	private $rest_post_types = array();
+
+	/**
 	 * Setup REST API validation for SiteOrigin widgets.
 	 *
-	 * This method sets up server-side validation for SiteOrigin widgets
-	 * in the REST API. It retrieves all public post types and adds a
-	 * REST API pre-insert action for each post type to perform
-	 * server-side validation.
+	 * A REST save of a widget block has its stored markup built here, from
+	 * the block's data, so the editor never has to supply it.
+	 *
+	 * Public post types are strict: a block that cannot be rendered rejects
+	 * the save. Every other post type the block editor can save content into
+	 * (templates, template parts, synced patterns and private types of that
+	 * kind) is lenient: the save always goes through. So is any post type
+	 * registered after this runs.
 	 *
 	 * @return void
 	 */
@@ -63,8 +75,58 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		foreach ( $post_types as $post_type ) {
-			add_action( 'rest_pre_insert_' . $post_type, array( $this, 'server_side_validation' ), 10, 2 );
+			$this->add_rest_validation( $post_type, true );
+		}
+
+		foreach ( get_post_types( array( 'show_in_rest' => true ), 'names' ) as $post_type ) {
+			if ( post_type_supports( $post_type, 'editor' ) ) {
+				$this->add_rest_validation( $post_type, false );
+			}
+		}
+
+		add_action( 'registered_post_type', array( $this, 'add_rest_validation_for_registered_post_type' ), 10, 2 );
+	}
+
+	/**
+	 * Hook the REST save of one post type, once.
+	 *
+	 * @param string $post_type The post type.
+	 * @param bool   $strict Whether a block that cannot be rendered rejects the save.
+	 *
+	 * @return void
+	 */
+	private function add_rest_validation( $post_type, $strict ) {
+		if ( isset( $this->rest_post_types[ $post_type ] ) ) {
+			return;
+		}
+
+		$this->rest_post_types[ $post_type ] = (bool) $strict;
+
+		add_action( 'rest_pre_insert_' . $post_type, array( $this, 'server_side_validation' ), 10, 2 );
+
+		// Page Builder data only stands in for the content of public post types.
+		if ( $strict ) {
 			add_action( 'rest_after_insert_' . $post_type, array( $this, 'clear_panels_data_for_widget_blocks' ), 10, 3 );
+		}
+	}
+
+	/**
+	 * Hook the REST save of a post type registered after setup, leniently.
+	 *
+	 * @param string       $post_type The post type.
+	 * @param WP_Post_Type $post_type_object Its registration.
+	 *
+	 * @return void
+	 */
+	public function add_rest_validation_for_registered_post_type( $post_type, $post_type_object ) {
+		if (
+			! empty( $post_type_object->public ) ||
+			(
+				! empty( $post_type_object->show_in_rest ) &&
+				post_type_supports( $post_type, 'editor' )
+			)
+		) {
+			$this->add_rest_validation( $post_type, false );
 		}
 	}
 
@@ -382,7 +444,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if (
 			empty( $current_screen ) ||
-			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ) )
+			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets', 'customize' ) )
 		) {
 			return;
 		}
@@ -684,7 +746,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$had_render_flag = ! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
-		$instance = $block_content['widgetData'];
+		// Stored data that is not a set of values is rendered as no values.
+		$instance = isset( $block_content['widgetData'] ) && is_array( $block_content['widgetData'] ) ? $block_content['widgetData'] : array();
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
 		// The render flag skips render time sanitization of stored values, so it
@@ -713,16 +776,18 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			* - Widget excluded via siteorigin_widgets_block_exclude_widget filter.
 			* - Active WPML translation exists.
 			*/
+			$must_render = ! empty( $_POST ) ||
+				in_array( $block_content['widgetClass'], $always_render_widget_list ) ||
+				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
+				$this->wpml_render_check();
+
 			if (
 				(
 					empty( $block_content['widgetMarkup'] ) ||
 					// Does widgetMarkup contain the string No widget preview available?
 					strpos( $block_content['widgetMarkup'], __( 'No widget preview available.', 'so-widgets-bundle' ) ) !== false
 				) ||
-				! empty( $_POST ) ||
-				in_array( $block_content['widgetClass'], $always_render_widget_list ) ||
-				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
-				$this->wpml_render_check()
+				$must_render
 			) {
 				// Add anchor to widget wrapper.
 				if ( ! empty( $block_content['anchor'] ) ) {
@@ -731,13 +796,21 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$anchor_filter_added = true;
 				}
 
+				// A block edited in a widget area renders here, as nothing rebuilds
+				// its markup. Keep the plain title its cached markup printed.
+				$plain_title = ! $must_render &&
+					! empty( $instance['_sow_plain_title'] ) &&
+					doing_filter( 'widget_block_content' );
+				unset( $instance['_sow_plain_title'] );
+
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
+
 				$widget->widget( array(
 					'before_widget' => '',
 					'after_widget' => '',
-					'before_title' => '<h3 class="widget-title">',
-					'after_title' => '</h3>',
+					'before_title' => $plain_title ? '' : '<h3 class="widget-title">',
+					'after_title' => $plain_title ? '' : '</h3>',
 				), $instance );
 			} else {
 				$widget->generate_and_enqueue_instance_styles( $instance );
@@ -748,9 +821,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
 
 					foreach ( $block_content['widgetIcons'] as $icon_font ) {
-						if ( ! wp_style_is( $icon_font ) ) {
-							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
-							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
+						$style_uri = self::icon_font_style_uri( $icon_font, $widget_icon_families );
+
+						if ( $style_uri !== null && ! wp_style_is( $icon_font ) ) {
+							wp_enqueue_style( $icon_font, $style_uri );
 						}
 					}
 				}
@@ -793,13 +867,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $prepared_post;
 		}
 
+		// Every widget block's comment starts this way, with any white space
+		// the block parser allows after the comment opens. Content without
+		// one is left exactly as it was sent, and is not parsed.
+		if ( ! preg_match( '#<!--\s+wp:sowb/#', $prepared_post->post_content ) ) {
+			return $prepared_post;
+		}
+
 		$blocks = parse_blocks( $prepared_post->post_content );
 		if ( empty( $blocks ) ) {
 			return $prepared_post;
 		}
 
+		$lenient = $this->is_lenient_rest_save();
+
 		foreach( $blocks as &$block ) {
-			$block = $this->sanitize_blocks( $block );
+			$block = $this->sanitize_blocks( $block, $lenient );
 
 			if ( is_wp_error( $block ) ) {
 				return $block;
@@ -810,7 +893,50 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $prepared_post;
 	}
 
-	public function sanitize_blocks( $block ) {
+	/**
+	 * Whether the REST save now running is of a post type whose saves are
+	 * never rejected over a widget block.
+	 *
+	 * @return bool
+	 */
+	private function is_lenient_rest_save() {
+		$filter = (string) current_filter();
+		$prefix = 'rest_pre_insert_';
+
+		if ( strpos( $filter, $prefix ) !== 0 ) {
+			return false;
+		}
+
+		$post_type = substr( $filter, strlen( $prefix ) );
+
+		return isset( $this->rest_post_types[ $post_type ] ) && ! $this->rest_post_types[ $post_type ];
+	}
+
+	/**
+	 * The stylesheet of the icon font a stored style handle names.
+	 *
+	 * @param mixed $handle A handle from a block's stored widgetIcons.
+	 * @param array $families The registered icon families.
+	 *
+	 * @return string|null Null when the handle does not name a registered family.
+	 */
+	public static function icon_font_style_uri( $handle, $families ) {
+		$prefix = 'siteorigin-widget-icon-font-';
+
+		if ( ! is_string( $handle ) || strpos( $handle, $prefix ) !== 0 ) {
+			return null;
+		}
+
+		$family = substr( $handle, strlen( $prefix ) );
+
+		if ( ! is_array( $families ) || empty( $families[ $family ]['style_uri'] ) || ! is_string( $families[ $family ]['style_uri'] ) ) {
+			return null;
+		}
+
+		return $families[ $family ]['style_uri'];
+	}
+
+	public function sanitize_blocks( $block, $lenient = false ) {
 		if ( is_wp_error( $block ) ) {
 			return $block;
 		}
@@ -819,7 +945,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			! empty( $block['blockName'] ) &&
 			strpos( $block['blockName'], 'sowb/' ) === 0
 		) {
-			$block = $this->sanitize_block( $block );
+			$block = $lenient ?
+				$this->sanitize_block_leniently( $block ) :
+				$this->sanitize_block( $block );
 
 			if ( is_wp_error( $block ) ) {
 				return $block;
@@ -831,7 +959,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			is_array( $block['innerBlocks'] )
 		) {
 			foreach( $block['innerBlocks'] as $i => $inner ) {
-				$inner = $this->sanitize_blocks( $inner );
+				$inner = $this->sanitize_blocks( $inner, $lenient );
 
 				if ( is_wp_error( $inner ) ) {
 					return $inner;
@@ -876,6 +1004,74 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		// The preview returns widget data only, so carry the kept values.
 		$block['attrs'] = array_merge( $rendered_widget, $kept );
+		return $block;
+	}
+
+	/**
+	 * Rebuild a widget block's stored markup for a save that must not fail.
+	 *
+	 * The block keeps its other attributes. A block that cannot be rendered
+	 * (its widget isn't active, its class can't be worked out, its data is
+	 * refused, or its widget throws) is kept too, with its stored markup
+	 * emptied so the front end renders it live and prints nothing stale. A
+	 * widget that isn't active is never activated here.
+	 *
+	 * @param array $block The parsed block.
+	 *
+	 * @return array The block.
+	 */
+	public function sanitize_block_leniently( $block ) {
+		$attrs = ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+
+		// What the block holds that isn't built here.
+		$own = $attrs;
+		unset( $own['widgetMarkup'], $own['widgetIcons'], $own['html'], $own['anchor'], $own['className'] );
+
+		$kept = array();
+		foreach ( array( 'anchor', 'className' ) as $key ) {
+			$value = self::get_valid_wrapper_attr( $attrs, $key );
+			if ( $value !== null ) {
+				$kept[ $key ] = $value;
+			}
+		}
+
+		$unrendered = array_merge(
+			$own,
+			array(
+				'widgetMarkup' => '',
+				'widgetIcons' => array(),
+			),
+			$kept
+		);
+
+		// Everything that touches the widget is inside this boundary, so
+		// nothing a block holds, however malformed, can stop the save.
+		try {
+			$widget_class = $this->resolve_widget_class( $attrs, empty( $block['blockName'] ) ? '' : $block['blockName'] );
+
+			$rendered_widget = null;
+			if (
+				is_string( $widget_class ) &&
+				$widget_class !== '' &&
+				! empty( SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class ) )
+			) {
+				$rendered_widget = $this->get_widget_preview(
+					array_merge( $own, array( 'widgetClass' => $widget_class ), $kept ),
+					false
+				);
+			}
+		} catch ( Throwable $e ) {
+			$rendered_widget = null;
+		}
+
+		if ( empty( $rendered_widget ) || ! is_array( $rendered_widget ) ) {
+			$block['attrs'] = $unrendered;
+
+			return $block;
+		}
+
+		$block['attrs'] = array_merge( $own, $rendered_widget, $kept );
+
 		return $block;
 	}
 
@@ -937,7 +1133,36 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $class_name;
 	}
 
+	/**
+	 * Whether the next get_widget_preview() call is the editor's preview
+	 * request, which saves nothing. Set by get_editor_preview().
+	 *
+	 * @var bool
+	 */
+	private $editor_preview = false;
+
+	/**
+	 * Build the preview the block editor asks for while a block is edited.
+	 * Nothing is saved, so the widget's stylesheet is left in place.
+	 *
+	 * @param array|WP_REST_Request $block The block's widgetClass and widgetData.
+	 */
+	public function get_editor_preview( $block ) {
+		$this->editor_preview = true;
+
+		try {
+			return $this->get_widget_preview( $block );
+		} finally {
+			$this->editor_preview = false;
+		}
+	}
+
 	public function get_widget_preview( $block, $just_html = true ) {
+		// Taken here, before anything else runs, so a preview built from
+		// inside this one is treated as a save.
+		$editor_preview = $this->editor_preview;
+		$this->editor_preview = false;
+
 		$widget_class = empty( $block['widgetClass'] ) ? '' : $block['widgetClass'];
 		$widget_data = empty( $block['widgetData'] ) ? array() : $block['widgetData'];
 
@@ -990,7 +1215,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 
 				/* @var $widget SiteOrigin_Widget */
-				$instance = $widget->update( $widget_data, $widget_data );
+				$instance = $editor_preview
+					? $widget->update_without_saving( $widget_data )
+					: $widget->update( $widget_data, $widget_data );
 
 				// Untrusted data is normalised and floored before it is
 				// rendered, so the cached markup is built from floored data.
@@ -1008,14 +1235,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$rendered_widget = array();
 				$rendered_widget['html'] = ob_get_clean();
 
-				// Check if this widget loaded any icons, and if it has, store them.
+				// Store the icon fonts queued once this widget has rendered. The
+				// list can include a font an earlier widget in the same request
+				// queued; a block then loads a stylesheet it does not use.
 				$styles = wp_styles();
 
 				if ( ! empty( $styles->queue ) ) {
 					$rendered_widget['widgetIcons'] = array();
 
 					foreach ( $styles->queue as $style ) {
-						if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
+						if ( is_string( $style ) && strpos( $style, 'siteorigin-widget-icon-font-' ) === 0 ) {
 							$rendered_widget['widgetIcons'][] = $style;
 						}
 					}
@@ -1066,7 +1295,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'widgetData' => $widget_data,
 				'widgetMarkup' => $rendered_widget['widgetMarkup'],
 				'html' => $rendered_widget['html'],
-				'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
+				'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
 			);
 		} finally {
 			// On the success path ob_get_clean() already popped the buffer. A

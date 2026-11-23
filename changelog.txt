@@ -1,5 +1,23 @@
 == Changelog ==
 
+= 1.77.0 - 23 November 2026 =
+* Customizer: Added support for the SiteOrigin Widget Block in Customizer widget areas, with editing, preview and save, and kept each widget's generated stylesheet and plain title through an edit.
+* Testimonials: Added Name and Location color settings, which also color their links, and named the color settings after their parts.
+* Contact Form: Added a Text color setting to the Container section.
+* Anything Carousel, Post Carousel: Strengthened how a carousel reads its settings, and limited Post Carousel load-more requests to the site's own host.
+* Google Maps: Fixed address, map name, marker Place and directions text being altered when the map settings were encoded, so the map shows the text as entered.
+* Google Maps: Kept the map settings valid when a marker's information contained an HTML entity.
+* Image Grid: Fixed a stray quote being added to every image's alt text.
+* Block Editor: Fixed the checkbox tick in widget forms not showing in the block editor, including in forced-colors mode.
+* Block Editor: Made the widget save bridge keep the editor's blocks and the saved content in step, without adding an extra edit or overwriting edits made during the save.
+* Block Editor: Stopped a widget preview marking its block as edited or holding up a save, and loaded each Widget Block form once per mount.
+* Widget Block: Built a block's stored markup on the server for templates, template parts and synced patterns, kept those saves working when a widget could not render, saved only the icon fonts a block uses, and rendered malformed stored data as empty values.
+* TinyMCE field: Kept the extra toolbar rows visible when a theme or plugin set wordpress_adv_hidden to false through tiny_mce_before_init.
+* Price Table: Fell back to the Atom theme when the stored theme name was not a plain name.
+* General: Raised the minimum required WordPress version to 6.6, which the Google Maps text decoding now needs.
+* General: Checked a widget template's path before loading it, so only templates inside the widget's own template folder load.
+* General: Kept a widget's generated stylesheet when Page Builder updates it, a Widget Block renders, or an editor loads its form or preview, removed it when a saved block no longer needs it, and cleared page caches when a stylesheet file is deleted.
+
 = 1.76.0 - 30 October 2026 =
 * Features: Added Space between icon and text and Space between title and text settings.
 * Price Table: Added a Fonts section to the design settings, with Font and Size settings for the title, subtitle, price, sale price, original price, period, features and button. Empty settings keep the current look.

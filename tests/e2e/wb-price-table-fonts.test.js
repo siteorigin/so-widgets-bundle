@@ -9,6 +9,7 @@ const {
 	useFeaturesPage,
 } = require( './helpers/features' );
 const { widgetBlock } = require( './helpers/widget-block-abilities' );
+const previewTheme = require( './helpers/preview-theme' );
 
 /**
  * Measures the Price Table font settings on a rendered page: each part uses
@@ -226,8 +227,9 @@ test.describe( 'Price Table font settings', () => {
 } );
 
 test.describe( 'Price Table equalized rows with a late web font', () => {
-	// Wider than the fallback, so the long title wraps only once it arrives.
-	const FONT_PATH = '/wp-content/themes/twentytwentyfive/assets/fonts/fira-code/FiraCode-VariableFont_wght.woff2';
+	// Takes more room than the fallback, so the long title only grows once
+	// it arrives.
+	const { font: FONT_PATH, fontDescriptors: FONT_DESCRIPTORS } = previewTheme();
 	const FONT_DELAY = 1000;
 
 	const latePage = useFeaturesPage(
@@ -259,7 +261,7 @@ test.describe( 'Price Table equalized rows with a late web font', () => {
 			beforeLoad: async ( p ) => {
 				await p.route( /fonts\.googleapis\.com/, ( route ) => route.fulfill( {
 					contentType: 'text/css',
-					body: `@font-face { font-family: 'Roboto'; src: url('https://fonts.gstatic.com/late.woff2') format('woff2'); font-display: swap; }`,
+					body: `@font-face { font-family: 'Roboto'; src: url('https://fonts.gstatic.com/late.woff2') format('woff2'); font-display: swap; ${ FONT_DESCRIPTORS } }`,
 				} ) );
 				await p.route( /fonts\.gstatic\.com/, async ( route ) => {
 					await new Promise( ( resolve ) => setTimeout( resolve, FONT_DELAY ) );
