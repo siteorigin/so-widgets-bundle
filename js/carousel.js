@@ -259,6 +259,12 @@ jQuery( function ( $ ) {
 				}
 			}
 
+			// Slick merges the items element's own data-slick JSON over the
+			// options below, which lets page content supply option values. The
+			// carousel is configured entirely from carousel_settings, so drop
+			// data-slick (attribute and cached jQuery data) before initialising.
+			$items.removeAttr( 'data-slick' ).removeData( 'slick' );
+
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
