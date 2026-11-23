@@ -18,6 +18,27 @@ jQuery( function ( $ ) {
 			return;
 		}
 
+		// The load-more URL comes from the carousel markup, so only fetch from
+		// this site's own host. Resolve it against the page and require the same
+		// hostname; otherwise do nothing (no request, no loading indicator).
+		// Comparing hostname rather than origin keeps load-more working when the
+		// admin uses a different scheme or port (e.g. FORCE_SSL_ADMIN), which an
+		// origin check would reject. An admin on a different hostname is not
+		// matched and will not load more here.
+		const ajaxUrl = carousel.data( 'ajax-url' );
+		let resolvedUrl;
+		try {
+			resolvedUrl = new URL( ajaxUrl, document.baseURI );
+		} catch ( e ) {
+			return;
+		}
+		if (
+			( resolvedUrl.protocol !== 'http:' && resolvedUrl.protocol !== 'https:' ) ||
+			resolvedUrl.hostname !== new URL( document.baseURI ).hostname
+		) {
+			return;
+		}
+
 		// Add loading indicator to the carousel.
 		$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
 
@@ -27,7 +48,7 @@ jQuery( function ( $ ) {
 		const page = carousel.data( 'page' ) + 1;
 
 		$.get(
-			carousel.data( 'ajax-url' ),
+			ajaxUrl,
 			{
 				action: 'sow_carousel_load',
 				paged: page,
